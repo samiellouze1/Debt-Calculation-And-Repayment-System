@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     public class PAYMENT
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public Nullable<int> PaymentPlanId { get; set; }
         public Nullable<System.DateTime> PaymentDate { get; set; }
         public Nullable<decimal> Amount { get; set; }

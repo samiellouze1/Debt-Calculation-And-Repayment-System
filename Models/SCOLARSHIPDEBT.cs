@@ -2,9 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
-    public class SCOLARSHIPDEPT
+    public class SCOLARSHIPDEBT
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public Nullable<int> UserId { get; set; }
         public Nullable<decimal> Amount { get; set; }
         public Nullable<System.DateTime> StartDate { get; set; }

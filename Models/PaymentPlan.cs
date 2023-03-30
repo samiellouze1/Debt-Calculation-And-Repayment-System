@@ -6,6 +6,7 @@
     {
         public int Id { get; set; }
         public Nullable<int> UserId { get; set; }
+        public Nullable<int> UserId1 { get; set; }
         public Nullable<int> NumOfInstallment { get; set; }
         public Nullable<System.DateTime> StartDate { get; set; }
         public Nullable<System.DateTime> FinishDate { get; set; }

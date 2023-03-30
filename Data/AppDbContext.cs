@@ -18,6 +18,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
 
             #region PAYMENTPLAN
             builder.Entity<PAYMENTPLAN>().HasOne(pp => pp.User).WithMany(u => u.PaymentPlans).HasForeignKey(pp => pp.UserId);
+            builder.Entity<PAYMENTPLAN>().HasOne(pp => pp.User1).WithMany(u => u.PaymentPlans1).HasForeignKey(pp => pp.UserId1);
             #endregion
 
             #region USER
@@ -29,8 +30,8 @@ namespace Debt_Calculation_And_Repayment_System.Data
             #endregion
 
             #region SCOLARSHIPDEBT
-            builder.Entity<SCOLARSHIPDEPT>().HasOne(sd => sd.User).WithMany(u => u.ScolarshipDebts).HasForeignKey(sd => sd.UserId);
-            builder.Entity<SCOLARSHIPDEPT>().HasOne(sd => sd.User1).WithMany(u => u.ScolarshipDebts1).HasForeignKey(sd => sd.RegUserId);
+            builder.Entity<SCOLARSHIPDEBT>().HasOne(sd => sd.User).WithMany(u => u.ScolarshipDebtsHeHas).HasForeignKey(sd => sd.UserId);
+            builder.Entity<SCOLARSHIPDEBT>().HasOne(sd => sd.User1).WithMany(u => u.ScolarshipDebtsHeRegistered).HasForeignKey(sd => sd.RegUserId);
             #endregion
 
             base.OnModelCreating(builder);
@@ -38,7 +39,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
         public DbSet<KEYVALUE> KEYVALUEs { get; set; }
         public DbSet<PAYMENT> PAYMENTs { get; set; }
         public DbSet<PAYMENTPLAN> PAYMENTPLANs { get; set; }
-        public DbSet<SCOLARSHIPDEPT> SCOLARSHIPDEPTs { get; set; }
-        public DbSet<USER> Users { get; set; }
+        public DbSet<SCOLARSHIPDEBT> SCOLARSHIPDEPTs { get; set; }
+        public DbSet<USER> USERs { get; set; }
     }
 }

@@ -5,7 +5,6 @@
     using System.Collections.Generic;
     public class USER : IdentityUser
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public string SurName { get; set; }
         public string Email { get; set; }
@@ -28,8 +27,8 @@
         public virtual KEYVALUE KeyValue3 { get; set; }
         public virtual ICollection<PAYMENTPLAN> PaymentPlans { get; set; }
         public virtual ICollection<PAYMENTPLAN> PaymentPlans1 { get; set; }
-        public virtual ICollection<SCOLARSHIPDEPT> ScolarshipDebts { get; set; }
-        public virtual ICollection<SCOLARSHIPDEPT> ScolarshipDebts1 { get; set; }
+        public virtual ICollection<SCOLARSHIPDEBT> ScolarshipDebtsHeHas { get; set; }
+        public virtual ICollection<SCOLARSHIPDEBT> ScolarshipDebtsHeRegistered { get; set; }
         public virtual ICollection<USER> User1 { get; set; }
         public virtual USER User2 { get; set; }
     }
