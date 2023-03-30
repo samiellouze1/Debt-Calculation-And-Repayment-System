@@ -1,9 +1,10 @@
 ﻿namespace Debt_Calculation_And_Repayment_System.Models
 {
+    using Debt_Calculation_And_Repayment_System.Data.Repository;
     using Microsoft.AspNetCore.Identity;
     using System;
     using System.Collections.Generic;
-    public class USER : IdentityUser
+    public class USER : IdentityUser,IEntityBase
     {
         public string Name { get; set; }
         public string SurName { get; set; }
