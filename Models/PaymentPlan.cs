@@ -36,7 +36,7 @@
         [ForeignKey("UserId")]
         public virtual USER User { get; set; }
         [Required]
-        public int RegUserId { get; set; }
+        public string RegUserId { get; set; }
         [ForeignKey("RegUserId")]
         public virtual USER UserRegister { get; set; }
     }

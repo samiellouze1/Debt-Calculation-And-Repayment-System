@@ -24,9 +24,13 @@
         public decimal Rate { get; set; }
         public string PaymentPlanId { get; set; }
         public bool Deleted { get; set; }
+        public string KeyValueId { get; set; }
         public virtual KEYVALUE KeyValue { get; set; }
+        public string KeyValueId1 { get; set; }
         public virtual KEYVALUE KeyValue1 { get; set; }
+        public string KeyValueId2 { get; set; }
         public virtual KEYVALUE KeyValue2 { get; set; }
+        public string KeyValueId3 { get; set; }
         public virtual KEYVALUE KeyValue3 { get; set; }
         public virtual ICollection<PAYMENTPLAN> PaymentPlans { get; set; }
         public virtual ICollection<PAYMENTPLAN> PaymentPlans1 { get; set; }

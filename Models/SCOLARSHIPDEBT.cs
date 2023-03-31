@@ -13,17 +13,29 @@
         [ScaffoldColumn(false)]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
+        [Required]
         public decimal Amount { get; set; }
+        [Required]
         public DateTime StartDate { get; set; }
+        [Required]
         public DateTime FinishDate { get; set; }
+        [Required]
         public decimal Rate { get; set; }
-        public int NumberOfDays { get; set; }
+        [Required]
+        public string NumberOfDays { get; set; }
+        [Required]
         public decimal Interest { get; set; }
+        [Required]
         public DateTime RegDate { get; set; }
-        public int RegUserId { get; set; }
+        [Required]
+        public string RegUserId { get; set; }
+        [ForeignKey("RegUserId")]
         public virtual USER UserRegister { get; set; }
-        public int UserId { get; set; }
+        [Required]
+        public string UserId { get; set; }
+        [ForeignKey("UserId")]
         public virtual USER User { get; set; }
+        [Required]
         public bool Deleted { get; set; }
     }
 }

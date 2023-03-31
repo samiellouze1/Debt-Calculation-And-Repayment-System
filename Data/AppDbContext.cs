@@ -23,10 +23,10 @@ namespace Debt_Calculation_And_Repayment_System.Data
 
             #region USER
             builder.Entity<USER>().HasOne(u => u.User2).WithMany(u => u.UserRegister).HasForeignKey(u => u.RegUserId);
-            builder.Entity<USER>().HasOne(u => u.KeyValue).WithMany(kv => kv.USERs).HasForeignKey(u=>u.KeyValue);
-            builder.Entity<USER>().HasOne(u => u.KeyValue1).WithMany(kv => kv.USERs1).HasForeignKey(u => u.KeyValue1);
-            builder.Entity<USER>().HasOne(u => u.KeyValue2).WithMany(kv => kv.USERs2).HasForeignKey(u => u.KeyValue2);
-            builder.Entity<USER>().HasOne(u => u.KeyValue3).WithMany(kv => kv.USERs3).HasForeignKey(u => u.KeyValue3);
+            builder.Entity<USER>().HasOne(u => u.KeyValue).WithMany(kv => kv.USERs).HasForeignKey(u=>u.KeyValueId);
+            builder.Entity<USER>().HasOne(u => u.KeyValue1).WithMany(kv => kv.USERs1).HasForeignKey(u => u.KeyValueId1);
+            builder.Entity<USER>().HasOne(u => u.KeyValue2).WithMany(kv => kv.USERs2).HasForeignKey(u => u.KeyValueId2);
+            builder.Entity<USER>().HasOne(u => u.KeyValue3).WithMany(kv => kv.USERs3).HasForeignKey(u => u.KeyValueId3);
             #endregion
 
             #region SCOLARSHIPDEBT
