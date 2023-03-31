@@ -4,24 +4,26 @@
     using Microsoft.AspNetCore.Identity;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+
     public class USER : IdentityUser,IEntityBase
     {
+        [Required]
         public string Name { get; set; }
+        [Required]
         public string SurName { get; set; }
+        [Required]
         public string Email { get; set; }
-        public string Password { get; set; }
-        public Nullable<int> TypeId { get; set; }
-        public Nullable<System.Guid> Guid { get; set; }
-        public Nullable<int> PaymentStatusId { get; set; }
-        public string UserNumber { get; set; }
+        [Required]
+        public DateTime RegDate { get; set; }
+        public string PaymentStatusId { get; set; }
         public string MobileNumber { get; set; }
         public string Address { get; set; }
-        public Nullable<int> ProgramId { get; set; }
-        public Nullable<decimal> Rate { get; set; }
-        public Nullable<System.DateTime> RegDate { get; set; }
-        public Nullable<int> RegUserId { get; set; }
-        public Nullable<int> PaymentPlanId { get; set; }
-        public Nullable<bool> Deleted { get; set; }
+        public string ProgramId { get; set; }
+        public decimal Rate { get; set; }
+        public string PaymentPlanId { get; set; }
+        public bool Deleted { get; set; }
         public virtual KEYVALUE KeyValue { get; set; }
         public virtual KEYVALUE KeyValue1 { get; set; }
         public virtual KEYVALUE KeyValue2 { get; set; }
@@ -31,6 +33,8 @@
         public virtual ICollection<SCOLARSHIPDEBT> ScolarshipDebtsHeHas { get; set; }
         public virtual ICollection<SCOLARSHIPDEBT> ScolarshipDebtsHeRegistered { get; set; }
         public virtual ICollection<USER> UserRegister { get; set; }
+        public string RegUserId { get; set; }
+        [ForeignKey("RegUserId")]
         public virtual USER User2 { get; set; }
     }
 }
