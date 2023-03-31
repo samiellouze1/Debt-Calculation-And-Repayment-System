@@ -1,8 +1,9 @@
 ﻿namespace Debt_Calculation_And_Repayment_System.Models
 {
+    using Debt_Calculation_And_Repayment_System.Data.Repository;
     using System;
     using System.Collections.Generic;
-    public class PAYMENT
+    public class PAYMENT: IEntityBase
     {
         public string Id { get; set; }
         public Nullable<int> PaymentPlanId { get; set; }

@@ -18,11 +18,11 @@ namespace Debt_Calculation_And_Repayment_System.Data
 
             #region PAYMENTPLAN
             builder.Entity<PAYMENTPLAN>().HasOne(pp => pp.User).WithMany(u => u.PaymentPlans).HasForeignKey(pp => pp.UserId);
-            builder.Entity<PAYMENTPLAN>().HasOne(pp => pp.User1).WithMany(u => u.PaymentPlans1).HasForeignKey(pp => pp.UserId1);
+            builder.Entity<PAYMENTPLAN>().HasOne(pp => pp.UserRegister).WithMany(u => u.PaymentPlans1).HasForeignKey(pp => pp.RegUserId);
             #endregion
 
             #region USER
-            builder.Entity<USER>().HasOne(u => u.User2).WithMany(u => u.User1).HasForeignKey(u => u.RegUserId);
+            builder.Entity<USER>().HasOne(u => u.User2).WithMany(u => u.UserRegister).HasForeignKey(u => u.RegUserId);
             builder.Entity<USER>().HasOne(u => u.KeyValue).WithMany(kv => kv.USERs).HasForeignKey(u=>u.KeyValue);
             builder.Entity<USER>().HasOne(u => u.KeyValue1).WithMany(kv => kv.USERs1).HasForeignKey(u => u.KeyValue1);
             builder.Entity<USER>().HasOne(u => u.KeyValue2).WithMany(kv => kv.USERs2).HasForeignKey(u => u.KeyValue2);
@@ -31,7 +31,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
 
             #region SCOLARSHIPDEBT
             builder.Entity<SCOLARSHIPDEBT>().HasOne(sd => sd.User).WithMany(u => u.ScolarshipDebtsHeHas).HasForeignKey(sd => sd.UserId);
-            builder.Entity<SCOLARSHIPDEBT>().HasOne(sd => sd.User1).WithMany(u => u.ScolarshipDebtsHeRegistered).HasForeignKey(sd => sd.RegUserId);
+            builder.Entity<SCOLARSHIPDEBT>().HasOne(sd => sd.UserRegister).WithMany(u => u.ScolarshipDebtsHeRegistered).HasForeignKey(sd => sd.RegUserId);
             #endregion
 
             base.OnModelCreating(builder);

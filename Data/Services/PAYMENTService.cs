@@ -4,8 +4,11 @@ using Debt_Calculation_And_Repayment_System.Models;
 
 namespace Debt_Calculation_And_Repayment_System.Data.Services
 {
-    public class KEYVALUEService: EntityBaseRepository<KEYVALUE>,IKEYVALUEService
+    public class PAYMENTService: EntityBaseRepository<PAYMENT>,IPAYMENTService
     {
-        public KEYVALUEService(AppDbContext context): base(context)
+        public PAYMENTService(AppDbContext context): base(context)
+        {
+
+        }
     }
 }

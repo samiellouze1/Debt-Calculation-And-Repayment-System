@@ -30,7 +30,7 @@
         public virtual ICollection<PAYMENTPLAN> PaymentPlans1 { get; set; }
         public virtual ICollection<SCOLARSHIPDEBT> ScolarshipDebtsHeHas { get; set; }
         public virtual ICollection<SCOLARSHIPDEBT> ScolarshipDebtsHeRegistered { get; set; }
-        public virtual ICollection<USER> User1 { get; set; }
+        public virtual ICollection<USER> UserRegister { get; set; }
         public virtual USER User2 { get; set; }
     }
 }
