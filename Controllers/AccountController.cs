@@ -68,7 +68,9 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var newUser = new USER()
             {
                 UserName=registerVM.Email,
-
+                Email=registerVM.Email,
+                Name=registerVM.Name,
+                SurName=registerVM.SurName,
             };
             var newUserResponse = await _userManager.CreateAsync(newUser, registerVM.Password);
             if (newUserResponse.Succeeded)
@@ -82,5 +84,12 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             return View(registerVM);
         }
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Product");
+        }
+
     }
 }

@@ -4,6 +4,7 @@ using Debt_Calculation_And_Repayment_System.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Debt_Calculation_And_Repayment_System.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230401144413_usedinheritedattributes")]
+    partial class usedinheritedattributes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,15 +56,13 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Amount")
-                        .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
 
                     b.Property<decimal>("OverdueAmount")
-                        .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("PaymentDate")
                         .HasColumnType("datetime2");
@@ -75,8 +75,7 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Total")
-                        .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -98,19 +97,16 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("InterestAmount")
-                        .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("MonthlyTotalAmount")
-                        .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("NumOfInstallment")
                         .HasColumnType("int");
 
                     b.Property<decimal>("PrincipalAmount")
-                        .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("RegDate")
                         .HasColumnType("datetime2");
@@ -142,8 +138,7 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Amount")
-                        .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
@@ -152,16 +147,14 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Interest")
-                        .HasPrecision(4, 3)
-                        .HasColumnType("decimal(4,3)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("NumberOfDays")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Rate")
-                        .HasPrecision(4, 3)
-                        .HasColumnType("decimal(4,3)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("RegDate")
                         .HasColumnType("datetime2");
@@ -269,8 +262,7 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Rate")
-                        .HasPrecision(4, 3)
-                        .HasColumnType("decimal(4,3)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("RegDate")
                         .HasColumnType("datetime2");
