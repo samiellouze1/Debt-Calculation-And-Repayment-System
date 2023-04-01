@@ -1,4 +1,5 @@
 ﻿using Debt_Calculation_And_Repayment_System.Data;
+using Debt_Calculation_And_Repayment_System.Data.Static;
 using Debt_Calculation_And_Repayment_System.Data.ViewModels;
 using Debt_Calculation_And_Repayment_System.Models;
 using Microsoft.AspNetCore.Identity;
@@ -66,18 +67,20 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             var newUser = new USER()
             {
-                // user attributes
+                UserName=registerVM.Email,
+
             };
             var newUserResponse = await _userManager.CreateAsync(newUser, registerVM.Password);
             if (newUserResponse.Succeeded)
             {
-                await _userManager.AddToRoleAsync(newUser, );
-                var result = await _signInManager.PasswordSignInAsync(new User, registerVM.Password, false, false);
+                await _userManager.AddToRoleAsync(newUser, UserRoles.StaffMember);
+                var result = await _signInManager.PasswordSignInAsync(newUser, registerVM.Password, false, false);
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Index", "Home");
                 }
             }
+            return View(registerVM);
         }
     }
 }
