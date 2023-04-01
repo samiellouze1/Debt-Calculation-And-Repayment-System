@@ -4,9 +4,9 @@ using Debt_Calculation_And_Repayment_System.Models;
 
 namespace Debt_Calculation_And_Repayment_System.Data.Services
 {
-    public class SCOLARSHIPDEBTService: EntityBaseRepository<SCOLARSHIPDEBT>,ISCOLARSHIPDEBTService
+    public class USERService: EntityBaseRepository<USER>,IUSERService
     {
-        public SCOLARSHIPDEBTService(AppDbContext context): base(context)
+        public USERService(AppDbContext context): base(context)
         {
 
         }
