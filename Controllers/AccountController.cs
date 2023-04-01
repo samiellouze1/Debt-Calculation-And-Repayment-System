@@ -1,0 +1,83 @@
+﻿using Debt_Calculation_And_Repayment_System.Data;
+using Debt_Calculation_And_Repayment_System.Data.ViewModels;
+using Debt_Calculation_And_Repayment_System.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Debt_Calculation_And_Repayment_System.Controllers
+{
+    public class AccountController: Controller
+    {
+        private readonly UserManager<USER> _userManager;
+        private readonly SignInManager<USER> _signInManager;
+        private readonly AppDbContext _context;
+        public AccountController(UserManager<USER> usermanager,SignInManager<USER> signinmanager,AppDbContext context)
+        {
+            _userManager = usermanager;
+            _signInManager = signinmanager;
+            _context = context;
+        }
+        public IActionResult Login()
+        {
+            var response = new LoginVM();
+            return View(response);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginVM loginvm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return (View(loginvm));
+            }
+            var user = await _userManager.FindByEmailAsync(loginvm.Email);
+            if (user!= null)
+            {
+                var passwordCheck = await _userManager.CheckPasswordAsync(user, loginvm.Password);
+                if (passwordCheck)
+                {
+                    var result=await _signInManager.PasswordSignInAsync(user, loginvm.Password,false,false);
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                }
+            }
+            TempData["Error"] = "Wrong! Try Again";
+            return View(loginvm);
+        }
+        public IActionResult Register()
+        {
+            var response = new RegisterVM();
+            return View(response);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterVM registerVM)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(registerVM);
+            }
+
+            var user = await _userManager.FindByEmailAsync(registerVM.Email);
+            if (user!=null)
+            {
+                TempData["Error"] = "This EMail Address has already been taken";
+                return View(registerVM);
+            }
+            var newUser = new USER()
+            {
+                // user attributes
+            };
+            var newUserResponse = await _userManager.CreateAsync(newUser, registerVM.Password);
+            if (newUserResponse.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(newUser, );
+                var result = await _signInManager.PasswordSignInAsync(new User, registerVM.Password, false, false);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+        }
+    }
+}
