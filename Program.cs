@@ -18,7 +18,16 @@ builder.Services.AddScoped<IPAYMENTPLANService, PAYMENTPLANService>();
 builder.Services.AddScoped<IPAYMENTService, PAYMENTService>();
 builder.Services.AddScoped<ISCOLARSHIPDEBTService, SCOLARSHIPDEBTService>();
 builder.Services.AddScoped<IUSERService, USERService>();
+
+
+
+
+
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddControllersWithViews();
+
+
+
 
 #region Services related to authentification and authorization
 builder.Services.AddIdentity<USER, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
@@ -76,4 +85,10 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+//Seeding
+AppDbInitializer.SeedUsersAndRolesAsync(app).Wait();
+AppDbInitializer.Seed(app);
+
+
+//Running
 app.Run();

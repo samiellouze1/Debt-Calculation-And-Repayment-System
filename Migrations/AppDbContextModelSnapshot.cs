@@ -293,6 +293,10 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<string>("VerificationCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("KeyValueId");
@@ -465,13 +469,13 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.USER", "UserRegister")
                         .WithMany("PaymentPlans1")
                         .HasForeignKey("RegUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired();
 
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.USER", "User")
                         .WithMany("PaymentPlans")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -484,13 +488,13 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.USER", "UserRegister")
                         .WithMany("ScolarshipDebtsHeRegistered")
                         .HasForeignKey("RegUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired();
 
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.USER", "User")
                         .WithMany("ScolarshipDebtsHeHas")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -509,25 +513,25 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.KEYVALUE", "KeyValue1")
                         .WithMany("USERs1")
                         .HasForeignKey("KeyValueId1")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired();
 
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.KEYVALUE", "KeyValue2")
                         .WithMany("USERs2")
                         .HasForeignKey("KeyValueId2")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired();
 
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.KEYVALUE", "KeyValue3")
                         .WithMany("USERs3")
                         .HasForeignKey("KeyValueId3")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired();
 
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.USER", "User2")
                         .WithMany("UserRegister")
                         .HasForeignKey("RegUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired();
 
                     b.Navigation("KeyValue");

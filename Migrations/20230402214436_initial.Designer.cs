@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Debt_Calculation_And_Repayment_System.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230401144413_usedinheritedattributes")]
-    partial class usedinheritedattributes
+    [Migration("20230402214436_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -56,13 +56,15 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
 
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
 
                     b.Property<decimal>("OverdueAmount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
 
                     b.Property<DateTime>("PaymentDate")
                         .HasColumnType("datetime2");
@@ -75,7 +77,8 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Total")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
 
                     b.HasKey("Id");
 
@@ -97,16 +100,19 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("InterestAmount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
 
                     b.Property<decimal>("MonthlyTotalAmount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
 
                     b.Property<int>("NumOfInstallment")
                         .HasColumnType("int");
 
                     b.Property<decimal>("PrincipalAmount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
 
                     b.Property<DateTime>("RegDate")
                         .HasColumnType("datetime2");
@@ -138,7 +144,8 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
 
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
@@ -147,14 +154,16 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Interest")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(4, 3)
+                        .HasColumnType("decimal(4,3)");
 
                     b.Property<string>("NumberOfDays")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Rate")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(4, 3)
+                        .HasColumnType("decimal(4,3)");
 
                     b.Property<DateTime>("RegDate")
                         .HasColumnType("datetime2");
@@ -262,7 +271,8 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Rate")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(4, 3)
+                        .HasColumnType("decimal(4,3)");
 
                     b.Property<DateTime>("RegDate")
                         .HasColumnType("datetime2");
@@ -284,6 +294,10 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("VerificationCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -457,13 +471,13 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.USER", "UserRegister")
                         .WithMany("PaymentPlans1")
                         .HasForeignKey("RegUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired();
 
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.USER", "User")
                         .WithMany("PaymentPlans")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -476,13 +490,13 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.USER", "UserRegister")
                         .WithMany("ScolarshipDebtsHeRegistered")
                         .HasForeignKey("RegUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired();
 
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.USER", "User")
                         .WithMany("ScolarshipDebtsHeHas")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -501,25 +515,25 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.KEYVALUE", "KeyValue1")
                         .WithMany("USERs1")
                         .HasForeignKey("KeyValueId1")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired();
 
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.KEYVALUE", "KeyValue2")
                         .WithMany("USERs2")
                         .HasForeignKey("KeyValueId2")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired();
 
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.KEYVALUE", "KeyValue3")
                         .WithMany("USERs3")
                         .HasForeignKey("KeyValueId3")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired();
 
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.USER", "User2")
                         .WithMany("UserRegister")
                         .HasForeignKey("RegUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired();
 
                     b.Navigation("KeyValue");

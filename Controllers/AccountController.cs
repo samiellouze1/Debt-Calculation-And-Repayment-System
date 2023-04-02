@@ -4,6 +4,7 @@ using Debt_Calculation_And_Repayment_System.Data.ViewModels;
 using Debt_Calculation_And_Repayment_System.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Mail;
 
 namespace Debt_Calculation_And_Repayment_System.Controllers
 {

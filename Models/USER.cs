@@ -22,13 +22,19 @@
         public decimal Rate { get; set; }
         public string PaymentPlanId { get; set; }
         public bool Deleted { get; set; }
+        public string VerificationCode { get; set; }
         public string KeyValueId { get; set; }
+        [ForeignKey("KeyValueId")]
         public virtual KEYVALUE KeyValue { get; set; }
         public string KeyValueId1 { get; set; }
+        [ForeignKey("KeyValueId1")]
         public virtual KEYVALUE KeyValue1 { get; set; }
         public string KeyValueId2 { get; set; }
+        [ForeignKey("KeyValueId2")]
         public virtual KEYVALUE KeyValue2 { get; set; }
         public string KeyValueId3 { get; set; }
+        [ForeignKey("KeyValueId3")]
+
         public virtual KEYVALUE KeyValue3 { get; set; }
         public string RegUserId { get; set; }
         [ForeignKey("RegUserId")]
