@@ -1,5 +1,42 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using Debt_Calculation_And_Repayment_System.Data.ViewModels
+@model LoginVM;
 @{
+    ViewData["Title"]="Sign In";
 }
+
+<div class="container-fluid px-0 py-5">
+    <div class="row mx-0 justify-content-center pt-5">
+        <div class="col-lg-6">
+            <div class="section-title text-center position-relative mb-4">
+                <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">STAFF MEMBER</h6>
+                <h1 class="display-4">LOGIN</h1>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center bg-image mx-0 mb-5">
+        <div class="col-lg-6 py-5">
+            <div class="bg-white p-5 my-5">
+                <h1 class="text-center mb-4">WELCOME BACK!</h1>
+                <form asp-action="Login">
+                    <div class="form-row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <input asp-for="Email" type="email" class="form-control bg-light border-0" placeholder="Email" style="padding: 30px 20px;">
+                                <span asp-validation-for="Email" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <input asp-for="Password" type="password" class="form-control bg-light border-0" placeholder="Password" style="padding: 30px 20px;">
+                                <span asp-validation-for="Password" style="color:red"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" style="width:50%;margin: 0 auto;">
+                        <button class="btn btn-primary btn-block" type="submit" style="height: 60px;" value="Login">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
