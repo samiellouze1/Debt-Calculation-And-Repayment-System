@@ -1,181 +1,47 @@
 ﻿@using Debt_Calculation_And_Repayment_System.Data.ViewModels
-@model RegisterVM;
+@model RegisterAStudentVM;
 @{
     ViewData["Title"] = "Register a student";
 }
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <title>Edukate - Online Education Website Template</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Free HTML Templates" name="keywords">
-    <meta content="Free HTML Templates" name="description">
-
-    <!-- Favicon -->
-    <link href="~/img/favicon.ico" rel="icon">
-
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
-
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="~/css/style.css" rel="stylesheet">
-</head>
-<body>
 <div class="container-fluid px-0 py-5">
     <div class="row mx-0 justify-content-center pt-5">
         <div class="col-lg-6">
             <div class="section-title text-center position-relative mb-4">
-                <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Our Courses</h6>
-                <h1 class="display-4">Checkout New Releases Of Our Courses</h1>
-            </div>
-        </div>
-    </div>
-    <div class="owl-carousel courses-carousel">
-        <div class="courses-item position-relative">
-            <img class="img-fluid" src="~/img/courses-1.jpg" alt="">
-            <div class="courses-text">
-                <h4 class="text-center text-white px-3">Web design & development courses for beginners</h4>
-                <div class="border-top w-100 mt-3">
-                    <div class="d-flex justify-content-between p-4">
-                        <span class="text-white"><i class="fa fa-user mr-2"></i>Jhon Doe</span>
-                        <span class="text-white"><i class="fa fa-star mr-2"></i>4.5 <small>(250)</small></span>
-                    </div>
-                </div>
-                <div class="w-100 bg-white text-center p-4">
-                    <a class="btn btn-primary" href="detail.html">Course Detail</a>
-                </div>
-            </div>
-        </div>
-        <div class="courses-item position-relative">
-            <img class="img-fluid" src="~/img/courses-2.jpg" alt="">
-            <div class="courses-text">
-                <h4 class="text-center text-white px-3">Web design & development courses for beginners</h4>
-                <div class="border-top w-100 mt-3">
-                    <div class="d-flex justify-content-between p-4">
-                        <span class="text-white"><i class="fa fa-user mr-2"></i>Jhon Doe</span>
-                        <span class="text-white"><i class="fa fa-star mr-2"></i>4.5 <small>(250)</small></span>
-                    </div>
-                </div>
-                <div class="w-100 bg-white text-center p-4">
-                    <a class="btn btn-primary" href="detail.html">Course Detail</a>
-                </div>
-            </div>
-        </div>
-        <div class="courses-item position-relative">
-            <img class="img-fluid" src="~/img/courses-3.jpg" alt="">
-            <div class="courses-text">
-                <h4 class="text-center text-white px-3">Web design & development courses for beginners</h4>
-                <div class="border-top w-100 mt-3">
-                    <div class="d-flex justify-content-between p-4">
-                        <span class="text-white"><i class="fa fa-user mr-2"></i>Jhon Doe</span>
-                        <span class="text-white"><i class="fa fa-star mr-2"></i>4.5 <small>(250)</small></span>
-                    </div>
-                </div>
-                <div class="w-100 bg-white text-center p-4">
-                    <a class="btn btn-primary" href="detail.html">Course Detail</a>
-                </div>
-            </div>
-        </div>
-        <div class="courses-item position-relative">
-            <img class="img-fluid" src="~/img/courses-4.jpg" alt="">
-            <div class="courses-text">
-                <h4 class="text-center text-white px-3">Web design & development courses for beginners</h4>
-                <div class="border-top w-100 mt-3">
-                    <div class="d-flex justify-content-between p-4">
-                        <span class="text-white"><i class="fa fa-user mr-2"></i>Jhon Doe</span>
-                        <span class="text-white"><i class="fa fa-star mr-2"></i>4.5 <small>(250)</small></span>
-                    </div>
-                </div>
-                <div class="w-100 bg-white text-center p-4">
-                    <a class="btn btn-primary" href="detail.html">Course Detail</a>
-                </div>
-            </div>
-        </div>
-        <div class="courses-item position-relative">
-            <img class="img-fluid" src="~/img/courses-5.jpg" alt="">
-            <div class="courses-text">
-                <h4 class="text-center text-white px-3">Web design & development courses for beginners</h4>
-                <div class="border-top w-100 mt-3">
-                    <div class="d-flex justify-content-between p-4">
-                        <span class="text-white"><i class="fa fa-user mr-2"></i>Jhon Doe</span>
-                        <span class="text-white"><i class="fa fa-star mr-2"></i>4.5 <small>(250)</small></span>
-                    </div>
-                </div>
-                <div class="w-100 bg-white text-center p-4">
-                    <a class="btn btn-primary" href="detail.html">Course Detail</a>
-                </div>
-            </div>
-        </div>
-        <div class="courses-item position-relative">
-            <img class="img-fluid" src="~/img/courses-6.jpg" alt="">
-            <div class="courses-text">
-                <h4 class="text-center text-white px-3">Web design & development courses for beginners</h4>
-                <div class="border-top w-100 mt-3">
-                    <div class="d-flex justify-content-between p-4">
-                        <span class="text-white"><i class="fa fa-user mr-2"></i>Jhon Doe</span>
-                        <span class="text-white"><i class="fa fa-star mr-2"></i>4.5 <small>(250)</small></span>
-                    </div>
-                </div>
-                <div class="w-100 bg-white text-center p-4">
-                    <a class="btn btn-primary" href="detail.html">Course Detail</a>
-                </div>
+                <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">STAFF MEMBER</h6>
+                <h1 class="display-4">REGISTER A STUDENT</h1>
             </div>
         </div>
     </div>
     <div class="row justify-content-center bg-image mx-0 mb-5">
-        <div class="col-lg-6 py-5">
+        <div class="col-lg-9 py-5">
             <div class="bg-white p-5 my-5">
-                <h1 class="text-center mb-4">30% Off For New Students</h1>
-                <form>
+                <h1 class="text-center mb-4">TYPE IN THE CREDENTIALS FOR THE NEW STUDENT!</h1>
+                <form asp-action="RegisterAStudent">
                     <div class="form-row">
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
                             <div class="form-group">
-                                <input type="text" class="form-control bg-light border-0" placeholder="Your Name" style="padding: 30px 20px;">
+                                <input asp-for="Name" type="text" class="form-control bg-light border-0" placeholder="Name" style="padding: 30px 20px;">
+                                <span asp-validation-for="Name" style="color:red"></span>
                             </div>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
                             <div class="form-group">
-                                <input type="email" class="form-control bg-light border-0" placeholder="Your Email" style="padding: 30px 20px;">
+                                <input asp-for="SurName" type="text" class="form-control bg-light border-0" placeholder="SurName" style="padding: 30px 20px;">
+                                <span asp-validation-for="SurName" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <input asp-for="Email" type="email" class="form-control bg-light border-0" placeholder="Email" style="padding: 30px 20px;">
+                                <span asp-validation-for="Email" style="color:red"></span>
                             </div>
                         </div>
                     </div>
-                    <div class="form-row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <select class="custom-select bg-light border-0 px-3" style="height: 60px;">
-                                    <option selected>Select A courses</option>
-                                    <option value="1">courses 1</option>
-                                    <option value="2">courses 1</option>
-                                    <option value="3">courses 1</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <button class="btn btn-primary btn-block" type="submit" style="height: 60px;">Sign Up Now</button>
-                        </div>
+                    <div class="col-sm-6" style="width:50%;margin: 0 auto;">
+                        <button class="btn btn-primary btn-block" type="submit" style="height: 60px;" value="RegisterAStudent">Register The Student (An email will be sent to complete the registration)</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-<script src="~/lib/easing/easing.min.js"></script>
-<script src="~/lib/waypoints/waypoints.min.js"></script>
-<script src="~/lib/counterup/counterup.min.js"></script>
-<script src="~/lib/owlcarousel/owl.carousel.min.js"></script>
-
-<!-- Template Javascript -->
-<script src="~/js/main.js"></script>
-</body>
-</html>

@@ -48,47 +48,52 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         }
         public IActionResult Register()
         {
-            var response = new RegisterVM();
+            var response = new RegisterAStudentVM();
             return View(response);
         }
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterVM registerVM)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(registerVM);
-            }
+        //public async Task<IActionResult> Register(RegisterAStudentVM registerVM)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return View(registerVM);
+        //    }
 
-            var user = await _userManager.FindByEmailAsync(registerVM.Email);
-            if (user!=null)
-            {
-                TempData["Error"] = "This EMail Address has already been taken";
-                return View(registerVM);
-            }
-            var newUser = new USER()
-            {
-                UserName=registerVM.Email,
-                Email=registerVM.Email,
-                Name=registerVM.Name,
-                SurName=registerVM.SurName,
-            };
-            var newUserResponse = await _userManager.CreateAsync(newUser, registerVM.Password);
-            if (newUserResponse.Succeeded)
-            {
-                await _userManager.AddToRoleAsync(newUser, UserRoles.StaffMember);
-                var result = await _signInManager.PasswordSignInAsync(newUser, registerVM.Password, false, false);
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("Index", "Home");
-                }
-            }
-            return View(registerVM);
-        }
+        //    var user = await _userManager.FindByEmailAsync(registerVM.Email);
+        //    if (user!=null)
+        //    {
+        //        TempData["Error"] = "This EMail Address has already been taken";
+        //        return View(registerVM);
+        //    }
+        //    var newUser = new USER()
+        //    {
+        //        UserName=registerVM.Email,
+        //        Email=registerVM.Email,
+        //        Name=registerVM.Name,
+        //        SurName=registerVM.SurName,
+        //    };
+        //    var newUserResponse = await _userManager.CreateAsync(newUser, registerVM.Password);
+        //    if (newUserResponse.Succeeded)
+        //    {
+        //        await _userManager.AddToRoleAsync(newUser, UserRoles.StaffMember);
+        //        var result = await _signInManager.PasswordSignInAsync(newUser, registerVM.Password, false, false);
+        //        if (result.Succeeded)
+        //        {
+        //            return RedirectToAction("Index", "Home");
+        //        }
+        //    }
+        //    return View(registerVM);
+        //}
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Product");
+        }
+        public async Task<IActionResult> RegisterAStudent()
+        {
+            var response = new RegisterAStudentVM();
+            return View(response);
         }
 
     }
