@@ -84,7 +84,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         //    }
         //    return View(registerVM);
         //}
-        [HttpPost]
+        //[HttpPost]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
@@ -95,6 +95,12 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var response = new RegisterAStudentVM();
             return View(response);
         }
-
+        //[HttpPost]
+        public async Task<IActionResult> RegisterPassword()
+        {
+            var response = new RegisterPasswordVM();
+            return View(response);
+        }
+        //[HttpPost]
     }
 }
