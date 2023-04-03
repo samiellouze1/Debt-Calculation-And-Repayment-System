@@ -2,6 +2,7 @@
 using Debt_Calculation_And_Repayment_System.Data.Static;
 using Debt_Calculation_And_Repayment_System.Data.ViewModels;
 using Debt_Calculation_And_Repayment_System.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mail;
@@ -50,61 +51,72 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             TempData["Error"] = "Wrong! Try Again";
             return View(loginvm);
         }
-        public IActionResult Register()
-        {
-            var response = new RegisterAStudentVM();
-            return View(response);
-        }
-        [HttpPost]
-        //public async Task<IActionResult> Register(RegisterAStudentVM registerVM)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return View(registerVM);
-        //    }
-
-        //    var user = await _userManager.FindByEmailAsync(registerVM.Email);
-        //    if (user!=null)
-        //    {
-        //        TempData["Error"] = "This EMail Address has already been taken";
-        //        return View(registerVM);
-        //    }
-        //    var newUser = new USER()
-        //    {
-        //        UserName=registerVM.Email,
-        //        Email=registerVM.Email,
-        //        Name=registerVM.Name,
-        //        SurName=registerVM.SurName,
-        //    };
-        //    var newUserResponse = await _userManager.CreateAsync(newUser, registerVM.Password);
-        //    if (newUserResponse.Succeeded)
-        //    {
-        //        await _userManager.AddToRoleAsync(newUser, UserRoles.StaffMember);
-        //        var result = await _signInManager.PasswordSignInAsync(newUser, registerVM.Password, false, false);
-        //        if (result.Succeeded)
-        //        {
-        //            return RedirectToAction("Index", "Home");
-        //        }
-        //    }
-        //    return View(registerVM);
-        //}
-        //[HttpPost]
-        public async Task<IActionResult> Logout()
-        {
-            await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Product");
-        }
+        [Authorize(UserRoles.Admin)]
+        [Authorize(UserRoles.StaffMember)]
         public async Task<IActionResult> RegisterAStudent()
         {
             var response = new RegisterAStudentVM();
             return View(response);
         }
-        //[HttpPost]
+        public string GenerateRandomPassword(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var random = new Random();
+            var password = new string(Enumerable.Repeat(chars, length)
+                                                  .Select(s => s[random.Next(s.Length)])
+                                                  .ToArray());
+            return password;
+        }
+        [HttpPost]
+        [Authorize(UserRoles.Admin)]
+        [Authorize(UserRoles.StaffMember)]
+        public async Task<IActionResult> RegisterAStudent(RegisterAStudentVM registerVM)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(registerVM);
+            }
+
+            var user = await _userManager.FindByEmailAsync(registerVM.Email);
+            if (user != null)
+            {
+                TempData["Error"] = "This Email Address has already been taken";
+                return View(registerVM);
+            }
+            var newStudent = new STUDENT()
+            {
+                UserName = registerVM.Email,
+                Email = registerVM.Email,
+                Name = registerVM.Name,
+                SurName = registerVM.SurName,
+                RegDate = DateTime.Now,
+                Address = "unspecified",
+                PhoneNumber = "unspecified",
+            };
+            string password = GenerateRandomPassword(8);
+            var newUserResponse = await _userManager.CreateAsync(newStudent, password);
+            if (newUserResponse.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(newStudent, UserRoles.StaffMember);
+                var result = await _signInManager.PasswordSignInAsync(newStudent, password, false, false);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            return View(registerVM);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Product");
+        }
+        [Authorize(UserRoles.Student)]
         public async Task<IActionResult> RegisterPassword()
         {
-            var response = new RegisterPasswordVM();
+            var response = new ModifyPasswordVM();
             return View(response);
         }
-        //[HttpPost]
     }
 }

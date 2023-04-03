@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Debt_Calculation_And_Repayment_System.Data.ViewModels
 {
-    public class RegisterPasswordVM
+    public class ModifyPasswordVM
     {
         [Required]
         [RegularExpression(@"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\da-zA-Z]).{8,}$",
@@ -13,5 +13,9 @@ namespace Debt_Calculation_And_Repayment_System.Data.ViewModels
         [Required]
         [Compare(nameof(Password), ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+        [Required]
+        public string Address { get; set; }
+        [Required]
+        public string PhoneNumber { get; set; }
     }
 }
