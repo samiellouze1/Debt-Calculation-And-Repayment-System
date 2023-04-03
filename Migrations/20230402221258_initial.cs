@@ -75,10 +75,10 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     PaymentPlanId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Deleted = table.Column<bool>(type: "bit", nullable: false),
                     VerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    KeyValueId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    KeyValueId1 = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    KeyValueId2 = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    KeyValueId3 = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    KeyValueId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    KeyValueId1 = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    KeyValueId2 = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    KeyValueId3 = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     RegUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -106,8 +106,7 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         name: "FK_AspNetUsers_KEYVALUEs_KeyValueId",
                         column: x => x.KeyValueId,
                         principalTable: "KEYVALUEs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_AspNetUsers_KEYVALUEs_KeyValueId1",
                         column: x => x.KeyValueId1,

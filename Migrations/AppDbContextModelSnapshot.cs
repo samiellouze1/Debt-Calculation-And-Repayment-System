@@ -213,19 +213,15 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("KeyValueId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("KeyValueId1")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("KeyValueId2")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("KeyValueId3")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("LockoutEnabled")
@@ -506,27 +502,22 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                 {
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.KEYVALUE", "KeyValue")
                         .WithMany("USERs")
-                        .HasForeignKey("KeyValueId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("KeyValueId");
 
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.KEYVALUE", "KeyValue1")
                         .WithMany("USERs1")
                         .HasForeignKey("KeyValueId1")
-                        .OnDelete(DeleteBehavior.ClientNoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.ClientNoAction);
 
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.KEYVALUE", "KeyValue2")
                         .WithMany("USERs2")
                         .HasForeignKey("KeyValueId2")
-                        .OnDelete(DeleteBehavior.ClientNoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.ClientNoAction);
 
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.KEYVALUE", "KeyValue3")
                         .WithMany("USERs3")
                         .HasForeignKey("KeyValueId3")
-                        .OnDelete(DeleteBehavior.ClientNoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.ClientNoAction);
 
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.USER", "User2")
                         .WithMany("UserRegister")

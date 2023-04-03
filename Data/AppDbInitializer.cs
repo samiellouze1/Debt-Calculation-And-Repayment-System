@@ -46,10 +46,13 @@ namespace Debt_Calculation_And_Repayment_System.Data
                         Id = "1",
                         Name = "Admin",
                         SurName = "User",
-                        RegDate = DateTime.Now
+                        RegDate = DateTime.Now,
+                        UserName=useradminemail,
+                        Address="unknown"
                     };
                     await userManager.CreateAsync(newUser,"Adminuser123@");
-                    await userManager.AddToRoleAsync(newUser, UserRoles.Admin);
+                    var f = await userManager.AddToRoleAsync(newUser, UserRoles.Admin);
+                    Console.WriteLine(f);
                 }
                 #endregion
 
