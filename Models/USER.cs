@@ -7,7 +7,7 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    public class USER : IdentityUser,IEntityBase
+    public class USER : IdentityUser, IEntityBase
     {
         [Required]
         public string Name { get; set; }
@@ -15,7 +15,6 @@
         public string SurName { get; set; }
         [Required]
         public DateTime RegDate { get; set; }
-        public string PaymentStatusId { get; set; }
         public string PhoneNumber { get; set; }
         public string Address { get; set; }
         public string ProgramId { get; set; }
@@ -23,6 +22,9 @@
         public string PaymentPlanId { get; set; }
         public bool Deleted { get; set; }
         public string VerificationCode { get; set; }
+        public string PaymentId { get; set; }
+        [ForeignKey("PaymentId")]
+        public virtual PAYMENT Payment { get; set;}
         public string KeyValueId { get; set; }
         [ForeignKey("KeyValueId")]
         public virtual KEYVALUE KeyValue { get; set; }
