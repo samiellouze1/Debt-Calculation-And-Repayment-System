@@ -60,6 +60,53 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AspNetUserClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserLogins",
+                columns: table => new
+                {
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserRoles",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetUsers",
                 columns: table => new
                 {
@@ -67,19 +114,13 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SurName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PaymentStatusId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProgramId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Rate = table.Column<decimal>(type: "decimal(4,3)", precision: 4, scale: 3, nullable: false),
-                    PaymentPlanId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Deleted = table.Column<bool>(type: "bit", nullable: false),
-                    VerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    KeyValueId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    KeyValueId1 = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    KeyValueId2 = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    KeyValueId3 = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    RegUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    VerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PaymentId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    RegUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -102,91 +143,6 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         column: x => x.RegUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_KEYVALUEs_KeyValueId",
-                        column: x => x.KeyValueId,
-                        principalTable: "KEYVALUEs",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_KEYVALUEs_KeyValueId1",
-                        column: x => x.KeyValueId1,
-                        principalTable: "KEYVALUEs",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_KEYVALUEs_KeyValueId2",
-                        column: x => x.KeyValueId2,
-                        principalTable: "KEYVALUEs",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_KEYVALUEs_KeyValueId3",
-                        column: x => x.KeyValueId3,
-                        principalTable: "KEYVALUEs",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUserClaims",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetUserClaims_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUserLogins",
-                columns: table => new
-                {
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
-                    table.ForeignKey(
-                        name: "FK_AspNetUserLogins_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUserRoles",
-                columns: table => new
-                {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
-                    table.ForeignKey(
-                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AspNetUserRoles_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -222,7 +178,7 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     MonthlyTotalAmount = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
                     RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Deleted = table.Column<bool>(type: "bit", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    StudentId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     RegUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
@@ -234,8 +190,8 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_PAYMENTPLANs_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_PAYMENTPLANs_AspNetUsers_StudentId",
+                        column: x => x.StudentId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                 });
@@ -252,9 +208,9 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     NumberOfDays = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Interest = table.Column<decimal>(type: "decimal(4,3)", precision: 4, scale: 3, nullable: false),
                     RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Deleted = table.Column<bool>(type: "bit", nullable: false),
                     RegUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Deleted = table.Column<bool>(type: "bit", nullable: false)
+                    StudentId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -265,8 +221,8 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_SCOLARSHIPDEPTs_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_SCOLARSHIPDEPTs_AspNetUsers_StudentId",
+                        column: x => x.StudentId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                 });
@@ -328,24 +284,9 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_KeyValueId",
+                name: "IX_AspNetUsers_PaymentId",
                 table: "AspNetUsers",
-                column: "KeyValueId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_KeyValueId1",
-                table: "AspNetUsers",
-                column: "KeyValueId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_KeyValueId2",
-                table: "AspNetUsers",
-                column: "KeyValueId2");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_KeyValueId3",
-                table: "AspNetUsers",
-                column: "KeyValueId3");
+                column: "PaymentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_RegUserId",
@@ -365,9 +306,9 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                 column: "RegUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PAYMENTPLANs_UserId",
+                name: "IX_PAYMENTPLANs_StudentId",
                 table: "PAYMENTPLANs",
-                column: "UserId");
+                column: "StudentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PAYMENTs_PaymentPlanId",
@@ -380,13 +321,53 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                 column: "RegUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SCOLARSHIPDEPTs_UserId",
+                name: "IX_SCOLARSHIPDEPTs_StudentId",
                 table: "SCOLARSHIPDEPTs",
-                column: "UserId");
+                column: "StudentId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUserClaims_AspNetUsers_UserId",
+                table: "AspNetUserClaims",
+                column: "UserId",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUserLogins_AspNetUsers_UserId",
+                table: "AspNetUserLogins",
+                column: "UserId",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUserRoles_AspNetUsers_UserId",
+                table: "AspNetUserRoles",
+                column: "UserId",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUsers_PAYMENTs_PaymentId",
+                table: "AspNetUsers",
+                column: "PaymentId",
+                principalTable: "PAYMENTs",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_PAYMENTPLANs_AspNetUsers_RegUserId",
+                table: "PAYMENTPLANs");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_PAYMENTPLANs_AspNetUsers_StudentId",
+                table: "PAYMENTPLANs");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -403,7 +384,7 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "PAYMENTs");
+                name: "KEYVALUEs");
 
             migrationBuilder.DropTable(
                 name: "SCOLARSHIPDEPTs");
@@ -412,13 +393,13 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "PAYMENTPLANs");
-
-            migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "KEYVALUEs");
+                name: "PAYMENTs");
+
+            migrationBuilder.DropTable(
+                name: "PAYMENTPLANs");
         }
     }
 }

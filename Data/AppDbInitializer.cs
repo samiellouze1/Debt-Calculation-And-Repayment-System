@@ -47,19 +47,56 @@ namespace Debt_Calculation_And_Repayment_System.Data
                         Name = "Admin",
                         SurName = "User",
                         RegDate = DateTime.Now,
-                        UserName=useradminemail,
-                        Address="unknown"
+                        UserName = useradminemail,
+                        Address = "unknown",
+                        PhoneNumber = "12345678",
+                        Email=useradminemail
                     };
                     await userManager.CreateAsync(newUser,"Adminuser123@");
-                    var f = await userManager.AddToRoleAsync(newUser, UserRoles.Admin);
-                    Console.WriteLine(f);
+                    await userManager.AddToRoleAsync(newUser, UserRoles.Admin);
                 }
                 #endregion
 
                 #region staffmember
+                string userstaffemail = "staff@debt.com";
+                var userstaff = await userManager.FindByEmailAsync(userstaffemail);
+                if (userstaff==null)
+                {
+                    var newUser1 = new STAFFMEMBER()
+                    {
+                        Id = "2",
+                        Name = "Staff",
+                        SurName = "Member",
+                        RegDate = DateTime.Now,
+                        UserName = userstaffemail,
+                        Address = "Turkey",
+                        PhoneNumber = "12345678",
+                        Email = userstaffemail
+                    };
+                    await userManager.CreateAsync(newUser1, "Staffmember123@");
+                    await userManager.AddToRoleAsync(newUser1, UserRoles.StaffMember);
+                }
                 #endregion
 
                 #region student
+                string userstudentemail = "staff@debt.com";
+                var userstudent = await userManager.FindByEmailAsync(userstudentemail);
+                if (userstudent == null)
+                {
+                    var newUser2 = new STAFFMEMBER()
+                    {
+                        Id = "3",
+                        Name = "Student",
+                        SurName = "",
+                        RegDate = DateTime.Now,
+                        UserName = userstudentemail,
+                        Address = "Turkey",
+                        PhoneNumber = "12345678",
+                        Email = userstudentemail
+                    };
+                    await userManager.CreateAsync(newUser2, "Student123@");
+                    await userManager.AddToRoleAsync(newUser2, UserRoles.Student);
+                }
                 #endregion
                 #endregion
 

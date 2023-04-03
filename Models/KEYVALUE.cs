@@ -21,9 +21,5 @@
         public int Type { get; set; }
         [Required]
         public bool Deleted { get; set; }
-        public virtual ICollection<USER> USERs { get; set; }
-        public virtual ICollection<USER> USERs1 { get; set; }
-        public virtual ICollection<USER> USERs2 { get; set; }
-        public virtual ICollection<USER> USERs3 { get; set; }
     }
 }

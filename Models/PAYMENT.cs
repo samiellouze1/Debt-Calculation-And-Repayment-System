@@ -13,6 +13,7 @@
         [ScaffoldColumn(false)]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
+        [Required]
         public DateTime PaymentDate { get; set; }
         public decimal Amount { get; set; }
         public decimal OverdueAmount { get; set; }

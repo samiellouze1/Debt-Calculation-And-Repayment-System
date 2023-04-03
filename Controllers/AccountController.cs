@@ -34,12 +34,15 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var user = await _userManager.FindByEmailAsync(loginvm.Email);
             if (user!= null)
             {
+                Console.WriteLine("c bon");
                 var passwordCheck = await _userManager.CheckPasswordAsync(user, loginvm.Password);
                 if (passwordCheck)
                 {
-                    var result=await _signInManager.PasswordSignInAsync(user, loginvm.Password,false,false);
+                    Console.WriteLine("c bon");
+                    var result =await _signInManager.PasswordSignInAsync(user, loginvm.Password,false,false);
                     if (result.Succeeded)
                     {
+                        Console.WriteLine("c bon");
                         return RedirectToAction("Index", "Home");
                     }
                 }

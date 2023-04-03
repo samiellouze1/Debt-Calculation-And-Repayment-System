@@ -32,12 +32,12 @@
         [Required]
         public virtual ICollection<PAYMENT> Payments { get; set; }
         [Required]
-        public string UserId { get; set; }
-        [ForeignKey("UserId")]
-        public virtual USER User { get; set; }
+        public string StudentId { get; set; }
+        [ForeignKey("StudentId")]
+        public virtual STUDENT Student { get; set; }
         [Required]
         public string RegUserId { get; set; }
         [ForeignKey("RegUserId")]
-        public virtual USER UserRegister { get; set; }
+        public virtual STAFFMEMBER RegUser { get; set; }
     }
 }
