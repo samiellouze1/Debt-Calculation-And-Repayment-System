@@ -2,8 +2,6 @@
 {
     public class STAFFMEMBER:USER
     {
-        public virtual ICollection<STUDENT> StudentsHeRegistered { get; set; }
-        public virtual ICollection<SCOLARSHIPDEBT> ScolarshipDebtsHeRegistered { get; set; }
-        public virtual ICollection<PAYMENTPLAN> PaymentPlansHeRegistered { get; set; }
+        public virtual ICollection<STUDENT> Students { get; set; }
     }
 }

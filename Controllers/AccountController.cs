@@ -101,6 +101,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 var result = await _signInManager.PasswordSignInAsync(newStudent, password, false, false);
                 if (result.Succeeded)
                 {
+
                     return RedirectToAction("Index", "Home");
                 }
             }

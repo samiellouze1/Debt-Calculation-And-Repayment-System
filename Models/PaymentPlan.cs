@@ -32,10 +32,6 @@
         [Required]
         public string PaymentId { get; set; }
         [ForeignKey("PaymentId")]
-        public virtual PAYMENT Payment { get; set; }
-        [Required]
-        public string RegUserId { get; set; }
-        [ForeignKey("RegUserId")]
-        public virtual STAFFMEMBER RegUser { get; set; }
+        public PAYMENT Payment { get; set; }
     }
 }

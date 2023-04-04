@@ -6,7 +6,7 @@
     using System.ComponentModel.DataAnnotations.Schema;
     using System.ComponentModel.DataAnnotations;
 
-    public class PAYMENT: IEntityBase
+    public class PAYMENT : IEntityBase
     {
         [Key]
         [Required]
@@ -18,12 +18,15 @@
         public decimal Amount { get; set; }
         public decimal OverdueAmount { get; set; }
         public decimal Total { get; set; }
+        [Required]
         public DateTime RegDate { get; set; }
         public bool Deleted { get; set; }
         [Required]
-        public string PaymentPlanId { get; set; }
-        [ForeignKey("PaymentPlanId")]
-        public virtual PAYMENTPLAN PaymentPlan { get; set; }
+        public string ScolarshipDebtId { get; set; }
+        [ForeignKey("ScolarshipDebtId")]
+        public virtual SCOLARSHIPDEBT ScolarshipDebt { get; set; }
+        [Required]
+        public virtual ICollection <PAYMENTPLAN> PaymentPlans { get; set; }
 
     }
 }
