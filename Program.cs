@@ -13,7 +13,7 @@ builder.Services.AddMvc().AddRazorRuntimeCompilation();
 builder.Services.AddDbContext<AppDbContext>(option => option.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add services to the container.
-builder.Services.AddScoped<IKEYVALUEService, KEYVALUEService>();
+
 builder.Services.AddScoped<IPAYMENTPLANService, PAYMENTPLANService>();
 builder.Services.AddScoped<IPAYMENTService, PAYMENTService>();
 builder.Services.AddScoped<ISCOLARSHIPDEBTService, SCOLARSHIPDEBTService>();
