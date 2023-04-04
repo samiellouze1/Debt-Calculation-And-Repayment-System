@@ -113,10 +113,37 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             return RedirectToAction("Index", "Product");
         }
         [Authorize(UserRoles.Student)]
-        public async Task<IActionResult> RegisterPassword()
+        public async Task<IActionResult> ModifyPassword()
         {
             var response = new ModifyPasswordVM();
             return View(response);
         }
+        public async Task<IActionResult> EditUser(string id)
+        {
+            var user = _userManager.FindByIdAsync(id).Result;
+            var vm = new EditVM()
+            {
+                Name = user.Name,
+                SurName=user.SurName,
+
+            };
+            return View(id, vm);
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditUser(string id,EditVM editStudentVM)
+        {
+            var dbuser = await _userManager.FindByIdAsync(id);
+
+            if (dbuser != null)
+            {
+                dbuser.Name=editStudentVM.Name;
+                dbuser.SurName=editStudentVM.SurName;
+                dbuser.PhoneNumber=editStudentVM.PhoneNumber;
+                dbuser.Address = editStudentVM.Address;
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("Index", "Home");
+        }
+            
     }
 }

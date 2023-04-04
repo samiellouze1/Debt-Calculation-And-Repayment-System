@@ -12,6 +12,5 @@ namespace Debt_Calculation_And_Repayment_System.Models
         [ForeignKey("RegUserId")]
         public virtual STAFFMEMBER RegUser { get; set; }
         public virtual ICollection<SCOLARSHIPDEBT> ScolarshipDebtsHeHas { get; set; }
-        public virtual ICollection<PAYMENTPLAN> PaymentPlansHeHas { get; set; }
     }
 }
