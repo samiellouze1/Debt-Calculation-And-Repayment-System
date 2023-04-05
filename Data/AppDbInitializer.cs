@@ -33,7 +33,6 @@ namespace Debt_Calculation_And_Repayment_System.Data
 
                 #region users
 
-
                 var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<USER>>();
 
                 #region admin
@@ -98,6 +97,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                     await userManager.AddToRoleAsync(newUser2, UserRoles.Student);
                 }
                 #endregion
+
                 #endregion
 
             }

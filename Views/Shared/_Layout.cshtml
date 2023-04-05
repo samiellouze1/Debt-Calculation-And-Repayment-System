@@ -93,7 +93,11 @@
                     {
                         <a asp-controller="Account" asp-action="RegisterAStudent" class="btn btn-primary py-2 px-4 d-none d-lg-block" style="margin-right:10px;">Register A Student</a>
                     }
-                    <a href="" class="btn btn-primary py-2 px-4 d-none d-lg-block">Logout</a>
+                    <form asp-controller="Account" asp-action="Logout">
+                        <button>
+                            <a class="btn btn-primary py-2 px-4 d-none d-lg-block">Logout</a>
+                        </button>
+                    </form>
                 }
                 else
                 {
