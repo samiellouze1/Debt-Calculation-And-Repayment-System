@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Debt_Calculation_And_Repayment_System.Data.ViewModels
 {
-    public class ModifyPasswordVM
+    public class StudentInitializePasswordVM
     {
         [Required]
         [RegularExpression(@"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\da-zA-Z]).{8,}$",

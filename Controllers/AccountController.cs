@@ -66,7 +66,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var response = new RegisterAStudentVM();
             return View(response);
         }
-        [Authorize(Roles = "Admin,StaffMember")]
+        [Authorize(Roles = "Admin, StaffMember")]
         [HttpPost]
         public async Task<IActionResult> RegisterAStudent(RegisterAStudentVM registerVM)
         {
@@ -117,10 +117,68 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             return View(registerVM);
         }
-        [Authorize(UserRoles.Student)]
-        public async Task<IActionResult> ModifyPassword()
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> RegisterAStaffMember()
         {
-            var response = new ModifyPasswordVM();
+            var response = new RegisterAStaffMemberVM();
+            return View(response);
+        }
+        [Authorize(Roles ="StaffMember")]
+        [HttpPost]
+        public async Task<IActionResult> RegisterAStaffMember (RegisterAStaffMemberVM registerVM)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(registerVM);
+            }
+
+            var user = await _userManager.FindByEmailAsync(registerVM.Email);
+            if (user != null)
+            {
+                TempData["Error"] = "This Email Address has already been taken";
+                return View(registerVM);
+            }
+            var newStaffMember = new STAFFMEMBER()
+            {
+                UserName = registerVM.Email,
+                Email = registerVM.Email,
+                Name = registerVM.Name,
+                SurName = registerVM.SurName,
+                RegDate = DateTime.Now,
+                Address = registerVM.Address,
+                PhoneNumber = registerVM.PhoneNumber,
+            };
+            string password = registerVM.Password;
+            var newUserResponse = await _userManager.CreateAsync(newStaffMember, password);
+            if (newUserResponse.Succeeded)
+            {
+                var result = await _userManager.AddToRoleAsync(newStaffMember, UserRoles.StaffMember);
+                if (result.Succeeded)
+                {
+                    MailMessage mail = new MailMessage();
+                    mail.To.Add(registerVM.Email);
+                    mail.From = new MailAddress("debtcalculation1@gmail.com");
+                    mail.Subject = "tsiwtsiw";
+                    mail.Body = "niwniw";
+                    mail.IsBodyHtml = true;
+                    SmtpClient smtp = new SmtpClient();
+                    smtp.Host = "smtp.gmail.com";
+                    smtp.Port = 587;
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Credentials = new System.Net.NetworkCredential("debtcalculation1@gmail.com", "zdsjnyteligoddnd");
+                    smtp.EnableSsl = true;
+                    smtp.Send(mail);
+
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            return View(registerVM);
+        }
+
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> StudentInitializePassword()
+        {
+            var response = new StudentInitializePasswordVM();
             return View(response);
         }
         public async Task<IActionResult> EditUser(string id)
