@@ -85,7 +85,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             {
                 UserName = registerVM.Email,
                 Email = registerVM.Email,
-                Name = registerVM.Name,
+                FirstName = registerVM.FirstName,
                 SurName = registerVM.SurName,
                 RegDate = DateTime.Now,
                 Address = "unspecified",
@@ -142,7 +142,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             {
                 UserName = registerVM.Email,
                 Email = registerVM.Email,
-                Name = registerVM.Name,
+                FirstName = registerVM.FirstName,
                 SurName = registerVM.SurName,
                 RegDate = DateTime.Now,
                 Address = registerVM.Address,
@@ -186,7 +186,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var user = _userManager.FindByIdAsync(id).Result;
             var vm = new EditVM()
             {
-                Name = user.Name,
+                FirstName = user.FirstName,
                 SurName=user.SurName,
             };
             return View(id, vm);
@@ -198,7 +198,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
 
             if (dbuser != null)
             {
-                dbuser.Name=editStudentVM.Name;
+                dbuser.FirstName=editStudentVM.FirstName;
                 dbuser.SurName=editStudentVM.SurName;
                 dbuser.PhoneNumber=editStudentVM.PhoneNumber;
                 dbuser.Address = editStudentVM.Address;

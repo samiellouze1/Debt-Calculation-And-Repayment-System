@@ -10,7 +10,7 @@
     public class USER : IdentityUser, IEntityBase
     {
         [Required]
-        public string Name { get; set; }
+        public string FirstName { get; set; }
         [Required]
         public string SurName { get; set; }
         [Required]

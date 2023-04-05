@@ -1,4 +1,6 @@
 ﻿using Debt_Calculation_And_Repayment_System.Data.IServices;
+using Debt_Calculation_And_Repayment_System.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Debt_Calculation_And_Repayment_System.Controllers
@@ -6,14 +8,20 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
     public class ScolarshipDebtController : Controller
     {
         private readonly ISCOLARSHIPDEBTService _scolarshipDebtService;
-        public ScolarshipDebtController(ISCOLARSHIPDEBTService scolarshipDebtService)
+        private readonly ISTUDENTService _studentService;
+        public ScolarshipDebtController(ISCOLARSHIPDEBTService scolarshipDebtService, ISTUDENTService studentService)
         {
             _scolarshipDebtService = scolarshipDebtService;
+            _studentService = studentService;
         }
-
-        public IActionResult Index()
+        [Authorize(Roles="Student")]
+        public async Task<IActionResult> MyScolarshipDebts(int id)
         {
-            return View();
+            string studentId = User.Identity.Name;
+            var student = _studentService.GetByIdAsync(studentId).Result;
+            var myscolarshipdebts = student.ScolarshipDebts.ToList();
+            return View(myscolarshipdebts);
+
         }
     }
 }
