@@ -158,8 +158,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                     MailMessage mail = new MailMessage();
                     mail.To.Add(registerVM.Email);
                     mail.From = new MailAddress("debtcalculation1@gmail.com");
-                    mail.Subject = "tsiwtsiw";
-                    mail.Body = "niwniw";
+                    mail.Subject = "Password Reset Link";
+                    mail.Body = "Dear Student, please click on the following link to reset your password: http://example.com/reset-password?token=abc123"; ;
                     mail.IsBodyHtml = true;
                     SmtpClient smtp = new SmtpClient();
                     smtp.Host = "smtp.gmail.com";
