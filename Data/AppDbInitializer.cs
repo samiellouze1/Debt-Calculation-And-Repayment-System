@@ -1,6 +1,7 @@
 ﻿using Debt_Calculation_And_Repayment_System.Data.Static;
 using Debt_Calculation_And_Repayment_System.Models;
 using Microsoft.AspNetCore.Identity;
+using System.Drawing.Drawing2D;
 
 namespace Debt_Calculation_And_Repayment_System.Data
 {
@@ -12,13 +13,76 @@ namespace Debt_Calculation_And_Repayment_System.Data
             {
                 var context = serviceScope.ServiceProvider.GetService<AppDbContext>();
                 context.Database.EnsureCreated();
+
+                #region scolarship debts
+                if (!context.SCOLARSHIPDEPTs.Any())
+                {
+                    context.SCOLARSHIPDEPTs.AddRange(new List<SCOLARSHIPDEBT>()
+                    {
+                        new SCOLARSHIPDEBT() { Id="1",
+                            Amount=3000, StartDate= new DateTime(2021,1,1),
+                            FinishDate=new DateTime(2022,1,1),
+                            NumberOfDays="365",
+                            Rate=9m,Interest=0.9m,
+                            RegDate=DateTime.Now,
+                            Deleted=false,
+                            StudentId="3"
+                        },
+                        new SCOLARSHIPDEBT() { 
+                            Id="2",
+                            Amount=6000,
+                            StartDate= new DateTime(2020,1,1),
+                            FinishDate=new DateTime(2021,1,1),
+                            NumberOfDays="365",
+                            Rate=9m,
+                            Interest=0.9m,
+                            RegDate=DateTime.Now,
+                            Deleted=false,
+                            StudentId="3"
+                        },
+                    });
+                    context.SaveChanges();
+                }
+                #endregion
+
+                #region payments
+                if(!context.PAYMENTs.Any())
+                {
+                    context.AddRange(new List<PAYMENT>()
+                    {
+                        new PAYMENT()
+                        { 
+                            Id="1",
+                            PaymentDate=new DateTime(2021,1,1),
+                            Amount=1500m,
+                            RegDate=DateTime.Now,
+                            ScolarshipDebtId="1"
+                        },
+                        new PAYMENT()
+                        {
+                            Id="2",
+                            PaymentDate=new DateTime(2021,2,1),
+                            Amount=1500m,
+                            RegDate=DateTime.Now,
+                            ScolarshipDebtId="1"
+                        },
+                        new PAYMENT()
+                        {
+                            Id ="3",
+                            PaymentDate =new DateTime(2020,3,1),
+                            Amount=2000m,
+                            RegDate=DateTime.Now,
+                            ScolarshipDebtId="2"
+                        }
+                    });
+                }
+                #endregion
             }
         }
         public static async Task SeedUsersAndRolesAsync(IApplicationBuilder applicationbuilder)
         {
             using (var serviceScope = applicationbuilder.ApplicationServices.CreateScope())
             {
-
 
                 #region roles
                 var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -43,7 +107,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                     var newUser = new USER()
                     {
                         Id = "1",
-                        Name = "Admin",
+                        FirstName = "Admin",
                         SurName = "User",
                         RegDate = DateTime.Now,
                         UserName = useradminemail,
@@ -64,7 +128,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                     var newUser1 = new STAFFMEMBER()
                     {
                         Id = "2",
-                        Name = "Staff",
+                        FirstName = "Staff",
                         SurName = "Member",
                         RegDate = DateTime.Now,
                         UserName = userstaffemail,
@@ -85,7 +149,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                     var newUser2 = new STAFFMEMBER()
                     {
                         Id = "3",
-                        Name = "Student",
+                        FirstName = "Student",
                         SurName = "",
                         RegDate = DateTime.Now,
                         UserName = userstudentemail,
@@ -99,7 +163,6 @@ namespace Debt_Calculation_And_Repayment_System.Data
                 #endregion
 
                 #endregion
-
             }
         }
     }
