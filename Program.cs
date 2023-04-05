@@ -65,7 +65,12 @@ builder.Services.AddAuthorization(options =>
             authBuilder.RequireRole("Student");
         });
 });
-#endregion  
+#endregion
+
+//builder.Services.AddHttpsRedirection(options =>
+//{
+//    options.HttpsPort = 443;
+//});
 
 var app = builder.Build();
 
@@ -74,7 +79,7 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();

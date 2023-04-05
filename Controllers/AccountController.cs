@@ -51,13 +51,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             TempData["Error"] = "Wrong! Try Again";
             return View(loginvm);
         }
-        [Authorize(UserRoles.Admin)]
-        [Authorize(UserRoles.StaffMember)]
-        public async Task<IActionResult> RegisterAStudent()
-        {
-            var response = new RegisterAStudentVM();
-            return View(response);
-        }
         public string GenerateRandomPassword(int length)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -67,9 +60,12 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                                                   .ToArray());
             return password;
         }
+        public async Task<IActionResult> RegisterAStudent()
+        {
+            var response = new RegisterAStudentVM();
+            return View(response);
+        }
         [HttpPost]
-        [Authorize(UserRoles.Admin)]
-        [Authorize(UserRoles.StaffMember)]
         public async Task<IActionResult> RegisterAStudent(RegisterAStudentVM registerVM)
         {
             if (!ModelState.IsValid)
@@ -91,16 +87,29 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 SurName = registerVM.SurName,
                 RegDate = DateTime.Now,
                 Address = "unspecified",
-                PhoneNumber = "unspecified",
+                PhoneNumber = "12345678",
             };
-            string password = GenerateRandomPassword(8);
+            //string password = GenerateRandomPassword(8);
+            string password = "Sami123@";
             var newUserResponse = await _userManager.CreateAsync(newStudent, password);
             if (newUserResponse.Succeeded)
             {
-                await _userManager.AddToRoleAsync(newStudent, UserRoles.StaffMember);
-                var result = await _signInManager.PasswordSignInAsync(newStudent, password, false, false);
+                var result = await _userManager.AddToRoleAsync(newStudent, UserRoles.Student);
                 if (result.Succeeded)
                 {
+                    MailMessage mail = new MailMessage();
+                    mail.To.Add(registerVM.Email);
+                    mail.From = new MailAddress("debtcalculation1@gmail.com");
+                    mail.Subject = "tsiwtsiw";
+                    mail.Body = "niwniw";
+                    mail.IsBodyHtml = true;
+                    SmtpClient smtp = new SmtpClient();
+                    smtp.Host = "smtp.gmail.com";
+                    smtp.Port = 587;
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Credentials = new System.Net.NetworkCredential("debtcalculation1@gmail.com", "zdsjnyteligoddnd");
+                    smtp.EnableSsl = true;
+                    smtp.Send(mail);
 
                     return RedirectToAction("Index", "Home");
                 }
