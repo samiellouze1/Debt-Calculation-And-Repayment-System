@@ -17,10 +17,5 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         {
             return View();
         }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
     }
 }
