@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Debt_Calculation_And_Repayment_System.Models;
 
 namespace Debt_Calculation_And_Repayment_System.Controllers
 {
@@ -16,13 +17,13 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             _studentService = studentService;
         }
         [Authorize(Roles="Student")]
-        public async Task<IActionResult> MyScolarshipDebts(int id)
+        public async Task<IActionResult> MyScolarshipDebts()
         {
             var studentId = User.FindFirstValue("Id");
-            Console.WriteLine("this");
-            Console.WriteLine(studentId);
             var student = _studentService.GetByIdAsync(studentId).Result;
             var myscolarshipdebts = student.ScolarshipDebts.ToList();
+            Console.WriteLine("this sc");
+            Console.WriteLine(myscolarshipdebts);
             return View(myscolarshipdebts);
         }
     }

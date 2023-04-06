@@ -85,7 +85,7 @@
                     {
                         @if (User.IsInRole("Admin"))
                         {
-                            <a class="nav-item nav-link active">Payments</a>
+                            <a  class="nav-item nav-link active">Payments</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Users</a>
                                 <div class="dropdown-menu m-0">
@@ -103,7 +103,7 @@
                         @if (User.IsInRole("Student"))
                         {
                             <a asp-controller="Debt" asp-action="MyScolarshipDebts"  class="nav-item nav-link active">Scolarship Debts</a>
-                            <a class="nav-item nav-link active">Payments</a>
+                            <a asp-controller="Debt" asp-action="MyPayments" class="nav-item nav-link active">Payments</a>
                         }
                     }
                 </div>
