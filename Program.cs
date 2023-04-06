@@ -1,4 +1,5 @@
 using Debt_Calculation_And_Repayment_System.Data;
+using Debt_Calculation_And_Repayment_System.Data.Extensions;
 using Debt_Calculation_And_Repayment_System.Data.IServices;
 using Debt_Calculation_And_Repayment_System.Data.Services;
 using Debt_Calculation_And_Repayment_System.Models;
@@ -13,21 +14,17 @@ builder.Services.AddMvc().AddRazorRuntimeCompilation();
 builder.Services.AddDbContext<AppDbContext>(option => option.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add services to the container.
-
 builder.Services.AddScoped<IPAYMENTPLANService, PAYMENTPLANService>();
 builder.Services.AddScoped<IPAYMENTService, PAYMENTService>();
 builder.Services.AddScoped<ISCOLARSHIPDEBTService, SCOLARSHIPDEBTService>();
 builder.Services.AddScoped<IUSERService, USERService>();
-
-
-
-
+builder.Services.AddScoped<ISTUDENTService, STUDENTService>();
+builder.Services.AddScoped<ISTAFFMEMBERService, STAFFMEMBERService>();
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddControllersWithViews();
 
-
-
+builder.Services.AddScoped<IUserClaimsPrincipalFactory<USER>, ApplicationUserClaimsPrincipalFactory>();
 
 #region Services related to authentification and authorization
 builder.Services.AddIdentity<USER, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();

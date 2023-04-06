@@ -142,11 +142,11 @@ namespace Debt_Calculation_And_Repayment_System.Data
                 #endregion
 
                 #region student
-                string userstudentemail = "staff@debt.com";
+                string userstudentemail = "student@debt.com";
                 var userstudent = await userManager.FindByEmailAsync(userstudentemail);
                 if (userstudent == null)
                 {
-                    var newUser2 = new STAFFMEMBER()
+                    var newUser2 = new STUDENT()
                     {
                         Id = "3",
                         FirstName = "Student",

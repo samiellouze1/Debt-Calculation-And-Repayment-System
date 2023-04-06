@@ -11,6 +11,8 @@ namespace Debt_Calculation_And_Repayment_System.Data
         public DbSet<PAYMENTPLAN> PAYMENTPLANs { get; set; }
         public DbSet<SCOLARSHIPDEBT> SCOLARSHIPDEPTs { get; set; }
         public DbSet<USER> USERs { get; set; }
+        public DbSet<STUDENT> STUDENTs { get; set; }
+        public DbSet<STAFFMEMBER> STAFFMEMBERs { get; set; }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
 
