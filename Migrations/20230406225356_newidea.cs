@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Debt_Calculation_And_Repayment_System.Migrations
 {
-    public partial class initial : Migration
+    public partial class newidea : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -37,7 +37,6 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     VerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StaffMemberId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    RegUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),

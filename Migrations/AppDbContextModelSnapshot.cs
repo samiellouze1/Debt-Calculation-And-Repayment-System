@@ -383,10 +383,6 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                 {
                     b.HasBaseType("Debt_Calculation_And_Repayment_System.Models.USER");
 
-                    b.Property<string>("RegUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("StaffMemberId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -402,35 +398,29 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
 
             modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.PAYMENT", b =>
                 {
-                    b.HasOne("Debt_Calculation_And_Repayment_System.Models.SCOLARSHIPDEBT", "ScolarshipDebt")
+                    b.HasOne("Debt_Calculation_And_Repayment_System.Models.SCOLARSHIPDEBT", null)
                         .WithMany("Payments")
                         .HasForeignKey("ScolarshipDebtId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("ScolarshipDebt");
                 });
 
             modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.PAYMENTPLAN", b =>
                 {
-                    b.HasOne("Debt_Calculation_And_Repayment_System.Models.PAYMENT", "Payment")
+                    b.HasOne("Debt_Calculation_And_Repayment_System.Models.PAYMENT", null)
                         .WithMany("PaymentPlans")
                         .HasForeignKey("PaymentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.SCOLARSHIPDEBT", b =>
                 {
-                    b.HasOne("Debt_Calculation_And_Repayment_System.Models.STUDENT", "Student")
+                    b.HasOne("Debt_Calculation_And_Repayment_System.Models.STUDENT", null)
                         .WithMany("ScolarshipDebts")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

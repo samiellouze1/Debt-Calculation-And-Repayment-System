@@ -75,6 +75,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                             ScolarshipDebtId="2"
                         }
                     });
+                    context.SaveChanges();
                 }
                 #endregion
             }

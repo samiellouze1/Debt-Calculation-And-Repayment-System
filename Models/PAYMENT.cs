@@ -23,10 +23,8 @@
         public bool Deleted { get; set; }
         [Required]
         public string ScolarshipDebtId { get; set; }
-        [ForeignKey("ScolarshipDebtId")]
-        public virtual SCOLARSHIPDEBT ScolarshipDebt { get; set; }
         [Required]
-        public virtual ICollection <PAYMENTPLAN> PaymentPlans { get; set; }
+        public virtual List<PAYMENTPLAN> PaymentPlans { get; set; } = new List<PAYMENTPLAN>();
 
     }
 }

@@ -2,6 +2,6 @@
 {
     public class STAFFMEMBER:USER
     {
-        public virtual ICollection<STUDENT> Students { get; set; }
+        public virtual List<STUDENT> Students { get; set; } = new List<STUDENT>();
     }
 }

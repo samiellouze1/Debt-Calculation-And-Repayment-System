@@ -31,7 +31,5 @@
         public bool Deleted { get; set; }
         [Required]
         public string PaymentId { get; set; }
-        [ForeignKey("PaymentId")]
-        public virtual PAYMENT Payment { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Debt_Calculation_And_Repayment_System.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.Build.Execution;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Emit;
 
@@ -23,26 +24,25 @@ namespace Debt_Calculation_And_Repayment_System.Data
             builder.Entity<PAYMENT>().Property(p => p.Total).HasPrecision(18, 4);
             builder.Entity<PAYMENT>().Property(s => s.Amount).HasPrecision(18,4);
             builder.Entity<PAYMENT>().Property(p => p.OverdueAmount).HasPrecision(18, 4);
-            builder.Entity<PAYMENT>().HasOne(p => p.ScolarshipDebt).WithMany(sd => sd.Payments).HasForeignKey(p => p.ScolarshipDebtId);
-
+            builder.Entity<PAYMENT>().Navigation(sd => sd.PaymentPlans).AutoInclude();
             #endregion
 
             #region PAYMENTPLAN
             builder.Entity<PAYMENTPLAN>().Property(p => p.PrincipalAmount).HasPrecision(18,4);
             builder.Entity<PAYMENTPLAN>().Property(p => p.MonthlyTotalAmount).HasPrecision(18, 4);
             builder.Entity<PAYMENTPLAN>().Property(p => p.InterestAmount).HasPrecision(18, 4);
-            builder.Entity<PAYMENTPLAN>().HasOne(pp => pp.Payment).WithMany(p => p.PaymentPlans).HasForeignKey("PaymentId");
             #endregion
 
             #region STUDENT
-            builder.Entity<STUDENT>().HasOne(u => u.StaffMember).WithMany(u => u.Students).HasForeignKey(u => u.StaffMemberId).OnDelete(DeleteBehavior.ClientSetNull);
+            builder.Entity<STUDENT>().Navigation(sd => sd.ScolarshipDebts).AutoInclude();
+            builder.Entity<STUDENT>().HasOne(s => s.StaffMember).WithMany(sm => sm.Students).HasForeignKey(s => s.StaffMemberId).OnDelete(DeleteBehavior.ClientSetNull);
             #endregion
 
             #region SCOLARSHIPDEBT
             builder.Entity<SCOLARSHIPDEBT>().Property(s => s.Interest).HasPrecision(4, 3);
             builder.Entity<SCOLARSHIPDEBT>().Property(s => s.Rate).HasPrecision(4, 3);
             builder.Entity<SCOLARSHIPDEBT>().Property(sd => sd.Amount).HasPrecision(18, 4);
-            builder.Entity<SCOLARSHIPDEBT>().HasOne(sd => sd.Student).WithMany(u => u.ScolarshipDebts).HasForeignKey(sd => sd.StudentId);
+            builder.Entity<SCOLARSHIPDEBT>().Navigation(sd => sd.Payments).AutoInclude();
             #endregion
 
             base.OnModelCreating(builder);

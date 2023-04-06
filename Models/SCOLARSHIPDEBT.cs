@@ -31,8 +31,6 @@
         public bool Deleted { get; set; }
         [Required]
         public string StudentId { get; set; }
-        [ForeignKey("StudentId")]
-        public virtual STUDENT Student { get; set; }
-        public virtual ICollection<PAYMENT> Payments { get; set; }
+        public virtual List<PAYMENT> Payments { get; set; } = new List<PAYMENT>();
     }
 }
