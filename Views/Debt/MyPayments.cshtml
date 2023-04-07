@@ -2,19 +2,23 @@
 @{
     ViewData["Title"] = "My Payments";
 }
-<table>
+<table class="table " style="width:1500px;margin-left:10%;margin-right:10%;"
     <thead>
-        <tr>Id</tr>
-        <tr>Amount</tr>
-        <tr>ScolarshipDebtId</tr>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">First</th>
+            <th scope="col">Last</th>
+            <th scope="col">Handle</th>
+        </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>@item.Id</td>
-                <td>@item.Amount</td>
-                <td>@item.ScolarshipDebtId</td>
+            <tr class="table-primary">
+                <td > 1 </td>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>mdo</td>
             </tr>
         }
     </tbody>
