@@ -4,8 +4,10 @@ using Debt_Calculation_And_Repayment_System.Data.Static;
 using Debt_Calculation_And_Repayment_System.Data.ViewModels;
 using Debt_Calculation_And_Repayment_System.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Net.Mail;
 using System.Security.Claims;
 
@@ -91,39 +93,40 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
+        #region generatepassword
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangePassword(ChangePasswordVM changePasswordVM)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(changePasswordVM);
-            }
+        //public async Task<IActionResult> ChangePassword(ChangePasswordVM changePasswordVM)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return View(changePasswordVM);
+        //    }
 
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            if (user == null)
-            {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
+        //    var user = await _userManager.FindByNameAsync(User.Identity.Name);
+        //    if (user == null)
+        //    {
+        //        return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+        //    }
 
-            var passwordValidator = new PasswordValidator<USER>();
-            var result = await passwordValidator.ValidateAsync(_userManager, user, changePasswordVM.NewPassword);
-            if (!result.Succeeded)
-            {
-                //errors(result)
-                return View(changePasswordVM);
-            }
+        //    var passwordValidator = new PasswordValidator<USER>();
+        //    var result = await passwordValidator.ValidateAsync(_userManager, user, changePasswordVM.NewPassword);
+        //    if (!result.Succeeded)
+        //    {
+        //        //errors(result)
+        //        return View(changePasswordVM);
+        //    }
 
-            var changePasswordResult = await _userManager.ChangePasswordAsync(user, changePasswordVM.OldPassword, changePasswordVM.NewPassword);
-            if (!changePasswordResult.Succeeded)
-            {
-                //AddErrors(changePasswordResult);
-                return View(changePasswordVM);
-            }
+        //    var changePasswordResult = await _userManager.ChangePasswordAsync(user, changePasswordVM.OldPassword, changePasswordVM.NewPassword);
+        //    if (!changePasswordResult.Succeeded)
+        //    {
+        //        //AddErrors(changePasswordResult);
+        //        return View(changePasswordVM);
+        //    }
 
-            await _signInManager.RefreshSignInAsync(user);
-            return RedirectToAction(nameof(HomeController.Index), "Home");
-        }
+        //    await _signInManager.RefreshSignInAsync(user);
+        //    return RedirectToAction(nameof(HomeController.Index), "Home");
+        //}
         public string GenerateRandomPassword(int length)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -133,16 +136,19 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                                                   .ToArray());
             return password;
         }
+        #endregion
+
+
+
+        #endregion
+
+        #region adminstaff
         [Authorize(Roles = "Admin, StaffMember")]
         public async Task<IActionResult> RegisterAStudent()
         {
             var response = new RegisterAStudentVM();
             return View(response);
         }
-
-        #endregion
-
-        #region adminstaff
         [Authorize(Roles = "Admin, StaffMember")]
         [HttpPost]
         public async Task<IActionResult> RegisterAStudent(RegisterAStudentVM registerVM)
@@ -175,24 +181,64 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 var result = await _userManager.AddToRoleAsync(newStudent, UserRoles.Student);
                 if (result.Succeeded)
                 {
-                    MailMessage mail = new MailMessage();
-                    mail.To.Add(registerVM.Email);
-                    mail.From = new MailAddress("debtcalculation1@gmail.com");
-                    mail.Subject = "tsiwtsiw";
-                    mail.Body = "niwniw";
-                    mail.IsBodyHtml = true;
-                    SmtpClient smtp = new SmtpClient();
-                    smtp.Host = "smtp.gmail.com";
-                    smtp.Port = 587;
-                    smtp.UseDefaultCredentials = false;
-                    smtp.Credentials = new System.Net.NetworkCredential("debtcalculation1@gmail.com", "zdsjnyteligoddnd");
-                    smtp.EnableSsl = true;
-                    smtp.Send(mail);
+                    //MailMessage mail = new MailMessage();
+                    //mail.To.Add(registerVM.Email);
+                    //mail.From = new MailAddress("debtcalculation1@gmail.com");
+                    //mail.Subject = "tsiwtsiw";
+                    //mail.Body = "niwniw";
+                    //mail.IsBodyHtml = true;
+                    //SmtpClient smtp = new SmtpClient();
+                    //smtp.Host = "smtp.gmail.com";
+                    //smtp.Port = 587;
+                    //smtp.UseDefaultCredentials = false;
+                    //smtp.Credentials = new System.Net.NetworkCredential("debtcalculation1@gmail.com", "zdsjnyteligoddnd");
+                    //smtp.EnableSsl = true;
+                    //smtp.Send(mail);
 
-                    return RedirectToAction("Index", "Home");
+                    //return RedirectToAction("Index", "Home");
+
+                    await SendPasswordResetEmail(newStudent.Email);
                 }
             }
             return View(registerVM);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SendPasswordResetEmail(string email)
+        {
+            // Look up the user by email address
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                // Show an error message to the user
+                TempData["ErrorMessage"] = "Invalid email address";
+                return RedirectToAction("ForgotPassword", "Account");
+            }
+
+            // Generate the password reset link
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var callbackUrl = Url.Action("ResetPassword", "Account", new { email = user.Email, code = code }, Request.Scheme);
+
+            // Send the password reset email to the user
+            var message = new MailMessage();
+            message.From = new MailAddress("debtcalculation1@gmail.com", "Debt Calculation and repayment system");
+            message.To.Add(new MailAddress(user.Email, user.UserName));
+            message.Subject = "Reset Your Password";
+            message.Body = $"Please reset your password by clicking <a href=\"{callbackUrl}\">here</a>.";
+            message.IsBodyHtml = true;
+
+            using (var client = new SmtpClient())
+            {
+                client.Host = "smtp.gmail.com";
+                client.Port = 587;
+                client.EnableSsl = true;
+                client.Credentials = new NetworkCredential("debtcalculation1@gmail.com", "zdsjnyteligoddnd");
+                client.Send(message);
+            }
+
+            // Show a success message to the user
+            TempData["SuccessMessage"] = "A password reset email has been sent to your email address";
+            return RedirectToAction("Index", "Home");
         }
         #endregion
 
@@ -218,11 +264,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             return View(students);
         }
 
-        #endregion
-
-        #region staffmember
-
-        [Authorize(Roles = "StaffMember")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> RegisterAStaffMember(RegisterAStaffMemberVM registerVM)
         {
@@ -274,6 +316,9 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             return View(registerVM);
         }
 
+        #endregion
+
+        #region staff
         [Authorize(Roles = "StaffMember")]
         public async Task<IActionResult> MyStudents(string id)
         {
@@ -287,11 +332,85 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
 
         #region student
         [Authorize(Roles = "Student")]
-        public async Task<IActionResult> StudentInitializePassword()
+        [HttpGet]
+        public async Task<IActionResult> ResetPassword( string email, string code)
         {
-            var response = new StudentInitializePasswordVM();
-            return View(response);
+            // Verify that the email and code are valid
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(code))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Create a view model for the password reset form
+            var model = new ResetPasswordVM()
+            {
+                Email = email,
+                Code = code
+            };
+
+            return View(model);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // Look up the user by email address
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid email address");
+                return View(model);
+            }
+
+            // Reset the user's password
+            var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(model);
+        }
+
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            // Look up the user by email address
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+            {
+                // Show an error message to the user
+                TempData["ErrorMessage"] = "Invalid email address";
+                return View();
+            }
+
+            // Generate the password reset link
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var callbackUrl = Url.Action("ResetPassword", "Account", new { email = user.Email, code = code }, protocol: Request.Scheme);
+
+            // Send the password reset email to the user
+            // (code for sending email omitted)
+
+            // Show a success message to the user
+            TempData["SuccessMessage"] = "A password reset email has been sent to your email address";
+            return RedirectToAction("Login", "Account");
+        }
+
 
         #endregion
 

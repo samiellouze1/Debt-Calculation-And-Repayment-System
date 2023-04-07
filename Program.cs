@@ -25,9 +25,11 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IUserClaimsPrincipalFactory<USER>, ApplicationUserClaimsPrincipalFactory>();
+builder.Services.AddTransient<IUserTwoFactorTokenProvider<USER>, EmailTokenProvider<USER>>();
+
 
 #region Services related to authentification and authorization
-builder.Services.AddIdentity<USER, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
+builder.Services.AddIdentity<USER, IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 builder.Services.AddMemoryCache();
 builder.Services.AddSession();
 builder.Services.AddAuthentication(options =>
