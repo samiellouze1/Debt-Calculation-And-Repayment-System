@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Debt_Calculation_And_Repayment_System.Models;
 using Microsoft.EntityFrameworkCore;
+using Debt_Calculation_And_Repayment_System.Data;
 
 namespace Debt_Calculation_And_Repayment_System.Controllers
 {
@@ -33,12 +34,30 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var mypayments = new List<PAYMENT>();
             foreach(var sd in myscolarshipdebts)
             {
-                var sdd = _scolarshipDebtService.GetByIdAsync(sd.Id).Result;
-                mypayments.AddRange(sdd.Payments.ToList());
-
+                mypayments.AddRange(sd.Payments.ToList());
             }
             return View(mypayments);
-            
+        }
+        public async Task<IActionResult> MyPaymentPlans()
+        {
+            var studentId = User.FindFirstValue("Id");
+            var student = _studentService.GetByIdAsync(studentId).Result;
+            var myscolarshipdebts = student.ScolarshipDebts.ToList();
+            var mypaymentplans = new List<PAYMENTPLAN>();
+            foreach(var sd in myscolarshipdebts)
+            {
+                foreach (var p in sd.Payments.ToList())
+                {
+                    mypaymentplans.AddRange(p.PaymentPlans.ToList());
+                }
+            }
+            return View(mypaymentplans);
+        }
+        public async Task<IActionResult> PaymentsperScolarshipDebt(string id)
+        {
+            var scolarshipdebt=_scolarshipDebtService.GetByIdAsync(id).Result;
+            var payments = scolarshipdebt.Payments;
+            return View(payments);
         }
     }
 }

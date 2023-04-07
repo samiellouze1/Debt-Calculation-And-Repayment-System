@@ -1,4 +1,5 @@
 ﻿using Debt_Calculation_And_Repayment_System.Data;
+using Debt_Calculation_And_Repayment_System.Data.IServices;
 using Debt_Calculation_And_Repayment_System.Data.Static;
 using Debt_Calculation_And_Repayment_System.Data.ViewModels;
 using Debt_Calculation_And_Repayment_System.Models;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mail;
+using System.Security.Claims;
 
 namespace Debt_Calculation_And_Repayment_System.Controllers
 {
@@ -13,18 +15,25 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
     {
         private readonly UserManager<USER> _userManager;
         private readonly SignInManager<USER> _signInManager;
+        private readonly ISTAFFMEMBERService _staffmemberService;
+        private readonly ISTUDENTService _studentService;
         private readonly AppDbContext _context;
-        public AccountController(UserManager<USER> usermanager,SignInManager<USER> signinmanager,AppDbContext context)
+        public AccountController(UserManager<USER> usermanager,SignInManager<USER> signinmanager, AppDbContext context, ISTAFFMEMBERService staffmemberService, ISTUDENTService studentService)
         {
             _userManager = usermanager;
             _signInManager = signinmanager;
+            _staffmemberService = staffmemberService;
             _context = context;
+            _studentService = studentService;
         }
+
+        #region common
         public IActionResult Login()
         {
             var response = new LoginVM();
             return View(response);
         }
+
         [HttpPost]
         public async Task<IActionResult> Login(LoginVM loginvm)
         {
@@ -51,6 +60,70 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             TempData["Error"] = "Wrong! Try Again";
             return View(loginvm);
         }
+        public async Task<IActionResult> EditUser(string id)
+        {
+            var user = _userManager.FindByIdAsync(id).Result;
+            var vm = new EditVM()
+            {
+                FirstName = user.FirstName,
+                SurName=user.SurName,
+            };
+            return View(id, vm);
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditUser(string id,EditVM editStudentVM)
+        {
+            var dbuser = await _userManager.FindByIdAsync(id);
+
+            if (dbuser != null)
+            {
+                dbuser.FirstName=editStudentVM.FirstName;
+                dbuser.SurName=editStudentVM.SurName;
+                dbuser.PhoneNumber=editStudentVM.PhoneNumber;
+                dbuser.Address = editStudentVM.Address;
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("Index", "Home");
+        }
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordVM changePasswordVM)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(changePasswordVM);
+            }
+
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            var passwordValidator = new PasswordValidator<USER>();
+            var result = await passwordValidator.ValidateAsync(_userManager, user, changePasswordVM.NewPassword);
+            if (!result.Succeeded)
+            {
+                //errors(result)
+                return View(changePasswordVM);
+            }
+
+            var changePasswordResult = await _userManager.ChangePasswordAsync(user, changePasswordVM.OldPassword, changePasswordVM.NewPassword);
+            if (!changePasswordResult.Succeeded)
+            {
+                //AddErrors(changePasswordResult);
+                return View(changePasswordVM);
+            }
+
+            await _signInManager.RefreshSignInAsync(user);
+            return RedirectToAction(nameof(HomeController.Index), "Home");
+        }
         public string GenerateRandomPassword(int length)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -60,12 +133,16 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                                                   .ToArray());
             return password;
         }
-        [Authorize(Roles = "Admin, StaffMember" )]
+        [Authorize(Roles = "Admin, StaffMember")]
         public async Task<IActionResult> RegisterAStudent()
         {
             var response = new RegisterAStudentVM();
             return View(response);
         }
+
+        #endregion
+
+        #region adminstaff
         [Authorize(Roles = "Admin, StaffMember")]
         [HttpPost]
         public async Task<IActionResult> RegisterAStudent(RegisterAStudentVM registerVM)
@@ -117,15 +194,37 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             return View(registerVM);
         }
-        [Authorize(Roles ="Admin")]
+        #endregion
+
+        #region admin
+
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RegisterAStaffMember()
         {
             var response = new RegisterAStaffMemberVM();
             return View(response);
         }
-        [Authorize(Roles ="StaffMember")]
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AllStaffMembers(string id)
+        {
+            var staffmembers = _staffmemberService.GetAllAsync();
+            return View(staffmembers);
+        }
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AllStudents(string id)
+        {
+            var students = _studentService.GetAllAsync();
+            return View(students);
+        }
+
+        #endregion
+
+        #region staffmember
+
+        [Authorize(Roles = "StaffMember")]
         [HttpPost]
-        public async Task<IActionResult> RegisterAStaffMember (RegisterAStaffMemberVM registerVM)
+        public async Task<IActionResult> RegisterAStaffMember(RegisterAStaffMemberVM registerVM)
         {
             if (!ModelState.IsValid)
             {
@@ -175,75 +274,26 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             return View(registerVM);
         }
 
+        [Authorize(Roles = "StaffMember")]
+        public async Task<IActionResult> MyStudents(string id)
+        {
+            var staffmemberId = User.FindFirstValue("Id");
+            var staffmember = _staffmemberService.GetByIdAsync(staffmemberId).Result;
+            var students = staffmember.Students.ToList();
+            return View(students);
+        }
+
+        #endregion
+
+        #region student
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> StudentInitializePassword()
         {
             var response = new StudentInitializePasswordVM();
             return View(response);
         }
-        public async Task<IActionResult> EditUser(string id)
-        {
-            var user = _userManager.FindByIdAsync(id).Result;
-            var vm = new EditVM()
-            {
-                FirstName = user.FirstName,
-                SurName=user.SurName,
-            };
-            return View(id, vm);
-        }
-        [HttpPost]
-        public async Task<IActionResult> EditUser(string id,EditVM editStudentVM)
-        {
-            var dbuser = await _userManager.FindByIdAsync(id);
 
-            if (dbuser != null)
-            {
-                dbuser.FirstName=editStudentVM.FirstName;
-                dbuser.SurName=editStudentVM.SurName;
-                dbuser.PhoneNumber=editStudentVM.PhoneNumber;
-                dbuser.Address = editStudentVM.Address;
-                await _context.SaveChangesAsync();
-            }
-            return RedirectToAction("Index", "Home");
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangePassword(ChangePasswordVM changePasswordVM)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(changePasswordVM);
-            }
+        #endregion
 
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            if (user == null)
-            {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
-            var passwordValidator = new PasswordValidator<USER>();
-            var result = await passwordValidator.ValidateAsync(_userManager, user, changePasswordVM.NewPassword);
-            if (!result.Succeeded)
-            {
-                //errors(result)
-                return View(changePasswordVM);
-            }
-
-            var changePasswordResult = await _userManager.ChangePasswordAsync(user, changePasswordVM.OldPassword, changePasswordVM.NewPassword);
-            if (!changePasswordResult.Succeeded)
-            {
-                //AddErrors(changePasswordResult);
-                return View(changePasswordVM);
-            }
-
-            await _signInManager.RefreshSignInAsync(user);
-            return RedirectToAction(nameof(HomeController.Index), "Home");
-        }
-        [HttpPost]
-        public async Task<IActionResult> Logout()
-        {
-            await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
-        }
     }
 }
