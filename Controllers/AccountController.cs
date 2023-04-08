@@ -13,14 +13,14 @@ using System.Security.Claims;
 
 namespace Debt_Calculation_And_Repayment_System.Controllers
 {
-    public class AccountController: Controller
+    public class AccountController : Controller
     {
         private readonly UserManager<USER> _userManager;
         private readonly SignInManager<USER> _signInManager;
         private readonly ISTAFFMEMBERService _staffmemberService;
         private readonly ISTUDENTService _studentService;
         private readonly AppDbContext _context;
-        public AccountController(UserManager<USER> usermanager,SignInManager<USER> signinmanager, AppDbContext context, ISTAFFMEMBERService staffmemberService, ISTUDENTService studentService)
+        public AccountController(UserManager<USER> usermanager, SignInManager<USER> signinmanager, AppDbContext context, ISTAFFMEMBERService staffmemberService, ISTUDENTService studentService)
         {
             _userManager = usermanager;
             _signInManager = signinmanager;
@@ -35,7 +35,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var response = new LoginVM();
             return View(response);
         }
-
         [HttpPost]
         public async Task<IActionResult> Login(LoginVM loginvm)
         {
@@ -44,14 +43,14 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 return (View(loginvm));
             }
             var user = await _userManager.FindByEmailAsync(loginvm.Email);
-            if (user!= null)
+            if (user != null)
             {
                 Console.WriteLine("c bon");
                 var passwordCheck = await _userManager.CheckPasswordAsync(user, loginvm.Password);
                 if (passwordCheck)
                 {
                     Console.WriteLine("c bon");
-                    var result =await _signInManager.PasswordSignInAsync(user, loginvm.Password,false,false);
+                    var result = await _signInManager.PasswordSignInAsync(user, loginvm.Password, false, false);
                     if (result.Succeeded)
                     {
                         Console.WriteLine("c bon");
@@ -68,20 +67,20 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var vm = new EditVM()
             {
                 FirstName = user.FirstName,
-                SurName=user.SurName,
+                SurName = user.SurName,
             };
             return View(id, vm);
         }
         [HttpPost]
-        public async Task<IActionResult> EditUser(string id,EditVM editStudentVM)
+        public async Task<IActionResult> EditUser(string id, EditVM editStudentVM)
         {
             var dbuser = await _userManager.FindByIdAsync(id);
 
             if (dbuser != null)
             {
-                dbuser.FirstName=editStudentVM.FirstName;
-                dbuser.SurName=editStudentVM.SurName;
-                dbuser.PhoneNumber=editStudentVM.PhoneNumber;
+                dbuser.FirstName = editStudentVM.FirstName;
+                dbuser.SurName = editStudentVM.SurName;
+                dbuser.PhoneNumber = editStudentVM.PhoneNumber;
                 dbuser.Address = editStudentVM.Address;
                 await _context.SaveChangesAsync();
             }
@@ -93,53 +92,95 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
-        #region generatepassword
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        //public async Task<IActionResult> ChangePassword(ChangePasswordVM changePasswordVM)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return View(changePasswordVM);
-        //    }
-
-        //    var user = await _userManager.FindByNameAsync(User.Identity.Name);
-        //    if (user == null)
-        //    {
-        //        return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-        //    }
-
-        //    var passwordValidator = new PasswordValidator<USER>();
-        //    var result = await passwordValidator.ValidateAsync(_userManager, user, changePasswordVM.NewPassword);
-        //    if (!result.Succeeded)
-        //    {
-        //        //errors(result)
-        //        return View(changePasswordVM);
-        //    }
-
-        //    var changePasswordResult = await _userManager.ChangePasswordAsync(user, changePasswordVM.OldPassword, changePasswordVM.NewPassword);
-        //    if (!changePasswordResult.Succeeded)
-        //    {
-        //        //AddErrors(changePasswordResult);
-        //        return View(changePasswordVM);
-        //    }
-
-        //    await _signInManager.RefreshSignInAsync(user);
-        //    return RedirectToAction(nameof(HomeController.Index), "Home");
-        //}
-        public string GenerateRandomPassword(int length)
+        public IActionResult ForgotPassword()
         {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            // Look up the user by email address
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+            {
+                // Show an error message to the user
+                TempData["ErrorMessage"] = "Invalid email address";
+                return View();
+            }
+
+            // Generate the password reset link
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var callbackUrl = Url.Action("ResetPassword", "Account", new { email = user.Email, code = code }, protocol: Request.Scheme);
+
+            // Send the password reset email to the user
+            // (code for sending email omitted)
+
+            // Show a success message to the user
+            TempData["SuccessMessage"] = "A password reset email has been sent to your email address";
+            return RedirectToAction("Index", "Home");
+        }
+        #region generatepassword
+        public static string GenerateRandomPassword(int length)
+        {
+            const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+";
             var random = new Random();
-            var password = new string(Enumerable.Repeat(chars, length)
-                                                  .Select(s => s[random.Next(s.Length)])
-                                                  .ToArray());
+
+            // Ensure that the password meets the conventional requirements
+            string password = "";
+            do
+            {
+                password = new string(
+                    Enumerable.Repeat(validChars, length)
+                              .Select(s => s[random.Next(s.Length)])
+                              .ToArray()
+                );
+            } while (!MeetsPasswordRequirements(password));
+
             return password;
         }
+
+        private static bool MeetsPasswordRequirements(string password)
+        {
+            const int minLength = 8;
+            const int minLowercase = 1;
+            const int minUppercase = 1;
+            const int minNumeric = 1;
+            const int minSpecial = 1;
+
+            // Check the length of the password
+            if (password.Length < minLength)
+            {
+                return false;
+            }
+
+            // Check for the presence of lowercase letters
+            if (password.Count(c => char.IsLower(c)) < minLowercase)
+            {
+                return false;
+            }
+
+            // Check for the presence of uppercase letters
+            if (password.Count(c => char.IsUpper(c)) < minUppercase)
+            {
+                return false;
+            }
+
+            // Check for the presence of numeric characters
+            if (password.Count(c => char.IsDigit(c)) < minNumeric)
+            {
+                return false;
+            }
+
+            // Check for the presence of special characters
+            if (password.Count(c => !char.IsLetterOrDigit(c)) < minSpecial)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         #endregion
-
-
-
         #endregion
 
         #region adminstaff
@@ -174,37 +215,21 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 Address = "unspecified",
                 PhoneNumber = "unspecified",
             };
-            string password = "Unspecified123@";
+            string password = GenerateRandomPassword(8);
             var newUserResponse = await _userManager.CreateAsync(newStudent, password);
             if (newUserResponse.Succeeded)
             {
                 var result = await _userManager.AddToRoleAsync(newStudent, UserRoles.Student);
                 if (result.Succeeded)
                 {
-                    //MailMessage mail = new MailMessage();
-                    //mail.To.Add(registerVM.Email);
-                    //mail.From = new MailAddress("debtcalculation1@gmail.com");
-                    //mail.Subject = "tsiwtsiw";
-                    //mail.Body = "niwniw";
-                    //mail.IsBodyHtml = true;
-                    //SmtpClient smtp = new SmtpClient();
-                    //smtp.Host = "smtp.gmail.com";
-                    //smtp.Port = 587;
-                    //smtp.UseDefaultCredentials = false;
-                    //smtp.Credentials = new System.Net.NetworkCredential("debtcalculation1@gmail.com", "zdsjnyteligoddnd");
-                    //smtp.EnableSsl = true;
-                    //smtp.Send(mail);
-
-                    //return RedirectToAction("Index", "Home");
-
                     await SendPasswordResetEmail(newStudent.Email);
                 }
             }
-            return View(registerVM);
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
-        public async Task<IActionResult> SendPasswordResetEmail(string email)
+        public async Task SendPasswordResetEmail(string email)
         {
             // Look up the user by email address
             var user = await _userManager.FindByEmailAsync(email);
@@ -212,12 +237,13 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             {
                 // Show an error message to the user
                 TempData["ErrorMessage"] = "Invalid email address";
-                return RedirectToAction("ForgotPassword", "Account");
+                Console.WriteLine("We couldn't find your account");
+                //return RedirectToAction("ForgotPassword", "Account");
             }
 
             // Generate the password reset link
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var callbackUrl = Url.Action("ResetPassword", "Account", new { email = user.Email, code = code }, Request.Scheme);
+            var callbackUrl = Url.Action("ResetPassword", "Account", new ResetPasswordVM() { Email = user.Email, Code = code }, Request.Scheme);
 
             // Send the password reset email to the user
             var message = new MailMessage();
@@ -225,6 +251,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             message.To.Add(new MailAddress(user.Email, user.UserName));
             message.Subject = "Reset Your Password";
             message.Body = $"Please reset your password by clicking <a href=\"{callbackUrl}\">here</a>.";
+            Console.WriteLine(message.Body);
             message.IsBodyHtml = true;
 
             using (var client = new SmtpClient())
@@ -238,7 +265,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
 
             // Show a success message to the user
             TempData["SuccessMessage"] = "A password reset email has been sent to your email address";
-            return RedirectToAction("Index", "Home");
+            Console.WriteLine("A password reset email has been sent to your email address");
+            //return RedirectToAction("Index", "Home");
         }
         #endregion
 
@@ -331,13 +359,13 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         #endregion
 
         #region student
-        [Authorize(Roles = "Student")]
         [HttpGet]
-        public async Task<IActionResult> ResetPassword( string email, string code)
+        public async Task<IActionResult> ResetPassword(string email, string code)
         {
             // Verify that the email and code are valid
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(code))
             {
+                TempData["SuccessMessage"] = "Your Token Expired";
                 return RedirectToAction("Index", "Home");
             }
 
@@ -369,9 +397,10 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
 
             // Reset the user's password
             var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
+            Console.WriteLine(model.Password);
             if (result.Succeeded)
             {
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("Index", "Home");
             }
 
             foreach (var error in result.Errors)
@@ -381,36 +410,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
 
             return View(model);
         }
-
-        public IActionResult ForgotPassword()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ForgotPassword(string email)
-        {
-            // Look up the user by email address
-            var user = await _userManager.FindByEmailAsync(email);
-            if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
-            {
-                // Show an error message to the user
-                TempData["ErrorMessage"] = "Invalid email address";
-                return View();
-            }
-
-            // Generate the password reset link
-            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var callbackUrl = Url.Action("ResetPassword", "Account", new { email = user.Email, code = code }, protocol: Request.Scheme);
-
-            // Send the password reset email to the user
-            // (code for sending email omitted)
-
-            // Show a success message to the user
-            TempData["SuccessMessage"] = "A password reset email has been sent to your email address";
-            return RedirectToAction("Login", "Account");
-        }
-
 
         #endregion
 
