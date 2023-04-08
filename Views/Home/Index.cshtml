@@ -36,7 +36,7 @@
             <h1 class="text-white display-1 mb-5">Debt Calculation & Repayment System</h1>
             @if (!User.Identity.IsAuthenticated)
             {
-                <button class="btn btn-secondary px-3 px-lg-5">Login</button>
+                <a asp-controller="Account" asp-action="Login" class="btn btn-secondary px-3 px-lg-5">Login</a>
             }
         </div>
     </div>
@@ -452,3 +452,4 @@
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary rounded-0 btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
     </body>
+    </html>

@@ -20,6 +20,13 @@ namespace Debt_Calculation_And_Repayment_System.Data
         }
         protected override void OnModelCreating (ModelBuilder builder)
         {
+            #region SCOLARSHIPDEBT
+            builder.Entity<SCOLARSHIPDEBT>().Property(s => s.Interest).HasPrecision(4, 3);
+            builder.Entity<SCOLARSHIPDEBT>().Property(s => s.Rate).HasPrecision(4, 3);
+            builder.Entity<SCOLARSHIPDEBT>().Property(sd => sd.Amount).HasPrecision(18, 4);
+            builder.Entity<SCOLARSHIPDEBT>().Navigation(sd => sd.Payments).AutoInclude();
+            #endregion
+
             #region PAYMENT
             builder.Entity<PAYMENT>().Property(p => p.Total).HasPrecision(18, 4);
             builder.Entity<PAYMENT>().Property(s => s.Amount).HasPrecision(18,4);
@@ -38,13 +45,9 @@ namespace Debt_Calculation_And_Repayment_System.Data
             builder.Entity<STUDENT>().HasOne(s => s.StaffMember).WithMany(sm => sm.Students).HasForeignKey(s => s.StaffMemberId).OnDelete(DeleteBehavior.ClientSetNull);
             #endregion
 
-            #region SCOLARSHIPDEBT
-            builder.Entity<SCOLARSHIPDEBT>().Property(s => s.Interest).HasPrecision(4, 3);
-            builder.Entity<SCOLARSHIPDEBT>().Property(s => s.Rate).HasPrecision(4, 3);
-            builder.Entity<SCOLARSHIPDEBT>().Property(sd => sd.Amount).HasPrecision(18, 4);
-            builder.Entity<SCOLARSHIPDEBT>().Navigation(sd => sd.Payments).AutoInclude();
+            #region STAFFMEMBER
+            builder.Entity<STAFFMEMBER>().Navigation(sm=>sm.Students).AutoInclude();
             #endregion
-
             base.OnModelCreating(builder);
         }
 

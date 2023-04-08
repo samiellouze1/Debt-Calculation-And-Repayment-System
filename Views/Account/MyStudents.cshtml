@@ -1,0 +1,29 @@
+﻿@model IEnumerable<STUDENT>
+@{
+    ViewData["Title"] = "My Students";
+}
+<table class="table " style="width:1500px;margin-left:10%;margin-right:10%;"
+    <thead>
+        <tr>
+            <th scope="col">UserName</th>
+            <th scope="col">FirstName</th>
+            <th scope="col">SurName</th>
+            <th scope="col">PhoneNumber</th>
+            <th scope="col">Number of Scolarship Debts</th>
+            <th scope="col">Registration Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="table-primary">
+                <td>@item.UserName</td>
+                <td>@item.FirstName</td>
+                <td>@item.SurName</td>
+                <td>@item.PhoneNumber</td>
+                <td><a asp-controller="Debt" asp-action="ScolarshipDebtsByStudentId">Not Implemented</a></td>
+                <td>@item.RegDate</td>
+            </tr>
+        }
+    </tbody>
+</table>

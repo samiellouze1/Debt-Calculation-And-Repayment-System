@@ -1,3 +1,25 @@
 ﻿@model IEnumerable<PAYMENTPLAN>
 @{
+    ViewData["Title"] = "PaymentPlansperPayment";
 }
+<table class="table " style="width:1500px;margin-left:10%;margin-right:10%;"
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">First</th>
+            <th scope="col">Last</th>
+            <th scope="col">Handle</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+                <tr class="table-primary">
+                    <td > 1 </td>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td>mdo</td>
+                </tr>
+        }
+    </tbody>
+</table>

@@ -5,20 +5,16 @@
 <table class="table " style="width:1500px;margin-left:10%;margin-right:10%;"
     <thead>
         <tr>
-            <th scope="col">#</th>
-            <th scope="col">First</th>
-            <th scope="col">Last</th>
-            <th scope="col">Handle</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Id</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr class="table-primary">
-                <td > 1 </td>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>mdo</td>
+                <td > @item.Amount </td>
+                <td>@item.Id</td>
             </tr>
         }
     </tbody>

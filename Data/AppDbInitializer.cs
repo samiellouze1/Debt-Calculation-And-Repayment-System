@@ -156,7 +156,8 @@ namespace Debt_Calculation_And_Repayment_System.Data
                         UserName = userstudentemail,
                         Address = "Turkey",
                         PhoneNumber = "12345678",
-                        Email = userstudentemail
+                        Email = userstudentemail,
+                        StaffMemberId="2"
                     };
                     await userManager.CreateAsync(newUser2, "Student123@");
                     await userManager.AddToRoleAsync(newUser2, UserRoles.Student);
