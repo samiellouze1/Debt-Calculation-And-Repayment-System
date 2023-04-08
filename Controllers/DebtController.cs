@@ -66,13 +66,24 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var scolarshipdebts = _scolarshipDebtService.GetAllAsync().Result;
             return View(scolarshipdebts);
         }
-        public async Task<IActionResult> ScolarshipDebtsperStaffMember()
+        public async Task<IActionResult> ScolarshipDebtsperStaffMember(string id)
         {
-            var staffId = User.FindFirstValue("Id");
-            var staff = _staffmemberService.GetByIdAsync(staffId).Result;
+            var staff = _staffmemberService.GetByIdAsync(id).Result;
             var mystudents = staff.Students.ToList();
             var myscolarshipdebts = new List<SCOLARSHIPDEBT>();
             foreach (var std in mystudents )
+            {
+                myscolarshipdebts.AddRange(std.ScolarshipDebts);
+            }
+            return View(myscolarshipdebts);
+        }
+        public async Task<IActionResult> ScolarshipDebtsperLoggedInStaffMember()
+        {
+            var staffid = User.FindFirstValue("Id");
+            var staff = _staffmemberService.GetByIdAsync(staffid).Result;
+            var mystudents = staff.Students.ToList();
+            var myscolarshipdebts = new List<SCOLARSHIPDEBT>();
+            foreach (var std in mystudents)
             {
                 myscolarshipdebts.AddRange(std.ScolarshipDebts);
             }
@@ -83,11 +94,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var student= _studentService.GetByIdAsync(id).Result;
             var scolarshipdebts = student.ScolarshipDebts;
             return View(scolarshipdebts);
-        }
-        public async Task<IActionResult> ScolarshipDebt(string id)
-        {
-            var sd = _scolarshipDebtService.GetByIdAsync(id).Result;
-            return View(sd);
         }
     }
 }

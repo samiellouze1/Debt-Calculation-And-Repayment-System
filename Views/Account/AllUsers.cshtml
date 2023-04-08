@@ -2,3 +2,26 @@
 @{
     ViewData["Title"] = "All Users";
 }
+<table class="table " style="width:1500px;margin-left:10%;margin-right:10%;"
+    <thead>
+        <tr>
+            <th scope="col">UserName</th>
+            <th scope="col">FirstName</th>
+            <th scope="col">SurName</th>
+            <th scope="col">PhoneNumber</th>
+            <th scope="col">Role</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="table-primary">
+                <td>@item.UserName</td>
+                <td>@item.FirstName</td>
+                <td>@item.SurName</td>
+                <td>@item.PhoneNumber</td>
+                <td>Not Implemented</td>
+            </tr>
+        }
+    </tbody>
+</table>

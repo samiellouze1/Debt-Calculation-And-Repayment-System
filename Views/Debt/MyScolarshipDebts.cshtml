@@ -2,27 +2,28 @@
 @{
     ViewData["Title"] = "My Scolarship Debts";
 }
-
 <table class="table " style="width:1500px;margin-left:10%;margin-right:10%;"
     <thead>
         <tr>
-            <th scope="col">#</th>
-            <th scope="col">First</th>
-            <th scope="col">Last</th>
-            <th scope="col">Handle</th>
-            <th scope="col"> Payments</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Interest</th>
+            <th scope="col">Number Of Days</th>
+            <th scope="col">Start Date</th>
+            <th scope="col">Finish Date</th>
+            <th scope="col">Number Of Days</th>
         </tr>
     </thead>
     <tbody>
-    @foreach(var item in Model)
-    {
-        <tr class="table-primary">
-            <td > 1 </td>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>mdo</td>
-            <td><a asp-controller="Debt" asp-action="PaymentsperScolarshipDebt" asp-route-id=@item.Id>ziwziw</a></td>
-        </tr>
-    }
+        @foreach (var item in Model)
+        {
+            <tr class="table-primary">
+                <td>@item.Amount</td>
+                <td>@item.Interest</td>
+                <td>@item.NumberOfDays</td>
+                <td>@item.StartDate</td>
+                <td>@item.FinishDate</td>
+                <td>@item.NumberOfDays</td>
+            </tr>
+        }
     </tbody>
 </table>

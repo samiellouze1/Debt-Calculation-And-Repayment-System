@@ -418,6 +418,12 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
 
             return View(model);
         }
+        [Authorize(Roles ="Student")]
+        public async Task<IActionResult> StaffMemberById(string id)
+        {
+            var staffmember = _staffmemberService.GetByIdAsync(id);
+            return View(staffmember);
+        }
 
         #endregion
 
