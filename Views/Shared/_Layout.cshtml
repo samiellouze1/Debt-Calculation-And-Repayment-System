@@ -88,10 +88,10 @@
                             <a asp-controller="Debt" asp-action="AllScolarshipDebts" class="nav-item nav-link active">Scolarship Debts</a>
                             <a asp-controller="Payment" asp-action="AllPayments" class="nav-item nav-link active">Payments</a>
                             <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Users</a>
+                                <a asp-controller="Account" asp-action="AllUsers" class="nav-link dropdown-toggle" data-toggle="dropdown">Users</a>
                                 <div class="dropdown-menu m-0">
-                                    <a href="detail.html" class="dropdown-item">Staff</a>
-                                    <a href="feature.html" class="dropdown-item">Students</a>
+                                    <a asp-controller="Account" asp-action="AllStaffMembers" class="dropdown-item">Staff</a>
+                                    <a asp-controller="Account" asp-action="AllStudents" class="dropdown-item">Students</a>
                                 </div>
                             </div>
                         }

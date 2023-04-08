@@ -17,16 +17,18 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
     {
         private readonly UserManager<USER> _userManager;
         private readonly SignInManager<USER> _signInManager;
+        private readonly IUSERService _userService;
         private readonly ISTAFFMEMBERService _staffmemberService;
         private readonly ISTUDENTService _studentService;
         private readonly AppDbContext _context;
-        public AccountController(UserManager<USER> usermanager, SignInManager<USER> signinmanager, AppDbContext context, ISTAFFMEMBERService staffmemberService, ISTUDENTService studentService)
+        public AccountController(UserManager<USER> usermanager, SignInManager<USER> signinmanager, AppDbContext context, ISTAFFMEMBERService staffmemberService, ISTUDENTService studentService, IUSERService userService)
         {
             _userManager = usermanager;
             _signInManager = signinmanager;
             _staffmemberService = staffmemberService;
             _context = context;
             _studentService = studentService;
+            _userService = userService;
         }
 
         #region common
@@ -279,16 +281,22 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             return View(response);
         }
 
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AllStaffMembers(string id)
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> AllUsers()
         {
-            var staffmembers = _staffmemberService.GetAllAsync();
+            var users = _userService.GetAllAsync().Result;
+            return View(users);
+        }
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AllStaffMembers()
+        {
+            var staffmembers = _staffmemberService.GetAllAsync().Result;
             return View(staffmembers);
         }
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AllStudents(string id)
+        public async Task<IActionResult> AllStudents()
         {
-            var students = _studentService.GetAllAsync();
+            var students = _studentService.GetAllAsync().Result;
             return View(students);
         }
 
