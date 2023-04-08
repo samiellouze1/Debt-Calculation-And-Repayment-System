@@ -16,7 +16,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             _paymentService = paymentService;
             _staffmemberService = staffmemberService;
         }
-        public async Task<IActionResult> PaymentPlansperPayment (string id)
+        public async Task<IActionResult> PaymentPlansperPayment(string id)
         {
             var payment = _paymentService.GetByIdAsync(id).Result;
             var paymentplans = payment.PaymentPlans;

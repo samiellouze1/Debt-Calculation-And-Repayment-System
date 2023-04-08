@@ -84,5 +84,10 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var scolarshipdebts = student.ScolarshipDebts;
             return View(scolarshipdebts);
         }
+        public async Task<IActionResult> ScolarshipDebt(string id)
+        {
+            var sd = _scolarshipDebtService.GetByIdAsync(id).Result;
+            return View(sd);
+        }
     }
 }

@@ -2,3 +2,28 @@
 @{
     ViewData["Title"] = "All Payments";
 }
+<table class="table " style="width:1500px;margin-left:10%;margin-right:10%;"
+    <thead>
+        <tr>
+            <th scope="col">ScolarshipDebt</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Overdue Amount</th>
+            <th scope="col">Registration Date</th>
+            <th scope="col">Payment Date</th>
+            <th scope="col">PaymentPlans</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="table-primary">
+                <td ><a asp-controller="Debt" asp-action="ScolarshipDebt" asp-route-id=@item.ScolarshipDebtId>Click Here</a></td>
+                <td>@item.Amount</td>
+                <td>@item.OverdueAmount</td>
+                <td>@item.RegDate</td>
+                <td>@item.PaymentDate</td>
+                <td><a asp-controller="Payment" asp-action="PaymentPlansperPayment" asp-route-id=@item.Id>Click Here</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
