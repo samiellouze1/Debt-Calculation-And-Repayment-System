@@ -4,7 +4,6 @@ using Debt_Calculation_And_Repayment_System.Data.Static;
 using Debt_Calculation_And_Repayment_System.Data.ViewModels;
 using Debt_Calculation_And_Repayment_System.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -30,8 +29,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             _studentService = studentService;
             _userService = userService;
         }
-
-        #region common
+        #region normal registration
         public IActionResult Login()
         {
             var response = new LoginVM();
@@ -94,98 +92,10 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
-        public IActionResult ForgotPassword()
-        {
-            return View();
-        }
-        [HttpPost]
-        public async Task<IActionResult> ForgotPassword(string email)
-        {
-            // Look up the user by email address
-            var user = await _userManager.FindByEmailAsync(email);
-            if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
-            {
-                // Show an error message to the user
-                TempData["ErrorMessage"] = "Invalid email address";
-                return View();
-            }
-
-            // Generate the password reset link
-            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var callbackUrl = Url.Action("ResetPassword", "Account", new { email = user.Email, code = code }, protocol: Request.Scheme);
-
-            // Send the password reset email to the user
-            // (code for sending email omitted)
-
-            // Show a success message to the user
-            TempData["SuccessMessage"] = "A password reset email has been sent to your email address";
-            return RedirectToAction("Index", "Home");
-        }
-        #region generatepassword
-        public static string GenerateRandomPassword(int length)
-        {
-            const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+";
-            var random = new Random();
-
-            // Ensure that the password meets the conventional requirements
-            string password = "";
-            do
-            {
-                password = new string(
-                    Enumerable.Repeat(validChars, length)
-                              .Select(s => s[random.Next(s.Length)])
-                              .ToArray()
-                );
-            } while (!MeetsPasswordRequirements(password));
-
-            return password;
-        }
-
-        private static bool MeetsPasswordRequirements(string password)
-        {
-            const int minLength = 8;
-            const int minLowercase = 1;
-            const int minUppercase = 1;
-            const int minNumeric = 1;
-            const int minSpecial = 1;
-
-            // Check the length of the password
-            if (password.Length < minLength)
-            {
-                return false;
-            }
-
-            // Check for the presence of lowercase letters
-            if (password.Count(c => char.IsLower(c)) < minLowercase)
-            {
-                return false;
-            }
-
-            // Check for the presence of uppercase letters
-            if (password.Count(c => char.IsUpper(c)) < minUppercase)
-            {
-                return false;
-            }
-
-            // Check for the presence of numeric characters
-            if (password.Count(c => char.IsDigit(c)) < minNumeric)
-            {
-                return false;
-            }
-
-            // Check for the presence of special characters
-            if (password.Count(c => !char.IsLetterOrDigit(c)) < minSpecial)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        #endregion
         #endregion
 
-        #region adminstaff
+        #region specialregistration
+
         [Authorize(Roles = "Admin, StaffMember")]
         public async Task<IActionResult> RegisterAStudent()
         {
@@ -229,7 +139,49 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             return RedirectToAction("Index", "Home");
         }
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RegisterAStaffMember()
+        {
+            var response = new RegisterAStaffMemberVM();
+            return View(response);
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> RegisterAStaffMember(RegisterAStaffMemberVM registerVM)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(registerVM);
+            }
 
+            var user = await _userManager.FindByEmailAsync(registerVM.Email);
+            if (user != null)
+            {
+                TempData["Error"] = "This Email Address has already been taken";
+                return View(registerVM);
+            }
+            var newStudent = new STUDENT()
+            {
+                UserName = registerVM.Email,
+                Email = registerVM.Email,
+                FirstName = registerVM.FirstName,
+                SurName = registerVM.SurName,
+                RegDate = DateTime.Now,
+                Address = "unspecified",
+                PhoneNumber = "unspecified",
+            };
+            string password = GenerateRandomPassword(8);
+            var newUserResponse = await _userManager.CreateAsync(newStudent, password);
+            if (newUserResponse.Succeeded)
+            {
+                var result = await _userManager.AddToRoleAsync(newStudent, UserRoles.StaffMember);
+                if (result.Succeeded)
+                {
+                    await SendPasswordResetEmail(newStudent.Email);
+                }
+            }
+            return RedirectToAction("Index", "Home");
+        }
         [HttpPost]
         public async Task SendPasswordResetEmail(string email)
         {
@@ -245,7 +197,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
 
             // Generate the password reset link
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var callbackUrl = Url.Action("ResetPassword", "Account", new ResetPasswordVM() { Email = user.Email, Code = code }, Request.Scheme);
+            var callbackUrl = Url.Action("ResetPassword", "Account", new { email, code }, Request.Scheme);
 
             // Send the password reset email to the user
             var message = new MailMessage();
@@ -270,103 +222,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             Console.WriteLine("A password reset email has been sent to your email address");
             //return RedirectToAction("Index", "Home");
         }
-        #endregion
-
-        #region admin
-
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> RegisterAStaffMember()
-        {
-            var response = new RegisterAStaffMemberVM();
-            return View(response);
-        }
-
-        [Authorize(Roles ="Admin")]
-        public async Task<IActionResult> AllUsers()
-        {
-            var users = _userService.GetAllAsync().Result;
-            return View(users);
-        }
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AllStaffMembers()
-        {
-            var staffmembers = _staffmemberService.GetAllAsync().Result;
-            return View(staffmembers);
-        }
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AllStudents()
-        {
-            var students = _studentService.GetAllAsync().Result;
-            return View(students);
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpPost]
-        public async Task<IActionResult> RegisterAStaffMember(RegisterAStaffMemberVM registerVM)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(registerVM);
-            }
-
-            var user = await _userManager.FindByEmailAsync(registerVM.Email);
-            if (user != null)
-            {
-                TempData["Error"] = "This Email Address has already been taken";
-                return View(registerVM);
-            }
-            var newStaffMember = new STAFFMEMBER()
-            {
-                UserName = registerVM.Email,
-                Email = registerVM.Email,
-                FirstName = registerVM.FirstName,
-                SurName = registerVM.SurName,
-                RegDate = DateTime.Now,
-                Address = registerVM.Address,
-                PhoneNumber = registerVM.PhoneNumber,
-            };
-            string password = registerVM.Password;
-            var newUserResponse = await _userManager.CreateAsync(newStaffMember, password);
-            if (newUserResponse.Succeeded)
-            {
-                var result = await _userManager.AddToRoleAsync(newStaffMember, UserRoles.StaffMember);
-                if (result.Succeeded)
-                {
-                    MailMessage mail = new MailMessage();
-                    mail.To.Add(registerVM.Email);
-                    mail.From = new MailAddress("debtcalculation1@gmail.com");
-                    mail.Subject = "Password Reset Link";
-                    mail.Body = "Dear Student, please click on the following link to reset your password: http://example.com/reset-password?token=abc123"; ;
-                    mail.IsBodyHtml = true;
-                    SmtpClient smtp = new SmtpClient();
-                    smtp.Host = "smtp.gmail.com";
-                    smtp.Port = 587;
-                    smtp.UseDefaultCredentials = false;
-                    smtp.Credentials = new System.Net.NetworkCredential("debtcalculation1@gmail.com", "zdsjnyteligoddnd");
-                    smtp.EnableSsl = true;
-                    smtp.Send(mail);
-
-                    return RedirectToAction("Index", "Home");
-                }
-            }
-            return View(registerVM);
-        }
-
-        #endregion
-
-        #region staff
-        [Authorize(Roles = "StaffMember")]
-        public async Task<IActionResult> MyStudents(string id)
-        {
-            var staffmemberId = User.FindFirstValue("Id");
-            var staffmember = _staffmemberService.GetByIdAsync(staffmemberId).Result;
-            var students = staffmember.Students.ToList();
-            return View(students);
-        }
-
-        #endregion
-
-        #region student
         [HttpGet]
         public async Task<IActionResult> ResetPassword(string email, string code)
         {
@@ -386,7 +241,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
 
             return View(model);
         }
-
         [HttpPost]
         public async Task<IActionResult> ResetPassword(ResetPasswordVM model)
         {
@@ -405,12 +259,14 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
 
             // Reset the user's password
             var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
-            Console.WriteLine(model.Password);
             if (result.Succeeded)
             {
                 return RedirectToAction("Index", "Home");
             }
-
+            else
+            {
+                return RedirectToAction("Login", "Account");
+            }
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
@@ -418,14 +274,130 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
 
             return View(model);
         }
-        [Authorize(Roles ="Student")]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            // Look up the user by email address
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+            {
+                // Show an error message to the user
+                TempData["ErrorMessage"] = "Invalid email address";
+                return View();
+            }
+
+            // Generate the password reset link
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var callbackUrl = Url.Action("ResetPassword", "Account", new { email = user.Email, code = code }, protocol: Request.Scheme);
+
+            // Send the password reset email to the user
+            // (code for sending email omitted)
+
+            // Show a success message to the user
+            TempData["SuccessMessage"] = "A password reset email has been sent to your email address";
+            return RedirectToAction("Index", "Home");
+        }
+
+        #endregion
+
+        #region getters
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> StaffMemberById(string id)
         {
             var staffmember = _staffmemberService.GetByIdAsync(id);
             return View(staffmember);
         }
-
+        [Authorize(Roles = "StaffMember")]
+        public async Task<IActionResult> MyStudents(string id)
+        {
+            var staffmemberId = User.FindFirstValue("Id");
+            var staffmember = _staffmemberService.GetByIdAsync(staffmemberId).Result;
+            var students = staffmember.Students.ToList();
+            return View(students);
+        }
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AllUsers()
+        {
+            var users = _userService.GetAllAsync().Result;
+            return View(users);
+        }
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AllStaffMembers()
+        {
+            var staffmembers = _staffmemberService.GetAllAsync().Result;
+            return View(staffmembers);
+        }
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AllStudents()
+        {
+            var students = _studentService.GetAllAsync().Result;
+            return View(students);
+        }
         #endregion
 
+        #region generaterandompassword
+        public static string GenerateRandomPassword(int length)
+        {
+            const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+";
+            var random = new Random();
+
+            // Ensure that the password meets the conventional requirements
+            string password = "";
+            do
+            {
+                password = new string(
+                    Enumerable.Repeat(validChars, length)
+                              .Select(s => s[random.Next(s.Length)])
+                              .ToArray()
+                );
+            } while (!MeetsPasswordRequirements(password));
+
+            return password;
+        }
+        private static bool MeetsPasswordRequirements(string password)
+        {
+            const int minLength = 8;
+            const int minLowercase = 1;
+            const int minUppercase = 1;
+            const int minNumeric = 1;
+            const int minSpecial = 1;
+
+            // Check the length of the password
+            if (password.Length < minLength)
+            {
+                return false;
+            }
+
+            // Check for the presence of lowercase letters
+            if (password.Count(c => char.IsLower(c)) < minLowercase)
+            {
+                return false;
+            }
+
+            // Check for the presence of uppercase letters
+            if (password.Count(c => char.IsUpper(c)) < minUppercase)
+            {
+                return false;
+            }
+
+            // Check for the presence of numeric characters
+            if (password.Count(c => char.IsDigit(c)) < minNumeric)
+            {
+                return false;
+            }
+
+            // Check for the presence of special characters
+            if (password.Count(c => !char.IsLetterOrDigit(c)) < minSpecial)
+            {
+                return false;
+            }
+
+            return true;
+        }
+        #endregion
     }
 }
