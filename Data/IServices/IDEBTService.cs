@@ -3,7 +3,7 @@ using Debt_Calculation_And_Repayment_System.Models;
 
 namespace Debt_Calculation_And_Repayment_System.Data.IServices
 {
-    public interface IPAYMENTService:IEntityBaseRepository<PAYMENT>
+    public interface IDEBTService:IEntityBaseRepository<DEBT>
     {
     }
 }

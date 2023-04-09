@@ -85,7 +85,7 @@
                     {
                         @if (User.IsInRole("Admin"))
                         {
-                            <a asp-controller="Debt" asp-action="AllScolarshipDebts" class="nav-item nav-link active">Scolarship Debts</a>
+                            <a asp-controller="Debt" asp-action="AllDEBTs" class="nav-item nav-link active">Scolarship Debts</a>
                             <a asp-controller="Payment" asp-action="AllPayments" class="nav-item nav-link active">Payments</a>
                             <div class="nav-item dropdown">
                                 <a asp-controller="Account" asp-action="AllUsers" class="nav-link dropdown-toggle" data-toggle="dropdown">Users</a>
@@ -97,13 +97,13 @@
                         }
                         @if (User.IsInRole("StaffMember"))
                         {
-                            <a asp-controller="Debt" asp-action="ScolarshipDebtsperLoggedInStaffMember" class="nav-item nav-link active">Scolarship Debts</a>
+                            <a asp-controller="Debt" asp-action="DEBTsperLoggedInStaffMember" class="nav-item nav-link active">Scolarship Debts</a>
                             <a asp-controller="Payment" asp-action="StaffPayments" class="nav-item nav-link active">Payments</a>
                             <a asp-controller="Account" asp-action="MyStudents" class="nav-item nav-link active">My Students</a>
                         }
                         @if (User.IsInRole("Student"))
                         {
-                            <a asp-controller="Debt" asp-action="MyScolarshipDebts"  class="nav-item nav-link active">Scolarship Debts</a>
+                            <a asp-controller="Debt" asp-action="MyDEBTs"  class="nav-item nav-link active">Scolarship Debts</a>
                             <a asp-controller="Debt" asp-action="MyPayments" class="nav-item nav-link active">Payments</a>
                         }
                     }

@@ -11,89 +11,62 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
 {
     public class DebtController : Controller
     {
-        private readonly ISCOLARSHIPDEBTService _scolarshipDebtService;
+        private readonly IDEBTService _DEBTService;
         private readonly ISTUDENTService _studentService;
         private readonly ISTAFFMEMBERService _staffmemberService;
-        public DebtController(ISCOLARSHIPDEBTService scolarshipDebtService, ISTUDENTService studentService, ISTAFFMEMBERService staffmemberService)
+        public DebtController(IDEBTService DEBTService, ISTUDENTService studentService, ISTAFFMEMBERService staffmemberService)
         {
-            _scolarshipDebtService = scolarshipDebtService;
+            _DEBTService = DEBTService;
             _studentService = studentService;
             _staffmemberService = staffmemberService;
         }
+        public async Task<IActionResult> AllDebts()
+        {
+            var DEBTs = _DEBTService.GetAllAsync().Result;
+            return View(DEBTs);
+        }
         [Authorize(Roles="Student")]
-        public async Task<IActionResult> MyScolarshipDebts()
+        public async Task<IActionResult> MyDebts()
         {
             var studentId = User.FindFirstValue("Id");
             var student = _studentService.GetByIdAsync(studentId).Result;
-            var myscolarshipdebts = student.ScolarshipDebts.ToList();
-            return View(myscolarshipdebts);
+            var myDEBTs = student.Debts.ToList();
+            return View(myDEBTs);
         }
-        public async Task<IActionResult> MyPayments()
+        public async Task<IActionResult> PaymentPlanssperDEBT(string id)
         {
-            var studentId = User.FindFirstValue("Id");
-            var student = _studentService.GetByIdAsync(studentId).Result;
-            var myscolarshipdebts = student.ScolarshipDebts.ToList();
-            var mypayments = new List<PAYMENT>();
-            foreach(var sd in myscolarshipdebts)
-            {
-                mypayments.AddRange(sd.Payments.ToList());
-            }
-            return View(mypayments);
+            var Debt=_DEBTService.GetByIdAsync(id).Result;
+            var paymentplans = Debt.PaymentPlans;
+            return View(paymentplans);
         }
-        public async Task<IActionResult> MyPaymentPlans()
-        {
-            var studentId = User.FindFirstValue("Id");
-            var student = _studentService.GetByIdAsync(studentId).Result;
-            var myscolarshipdebts = student.ScolarshipDebts.ToList();
-            var mypaymentplans = new List<PAYMENTPLAN>();
-            foreach(var sd in myscolarshipdebts)
-            {
-                foreach (var p in sd.Payments.ToList())
-                {
-                    mypaymentplans.AddRange(p.PaymentPlans.ToList());
-                }
-            }
-            return View(mypaymentplans);
-        }
-        public async Task<IActionResult> PaymentsperScolarshipDebt(string id)
-        {
-            var scolarshipdebt=_scolarshipDebtService.GetByIdAsync(id).Result;
-            var payments = scolarshipdebt.Payments;
-            return View(payments);
-        }
-        public async Task<IActionResult> AllScolarshipDebts()
-        {
-            var scolarshipdebts = _scolarshipDebtService.GetAllAsync().Result;
-            return View(scolarshipdebts);
-        }
-        public async Task<IActionResult> ScolarshipDebtsperStaffMember(string id)
+        public async Task<IActionResult> DebtsperStaffMember(string id)
         {
             var staff = _staffmemberService.GetByIdAsync(id).Result;
             var mystudents = staff.Students.ToList();
-            var myscolarshipdebts = new List<SCOLARSHIPDEBT>();
+            var myDebts = new List<DEBT>();
             foreach (var std in mystudents )
             {
-                myscolarshipdebts.AddRange(std.ScolarshipDebts);
+                myDebts.AddRange(std.Debts);
             }
-            return View(myscolarshipdebts);
+            return View(myDebts);
         }
-        public async Task<IActionResult> ScolarshipDebtsperLoggedInStaffMember()
+        public async Task<IActionResult> DebtsperLoggedInStaffMember()
         {
             var staffid = User.FindFirstValue("Id");
             var staff = _staffmemberService.GetByIdAsync(staffid).Result;
             var mystudents = staff.Students.ToList();
-            var myscolarshipdebts = new List<SCOLARSHIPDEBT>();
+            var myDebts = new List<DEBT>();
             foreach (var std in mystudents)
             {
-                myscolarshipdebts.AddRange(std.ScolarshipDebts);
+                myDebts.AddRange(std.Debts);
             }
-            return View(myscolarshipdebts);
+            return View(myDebts);
         }
-        public async Task<IActionResult> ScolarshipDebtsByStudentId( string id)
+        public async Task<IActionResult> DebtsByStudentId(string id)
         {
             var student= _studentService.GetByIdAsync(id).Result;
-            var scolarshipdebts = student.ScolarshipDebts;
-            return View(scolarshipdebts);
+            var DEBTs = student.Debts;
+            return View(DEBTs);
         }
     }
 }

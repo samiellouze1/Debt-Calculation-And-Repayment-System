@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SCOLARSHIPDEBT>
+﻿@model IEnumerable<DEBT>
 @{
     ViewData["Title"] = "My Scolarship Debts";
 }
@@ -17,12 +17,7 @@
         @foreach (var item in Model)
         {
                 <tr class="table-primary">
-                    <td>@item.Amount</td>
-                    <td>@item.Interest</td>
-                    <td>@item.NumberOfDays</td>
-                    <td>@item.StartDate</td>
-                    <td>@item.FinishDate</td>
-                    <td>@item.NumberOfDays</td>
+                    <td></td>
                 </tr>
         }
     </tbody>

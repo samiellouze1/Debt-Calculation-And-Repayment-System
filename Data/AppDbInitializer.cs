@@ -15,65 +15,28 @@ namespace Debt_Calculation_And_Repayment_System.Data
                 context.Database.EnsureCreated();
 
                 #region scolarship debts
-                if (!context.SCOLARSHIPDEPTs.Any())
+                if (!context.DEBTs.Any())
                 {
-                    context.SCOLARSHIPDEPTs.AddRange(new List<SCOLARSHIPDEBT>()
+                    context.DEBTs.AddRange(new List<DEBT>()
                     {
-                        new SCOLARSHIPDEBT() { Id="1",
-                            Amount=3000, StartDate= new DateTime(2021,1,1),
-                            FinishDate=new DateTime(2022,1,1),
-                            NumberOfDays="365",
-                            Rate=9m,Interest=0.9m,
-                            RegDate=DateTime.Now,
-                            Deleted=false,
-                            StudentId="3"
-                        },
-                        new SCOLARSHIPDEBT() { 
-                            Id="2",
-                            Amount=6000,
-                            StartDate= new DateTime(2020,1,1),
-                            FinishDate=new DateTime(2021,1,1),
-                            NumberOfDays="365",
-                            Rate=9m,
-                            Interest=0.9m,
-                            RegDate=DateTime.Now,
-                            Deleted=false,
-                            StudentId="3"
-                        },
-                    });
-                    context.SaveChanges();
-                }
-                #endregion
-
-                #region payments
-                if(!context.PAYMENTs.Any())
-                {
-                    context.AddRange(new List<PAYMENT>()
-                    {
-                        new PAYMENT()
+                        new DEBT() 
                         { 
                             Id="1",
-                            PaymentDate=new DateTime(2021,1,1),
-                            Amount=1500m,
+                            InitialAmount=3000, 
+                            StartDate= new DateTime(2021,1,1),
+                            InterestRate=9m,
                             RegDate=DateTime.Now,
-                            ScolarshipDebtId="1"
+                            StudentId="3"
                         },
-                        new PAYMENT()
-                        {
+                        new DEBT() 
+                        { 
                             Id="2",
-                            PaymentDate=new DateTime(2021,2,1),
-                            Amount=1500m,
+                            InitialAmount=6000,
+                            StartDate= new DateTime(2020,1,1),
+                            InterestRate=9m,
                             RegDate=DateTime.Now,
-                            ScolarshipDebtId="1"
+                            StudentId="3"
                         },
-                        new PAYMENT()
-                        {
-                            Id ="3",
-                            PaymentDate =new DateTime(2020,3,1),
-                            Amount=2000m,
-                            RegDate=DateTime.Now,
-                            ScolarshipDebtId="2"
-                        }
                     });
                     context.SaveChanges();
                 }

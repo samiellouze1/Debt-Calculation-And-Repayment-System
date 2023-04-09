@@ -22,7 +22,7 @@
                     <td>@item.FirstName</td>
                     <td>@item.SurName</td>
                     <td>@item.PhoneNumber</td>
-                    <td><a asp-controller="Debt" asp-action="ScolarshipDebtsByStudentId">@item.ScolarshipDebts.ToList().Count()</a></td>
+                    <td><a asp-controller="Debt" asp-action="DEBTsByStudentId">@item.Debts.ToList().Count()</a></td>
                     <td>@item.RegDate</td>
                     <td><a asp-controller="Account" asp-action="StaffMemberById" asp-route-id=@item.StaffMemberId>Click Here</a></td>
                 </tr>
