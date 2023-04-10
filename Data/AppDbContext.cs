@@ -32,7 +32,6 @@ namespace Debt_Calculation_And_Repayment_System.Data
             builder.Entity<DEBT>().Navigation(d => d.PaymentPlans).AutoInclude();
             builder.Entity<PAYMENTPLANINSTALLMENT>().Navigation(pi => pi.Installments).AutoInclude();
 
-
             builder.Entity<DEBT>().Property(d => d.InitialAmount).HasPrecision(18, 4);
             builder.Entity<DEBT>().Property(d => d.InterestRate).HasPrecision(4, 3);
             builder.Entity<PAYMENTPLAN>().Property(pp=>pp.Amount).HasPrecision(18, 4);

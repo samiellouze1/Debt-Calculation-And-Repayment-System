@@ -55,7 +55,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                             DebtId="1"
                         }
                     });
-                    context.SaveChangesAsync();
+                    context.SaveChanges();
                     context.PAYMENTPLANINSTALLMENTs.AddRange(new List<PAYMENTPLANINSTALLMENT>() 
                     { 
                         new PAYMENTPLANINSTALLMENT()
@@ -68,7 +68,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                             DebtId="1"
                         }
                     });
-                    context.SaveChangesAsync();
+                    context.SaveChanges();
                 }
                 #endregion
                 #region Installment
@@ -85,7 +85,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                             PaymentPlanInstallmentId="2"
                         }
                     });
-                    context.SaveChangesAsync();
+                    context.SaveChanges();
                     context.INSTALLMENTs.AddRange(new List<INSTALLMENT>()
                     {
                         new INSTALLMENT()
@@ -97,7 +97,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                             PaymentPlanInstallmentId="2"
                         }
                     });
-                    context.SaveChangesAsync();
+                    context.SaveChanges();
                 }
                 #endregion
             }
@@ -126,19 +126,19 @@ namespace Debt_Calculation_And_Repayment_System.Data
                 var useradmin = await userManager.FindByEmailAsync(useradminemail);
                 if (useradmin == null)
                 {
-                    var newUser = new USER()
+                    var newUserAdmin = new USER()
                     {
                         Id = "1",
                         FirstName = "Admin",
                         SurName = "User",
                         RegDate = DateTime.Now,
                         UserName = useradminemail,
-                        Address = "unknown",
                         PhoneNumber = "12345678",
-                        Email = useradminemail
+                        Email = useradminemail,
+                        Address="Turkey"
                     };
-                    await userManager.CreateAsync(newUser, "Adminuser123@");
-                    await userManager.AddToRoleAsync(newUser, UserRoles.Admin);
+                    await userManager.CreateAsync(newUserAdmin, "Adminuser123@");
+                    await userManager.AddToRoleAsync(newUserAdmin, UserRoles.Admin);
                 }
                 #endregion
 
@@ -147,19 +147,19 @@ namespace Debt_Calculation_And_Repayment_System.Data
                 var userstaff = await userManager.FindByEmailAsync(userstaffemail);
                 if (userstaff==null)
                 {
-                    var newUser1 = new STAFFMEMBER()
+                    var newUserStaff = new STAFFMEMBER()
                     {
                         Id = "2",
                         FirstName = "Staff",
                         SurName = "Member",
                         RegDate = DateTime.Now,
                         UserName = userstaffemail,
-                        Address = "Turkey",
                         PhoneNumber = "12345678",
-                        Email = userstaffemail
+                        Email = userstaffemail,
+                        Address = "Turkey"
                     };
-                    await userManager.CreateAsync(newUser1, "Staffmember123@");
-                    await userManager.AddToRoleAsync(newUser1, UserRoles.StaffMember);
+                    await userManager.CreateAsync(newUserStaff, "Staffmember123@");
+                    await userManager.AddToRoleAsync(newUserStaff, UserRoles.StaffMember);
                 }
                 #endregion
 
@@ -168,20 +168,20 @@ namespace Debt_Calculation_And_Repayment_System.Data
                 var userstudent = await userManager.FindByEmailAsync(userstudentemail);
                 if (userstudent == null)
                 {
-                    var newUser2 = new STUDENT()
+                    var newUserStudent = new STUDENT()
                     {
                         Id = "3",
                         FirstName = "Student",
                         SurName = "User",
                         RegDate = DateTime.Now,
                         UserName = userstudentemail,
-                        Address = "Turkey",
                         PhoneNumber = "12345678",
                         Email = userstudentemail,
-                        StaffMemberId="2"
+                        StaffMemberId="2",
+                        Address = "Turkey"
                     };
-                    await userManager.CreateAsync(newUser2, "Student123@");
-                    await userManager.AddToRoleAsync(newUser2, UserRoles.Student);
+                    await userManager.CreateAsync(newUserStudent, "Student123@");
+                    await userManager.AddToRoleAsync(newUserStudent, UserRoles.Student);
                 }
                 #endregion
 

@@ -7,18 +7,13 @@ namespace Debt_Calculation_And_Repayment_System.Models
 {
     public class USER : IdentityUser,IEntityBase
     {
-        [Key]
-        [Required]
-        [ScaffoldColumn(false)]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string Id { get; set; }
         [Required]
         public string FirstName { get; set; }
         [Required]
         public string SurName { get; set; }
         [Required]
         public DateTime RegDate { get; set; }
-        public string PhoneNumber { get; set; }
+        [Required]
         public string Address { get; set; }
     }
 }
