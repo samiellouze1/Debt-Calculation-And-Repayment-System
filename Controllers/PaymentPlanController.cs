@@ -1,5 +1,6 @@
 ﻿using Debt_Calculation_And_Repayment_System.Data.IServices;
 using Debt_Calculation_And_Repayment_System.Data.Services;
+using Debt_Calculation_And_Repayment_System.Data.ViewModels;
 using Debt_Calculation_And_Repayment_System.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,14 +15,18 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         private readonly IPAYMENTPLANService _paymentplanService;
         private readonly ISTAFFMEMBERService _staffmemberService;
         private readonly IPAYMENTPLANFULLService _paymentPlanFullService;
+        private readonly IPAYMENTPLANINSTALLMENTService _paymentPlanInstallmentService;
+        private readonly IINSTALLMENTService _installmentService;
         private readonly ISTUDENTService _studentService;
-        public PaymentPlanController(IPAYMENTPLANService paymentplanService, ISTAFFMEMBERService staffmemberService, ISTUDENTService studentService, IDEBTService debtService, IPAYMENTPLANFULLService paymentplanfullService)
+        public PaymentPlanController(IPAYMENTPLANService paymentplanService, ISTAFFMEMBERService staffmemberService, ISTUDENTService studentService, IDEBTService debtService, IPAYMENTPLANFULLService paymentplanfullService, IPAYMENTPLANINSTALLMENTService paymentPlanInstallmentService, IINSTALLMENTService installmentService)
         {
             _paymentplanService = paymentplanService;
             _staffmemberService = staffmemberService;
             _studentService = studentService;
             _debtService = debtService;
             _paymentPlanFullService = paymentplanfullService;
+            _paymentPlanInstallmentService = paymentPlanInstallmentService;
+            _installmentService = installmentService;
         }
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> AllPaymentPlans()
@@ -29,8 +34,50 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var paymentplans = _paymentplanService.GetAllAsync().Result;
             return View(paymentplans);
         }
-        public void GeneratePaymentPlansDefault()
+        public IActionResult GeneratePaymentPlans()
         {
+            var gppvm = new GeneratePaymentPlansVM();
+            return View(gppvm);
+        }
+        [HttpPost]
+        public async Task<IActionResult> GeneratePaymentPlans(GeneratePaymentPlansVM gppvm)
+        {
+            var debt = _debtService.GetByIdAsync(gppvm.DebtId).Result;
+            var NumOfMonths = gppvm.NumOfMonths;
+            var startdate = debt.StartDate;
+            var interest = debt.InterestRate;
+            var initialamount = debt.InitialAmount;
+            var amoundpaidfull = debt.PaymentPlans.Where(pp => pp.Type == "F").ToList().Sum(pp=>pp.Amount);
+            var amounttopayinstallment = debt.InitialAmount - amoundpaidfull;
+            var insterestcalculs = new List<InterestCalculVM>();
+            var installments = new List<INSTALLMENT>();
+            for (var monthnum = 1; monthnum<=NumOfMonths; monthnum++)
+            {
+                insterestcalculs.Add(new InterestCalculVM()
+                {
+                    PaymentDate= startdate.AddMonths(monthnum),
+                    InitialAmount=initialamount/NumOfMonths,
+                    AmountafterInstallments=initialamount*interest*(startdate.AddMonths(monthnum)-startdate.AddMonths(monthnum-1)).Days/36500
+                });
+            }
+            await _paymentPlanInstallmentService.AddAsync(new PAYMENTPLANINSTALLMENT()
+            {
+                Amount = debt.InitialAmount,
+                Type="I",
+                Paid=false,
+                DebtId=gppvm.DebtId,
+                NumOfInstallments=NumOfMonths,
+                AmountAfterInstallments = insterestcalculs.Sum(ic => ic.AmountafterInstallments),
+            });
+            foreach (var ic in insterestcalculs)
+            {
+                await _installmentService.AddAsync(new INSTALLMENT()
+                {
+                    /// to be completed i need id of newly created paymentplan
+                });
+            }
+
+            return View();
         }
         public async Task<IActionResult> MyPaymentPlansStudent()
         {

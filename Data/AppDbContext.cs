@@ -41,6 +41,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
             builder.Entity<DEBT>().Property(d => d.InterestRate).HasPrecision(4, 3);
             builder.Entity<PAYMENTPLAN>().Property(pp=>pp.Amount).HasPrecision(18, 4);
             builder.Entity<INSTALLMENT>().Property(i => i.Amount).HasPrecision(18, 4);
+            builder.Entity<PAYMENTPLANINSTALLMENT>().Property(ppi => ppi.AmountAfterInstallments).HasPrecision(18, 4);
 
             base.OnModelCreating(builder);
         }

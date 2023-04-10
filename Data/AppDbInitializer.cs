@@ -65,7 +65,8 @@ namespace Debt_Calculation_And_Repayment_System.Data
                             Amount=1500,
                             Paid=false,
                             NumOfInstallments=2,
-                            DebtId="1"
+                            DebtId="1",
+                            AmountAfterInstallments=2000
                         }
                     });
                     context.SaveChanges();

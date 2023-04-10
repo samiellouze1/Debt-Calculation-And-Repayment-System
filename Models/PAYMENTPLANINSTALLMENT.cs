@@ -9,5 +9,7 @@ namespace Debt_Calculation_And_Repayment_System.Models
         [Required]
         public int NumOfInstallments { get; set; }
         public virtual List<INSTALLMENT> Installments { get; set; }
+        [Required]
+        public decimal AmountAfterInstallments { get; set; }
     }
 }

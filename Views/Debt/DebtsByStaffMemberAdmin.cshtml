@@ -2,12 +2,12 @@
 @{
     ViewData["Title"] = "Debts By Staff Member";
 }
-<div class="container-fluid px-0 py-5" style="width:1200px;margin-left:10%;margin-right:10%;">
+<div class="container-fluid px-0 py-5">
     <div class="row mx-0 justify-content-center pt-5">
         <div class="col-lg-6">
             <div class="section-title text-center position-relative mb-4">
                 <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">This specific view is only viewed by admins</h6>
-                <h1 class="display-4">Scolarship Debts of Staff Member @Model[0].Student.StaffMember.FirstName @Model[0].Student.StaffMember.SurName</h1>
+                <h1 class="display-4">Debts of Staff Member @Model[0].Student.StaffMember.FirstName @Model[0].Student.StaffMember.SurName</h1>
             </div>
         </div>
     </div>
@@ -28,12 +28,12 @@
                     @foreach (var item in Model)
                     {
                         <tr class="table">
-                            <td><a asp-controller="Debt" asp-action="DebtsByStudentAdmin">@item.Student.Email</a></td>
-                            <td><a asp-controller="Debt" asp-action="DebtsByStaffMemberAdmin">@item.Student.StaffMember.Email</a></td>
+                            <td>@item.Student.Email</td>
+                            <td><a asp-controller="Account" asp-action="StudentsByStaffMemberAdmin" asp-route-id=@item.Student.StaffMember.Id>@item.Student.StaffMember.Email</a></td>
                             <td>@item.InitialAmount</td>
                             <td>@item.StartDate</td>
                             <td>@item.InterestRate</td>
-                            <td><a asp-controller="PaymentPlan" asp-action="PaymentPlansByDebtAdmin" asp-route-id=@item.Id>PaymentPlans</a></td>
+                            <td><a asp-controller="Debt" asp-action="DebtsByStaffMemberAdmin" asp-route-id=@item.Student.StaffMember.Id>Debts</a></td>
                         </tr>
                     }
                 </tbody>
