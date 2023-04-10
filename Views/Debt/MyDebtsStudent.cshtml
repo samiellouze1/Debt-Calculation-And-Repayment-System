@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "Debts By Staff Member";
 }
-<table class="table " style="width:1500px;margin-left:10%;margin-right:10%;">
+<table class="table " style="width:1000px;margin-left:10%;margin-right:10%;">
     <thead>
         <tr>
             <th scope="col">StaffMember</th>
@@ -20,7 +20,7 @@
                     <td>@item.InitialAmount</td>
                     <td>@item.StartDate</td>
                     <td>@item.InterestRate</td>
-                    <td><a asp-controller="PaymentPlan" asp-action="PaymentPlansperDebt">PaymentPlans</a></td>
+                    <td><a asp-controller="PaymentPlan" asp-action="PaymentPlansByDebtStudent" asp-route-id=@item.Id>PaymentPlans</a></td>
                 </tr>
         }
     </tbody>
