@@ -62,7 +62,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         public async Task<IActionResult> PaymentPlansByDebtAdmin(string id)
         {
             var Debt = _debtService.GetByIdAsync(id).Result;
-            var paymentplans = Debt.PaymentPlans;
+            var paymentplans = Debt.PaymentPlans.ToList();
             return View(paymentplans);
         }
         [Authorize(Roles = "StaffMember")]

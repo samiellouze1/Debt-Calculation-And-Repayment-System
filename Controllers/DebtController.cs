@@ -47,20 +47,27 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             return View(mydebts);
         }
-        [Authorize(Roles ="Admin, StaffMember")]
-        public async Task<IActionResult> DebtsByStudent(string id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DebtsByStudentAdmin(string id)
+        {
+            var student = _studentService.GetByIdAsync(id).Result;
+            var Debts = student.Debts.ToList();
+            return View(Debts);
+        }
+        [Authorize(Roles = "StaffMember")]
+        public async Task<IActionResult> DebtsByStudentStaffMember(string id)
         {
             var student = _studentService.GetByIdAsync(id).Result;
             var DEBTs = student.Debts;
             return View(DEBTs);
         }
-        [Authorize(Roles ="Admin, StaffMember")]
-        public async Task<IActionResult> DebtsByStaffMember(string id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DebtsByStaffMemberAdmin(string id)
         {
             var staff = _staffmemberService.GetByIdAsync(id).Result;
             var mystudents = staff.Students.ToList();
             var myDebts = new List<DEBT>();
-            foreach (var std in mystudents )
+            foreach (var std in mystudents)
             {
                 myDebts.AddRange(std.Debts);
             }

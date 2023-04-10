@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PAYMENTPLANFULL>
+﻿@model PAYMENTPLANFULL
 @{
     ViewData["Title"] = "Payment In full Detailed";
 }
@@ -16,22 +16,19 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
-        {
-            <tr class="table">
-                <td>@item.Type</td>
-                <td>@item.Amount</td>
-                @if (@item.Paid == true)
-                {
-                    <td>Yes</td>
-                }
-                else
-                {
-                    <td>No</td>
-                }
-                <td>@item.PaymentDate</td>
-                <td>Not Implemented(Student Email)</td>
-            </tr>
-        }
+        <tr class="table">
+            <td>@Model.Type</td>
+            <td>@Model.Amount</td>
+            @if (@Model.Paid == true)
+            {
+                <td>Yes</td>
+            }
+            else
+            {
+                <td>No</td>
+            }
+            <td>@Model.PaymentDate</td>
+            <td>Not Implemented(Student Email)</td>
+        </tr>
     </tbody>
 </table>

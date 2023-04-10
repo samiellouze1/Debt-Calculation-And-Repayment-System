@@ -1,13 +1,13 @@
-﻿@model IEnumerable<STUDENT>
+﻿@model List<STUDENT>
 @{
-    ViewData["Title"] = "All Students";
+    ViewData["Title"] = "My Students";
 }
-<div class="container-fluid px-0 py-5" style="width:1200px;margin-left:10%;margin-right:10%;">
+<div class="container-fluid px-0 py-5">
     <div class="row mx-0 justify-content-center pt-5">
         <div class="col-lg-6">
             <div class="section-title text-center position-relative mb-4">
                 <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">This specific view is only viewed by admins</h6>
-                <h1 class="display-4">All Students</h1>
+                <h1 class="display-4">Students of @Model[0].StaffMember.FirstName @Model[0].StaffMember.SurName</h1>
             </div>
         </div>
     </div>
@@ -20,9 +20,8 @@
                         <th scope="col">FirstName</th>
                         <th scope="col">SurName</th>
                         <th scope="col">PhoneNumber</th>
-                        <th scope="col">Scolarship Debts</th>
+                        <th scope="col">Number of Scolarship Debts</th>
                         <th scope="col">Registration Date</th>
-                        <th scope="col">Staff Member</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,7 +34,6 @@
                             <td>@item.PhoneNumber</td>
                             <td><a asp-controller="Debt" asp-action="DebtsByStudentAdmin" asp-route-id=@item.Id>@item.Debts.Count()</a></td>
                             <td>@item.RegDate</td>
-                            <td><a asp-controller="Account" asp-action="StudentsByStaffMemberAdmin" asp-route-id=@item.StaffMember.Id>@item.StaffMember.Email</a></td>
                         </tr>
                     }
                 </tbody>
