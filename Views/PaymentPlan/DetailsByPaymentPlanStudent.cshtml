@@ -1,0 +1,36 @@
+﻿@@model IEnumerable<PAYMENTPLANFULL>
+    @{
+        ViewData["Title"] = "Payment In full Detailed";
+    }
+    <table class="table " style="width:1500px;margin-left:10%;margin-right:10%;">
+        <thead>
+            <tr>
+                <th scope="col">Type</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Paid</th>
+                <th scope="col">Payment Date</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col">StaffMember</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="table">
+                    <td>@item.Type</td>
+                    <td>@item.Amount</td>
+                    @if (@item.Paid == true)
+                    {
+                        <td>Yes</td>
+                    }
+                    else
+                    {
+                        <td>No</td>
+                    }
+                    <td>@item.PaymentDate</td>
+                    <td>Not Implemented(StaffMember Email)</td>
+                </tr>
+            }
+        </tbody>
+    </table>

@@ -1,6 +1,6 @@
-﻿@model IEnumerable<PAYMENTPLAN>
+﻿@model IEnumerable<PAYMENTPLAN>;
 @{
-    ViewData["Title"] = "All Payment Plans";
+    ViewData["Title"] = "My Payments";
 }
 <table class="table " style="width:1500px;margin-left:10%;margin-right:10%;">
     <thead>
@@ -12,7 +12,6 @@
             <th scope="col"></th>
             <th scope="col"></th>
             <th scope="col">StaffMember</th>
-            <th scope="col">Student</th>
         </tr>
     </thead>
     <tbody>
@@ -38,7 +37,6 @@
                     <td><a asp-controller="PaymentPlan" asp-action="DetailsByPaymentPlanAdmin" asp-route-id=@item.Id>Details</a></td>
                 }
                 <td>Not Implemented(StaffMember Email)</td>
-                <td>Not Implemented(Student Email)</td>
             </tr>
         }
     </tbody>

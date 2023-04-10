@@ -21,7 +21,11 @@ namespace Debt_Calculation_And_Repayment_System.Models
         [Required]
         public DateTime RegDate { get; set; }
         [Required]
+        public bool Paid { get; set; }
+        [Required]
         public string StudentId { get; set; }
+        [ForeignKey("StudentId")]
+        public virtual STUDENT Student { get; set; }
         public virtual List<PAYMENTPLAN> PaymentPlans { get; set; } = new List<PAYMENTPLAN>();
     }
 }

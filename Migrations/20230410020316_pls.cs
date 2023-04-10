@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Debt_Calculation_And_Repayment_System.Migrations
 {
-    public partial class final : Migration
+    public partial class pls : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -174,6 +174,7 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     InterestRate = table.Column<decimal>(type: "decimal(4,3)", precision: 4, scale: 3, nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Paid = table.Column<bool>(type: "bit", nullable: false),
                     StudentId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
@@ -194,7 +195,8 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
-                    DEBTId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Paid = table.Column<bool>(type: "bit", nullable: false),
+                    DebtId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     NumOfInstallments = table.Column<int>(type: "int", nullable: true)
@@ -203,10 +205,11 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                 {
                     table.PrimaryKey("PK_PAYMENTPLANs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PAYMENTPLANs_DEBTs_DEBTId",
-                        column: x => x.DEBTId,
+                        name: "FK_PAYMENTPLANs_DEBTs_DebtId",
+                        column: x => x.DebtId,
                         principalTable: "DEBTs",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -218,16 +221,17 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     Paid = table.Column<bool>(type: "bit", nullable: false),
                     SupposedPaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ActualPaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PAYMENTPLANINSTALLMENTId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    PaymentPlanInstallmentId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_INSTALLMENTs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_INSTALLMENTs_PAYMENTPLANs_PAYMENTPLANINSTALLMENTId",
-                        column: x => x.PAYMENTPLANINSTALLMENTId,
+                        name: "FK_INSTALLMENTs_PAYMENTPLANs_PaymentPlanInstallmentId",
+                        column: x => x.PaymentPlanInstallmentId,
                         principalTable: "PAYMENTPLANs",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -280,14 +284,14 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                 column: "StudentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_INSTALLMENTs_PAYMENTPLANINSTALLMENTId",
+                name: "IX_INSTALLMENTs_PaymentPlanInstallmentId",
                 table: "INSTALLMENTs",
-                column: "PAYMENTPLANINSTALLMENTId");
+                column: "PaymentPlanInstallmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PAYMENTPLANs_DEBTId",
+                name: "IX_PAYMENTPLANs_DebtId",
                 table: "PAYMENTPLANs",
-                column: "DEBTId");
+                column: "DebtId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

@@ -36,6 +36,9 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasPrecision(4, 3)
                         .HasColumnType("decimal(4,3)");
 
+                    b.Property<bool>("Paid")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("RegDate")
                         .HasColumnType("datetime2");
 
@@ -66,18 +69,19 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasPrecision(18, 4)
                         .HasColumnType("decimal(18,4)");
 
-                    b.Property<string>("PAYMENTPLANINSTALLMENTId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<bool>("Paid")
                         .HasColumnType("bit");
+
+                    b.Property<string>("PaymentPlanInstallmentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("SupposedPaymentDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PAYMENTPLANINSTALLMENTId");
+                    b.HasIndex("PaymentPlanInstallmentId");
 
                     b.ToTable("INSTALLMENTs");
                 });
@@ -92,12 +96,16 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasPrecision(18, 4)
                         .HasColumnType("decimal(18,4)");
 
-                    b.Property<string>("DEBTId")
+                    b.Property<string>("DebtId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Paid")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -105,7 +113,7 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DEBTId");
+                    b.HasIndex("DebtId");
 
                     b.ToTable("PAYMENTPLANs");
 
@@ -375,25 +383,35 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
 
             modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.DEBT", b =>
                 {
-                    b.HasOne("Debt_Calculation_And_Repayment_System.Models.STUDENT", null)
+                    b.HasOne("Debt_Calculation_And_Repayment_System.Models.STUDENT", "Student")
                         .WithMany("Debts")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.INSTALLMENT", b =>
                 {
-                    b.HasOne("Debt_Calculation_And_Repayment_System.Models.PAYMENTPLANINSTALLMENT", null)
+                    b.HasOne("Debt_Calculation_And_Repayment_System.Models.PAYMENTPLANINSTALLMENT", "PaymentPlanInstallment")
                         .WithMany("Installments")
-                        .HasForeignKey("PAYMENTPLANINSTALLMENTId");
+                        .HasForeignKey("PaymentPlanInstallmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PaymentPlanInstallment");
                 });
 
             modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.PAYMENTPLAN", b =>
                 {
-                    b.HasOne("Debt_Calculation_And_Repayment_System.Models.DEBT", null)
+                    b.HasOne("Debt_Calculation_And_Repayment_System.Models.DEBT", "Debt")
                         .WithMany("PaymentPlans")
-                        .HasForeignKey("DEBTId");
+                        .HasForeignKey("DebtId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Debt");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -2,7 +2,6 @@
 {
     public class STAFFMEMBER:USER
     {
-
         public virtual List<STUDENT> Students { get; set; } = new List<STUDENT>();
     }
 }

@@ -14,7 +14,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                 var context = serviceScope.ServiceProvider.GetService<AppDbContext>();
                 context.Database.EnsureCreated();
 
-                #region scolarship debts
+                #region debts
                 if (!context.DEBTs.Any())
                 {
                     context.DEBTs.AddRange(new List<DEBT>()
@@ -41,6 +41,65 @@ namespace Debt_Calculation_And_Repayment_System.Data
                     context.SaveChanges();
                 }
                 #endregion
+                #region PaymentPlan
+                if (!context.PAYMENTPLANs.Any())
+                {
+                    context.PAYMENTPLANFULLs.AddRange(new List<PAYMENTPLANFULL>()
+                    {
+                        new PAYMENTPLANFULL()
+                        {
+                            Id = "1",
+                            Type= "F",
+                            Amount=1500,
+                            Paid=true,
+                            DebtId="1"
+                        }
+                    });
+                    context.SaveChangesAsync();
+                    context.PAYMENTPLANINSTALLMENTs.AddRange(new List<PAYMENTPLANINSTALLMENT>() 
+                    { 
+                        new PAYMENTPLANINSTALLMENT()
+                        {
+                            Id = "2",
+                            Type= "I",
+                            Amount=1500,
+                            Paid=false,
+                            NumOfInstallments=2,
+                            DebtId="1"
+                        }
+                    });
+                    context.SaveChangesAsync();
+                }
+                #endregion
+                #region Installment
+                if (!context.INSTALLMENTs.Any())
+                {
+                    context.INSTALLMENTs.AddRange(new List<INSTALLMENT>()
+                    {
+                        new INSTALLMENT()
+                        {
+                            Id = "1",
+                            Amount=1000,
+                            SupposedPaymentDate=new DateTime(2021,1,1),
+                            ActualPaymentDate=new DateTime(2021,1,1),
+                            PaymentPlanInstallmentId="2"
+                        }
+                    });
+                    context.SaveChangesAsync();
+                    context.INSTALLMENTs.AddRange(new List<INSTALLMENT>()
+                    {
+                        new INSTALLMENT()
+                        {
+                            Id = "2",
+                            Amount=1000,
+                            SupposedPaymentDate=new DateTime(2021,2,1),
+                            ActualPaymentDate=new DateTime(2021,2,1),
+                            PaymentPlanInstallmentId="2"
+                        }
+                    });
+                    context.SaveChangesAsync();
+                }
+                #endregion
             }
         }
         public static async Task SeedUsersAndRolesAsync(IApplicationBuilder applicationbuilder)
@@ -58,7 +117,6 @@ namespace Debt_Calculation_And_Repayment_System.Data
                     await roleManager.CreateAsync(new IdentityRole(UserRoles.Student));
                 #endregion
 
-
                 #region users
 
                 var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<USER>>();
@@ -66,7 +124,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                 #region admin
                 string useradminemail = "admin@debt.com";
                 var useradmin = await userManager.FindByEmailAsync(useradminemail);
-                if (useradmin==null)
+                if (useradmin == null)
                 {
                     var newUser = new USER()
                     {
@@ -77,9 +135,9 @@ namespace Debt_Calculation_And_Repayment_System.Data
                         UserName = useradminemail,
                         Address = "unknown",
                         PhoneNumber = "12345678",
-                        Email=useradminemail
+                        Email = useradminemail
                     };
-                    await userManager.CreateAsync(newUser,"Adminuser123@");
+                    await userManager.CreateAsync(newUser, "Adminuser123@");
                     await userManager.AddToRoleAsync(newUser, UserRoles.Admin);
                 }
                 #endregion
@@ -114,7 +172,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                     {
                         Id = "3",
                         FirstName = "Student",
-                        SurName = "",
+                        SurName = "User",
                         RegDate = DateTime.Now,
                         UserName = userstudentemail,
                         Address = "Turkey",

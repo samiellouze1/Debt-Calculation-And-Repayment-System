@@ -1,0 +1,27 @@
+﻿@model IEnumerable<DEBT>
+@{
+    ViewData["Title"] = "Debts By Staff Member";
+}
+<table class="table " style="width:1500px;margin-left:10%;margin-right:10%;">
+    <thead>
+        <tr>
+            <th scope="col">StaffMember</th>
+            <th scope="col">Initial Amount</th>
+            <th scope="col">Start Date</th>
+            <th scope="col">Interest Rate</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+                <tr class="table">
+                    <td><a asp-controller="Debt" asp-action="DebtsByStaffMember">Not Implemented(Email of Staff Member)</a></td>
+                    <td>@item.InitialAmount</td>
+                    <td>@item.StartDate</td>
+                    <td>@item.InterestRate</td>
+                    <td><a asp-controller="PaymentPlan" asp-action="PaymentPlansperDebt">PaymentPlans</a></td>
+                </tr>
+        }
+    </tbody>
+</table>

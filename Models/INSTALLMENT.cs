@@ -17,7 +17,10 @@ namespace Debt_Calculation_And_Repayment_System.Models
         public bool Paid { get; set; }
         [Required]
         public DateTime SupposedPaymentDate {get;set; }
-        [Required]
         public DateTime ActualPaymentDate { get; set; }
+        [Required]
+        public string PaymentPlanInstallmentId { get; set; }
+        [ForeignKey("PaymentPlanInstallmentId")]
+        public PAYMENTPLANINSTALLMENT PaymentPlanInstallment { get; set; }
     }
 }

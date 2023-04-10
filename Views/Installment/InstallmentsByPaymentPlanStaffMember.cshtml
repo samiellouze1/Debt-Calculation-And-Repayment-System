@@ -1,0 +1,34 @@
+﻿@model IEnumerable<INSTALLMENT>
+@{
+    ViewData["Title"] = "Installments By Payment Plan";
+}
+<table class="table " style="width:1500px;margin-left:10%;margin-right:10%;">
+    <thead>
+        <tr>
+            <th scope="col">Amount</th>
+            <th scope="col">Paid</th>
+            <th scope="col">Supposed Payment Date</th>
+            <th scope="col">Actual Payment Date</th>
+            <th scope="col">Student</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="table">
+                <td>@item.Amount</td>
+                @if (@item.Paid == true)
+                {
+                    <td>Yes</td>
+                }
+                else
+                {
+                    <td>No</td>
+                }
+                <td>@item.SupposedPaymentDate</td>
+                <td>@item.ActualPaymentDate</td>
+                <td>Not Implemented(Student Email)</td>
+            </tr>
+        }
+    </tbody>
+</table>

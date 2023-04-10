@@ -15,5 +15,11 @@ namespace Debt_Calculation_And_Repayment_System.Models
         public string Type { get; set; }
         [Required]
         public decimal Amount { get; set; }
+        [Required]
+        public bool Paid { get; set; }
+        [Required]
+        public string DebtId { get; set; }
+        [ForeignKey("DebtId")]
+        public virtual DEBT Debt { get; set; }
     }
 }

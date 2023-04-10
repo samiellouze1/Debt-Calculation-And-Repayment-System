@@ -14,10 +14,13 @@ builder.Services.AddMvc().AddRazorRuntimeCompilation();
 builder.Services.AddDbContext<AppDbContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add services to the container.
+builder.Services.AddScoped<IPAYMENTPLANFULLService, PAYMENTPLANFULLService>();
+builder.Services.AddScoped<IPAYMENTPLANINSTALLMENTService, PAYMENTPLANINSTALLMENTService>();
 builder.Services.AddScoped<IPAYMENTPLANService, PAYMENTPLANService>();
 builder.Services.AddScoped<IDEBTService, DEBTService>();
 builder.Services.AddScoped<IUSERService, USERService>();
 builder.Services.AddScoped<ISTUDENTService, STUDENTService>();
+builder.Services.AddScoped<IINSTALLMENTService, INSTALLMENTService>();
 builder.Services.AddScoped<ISTAFFMEMBERService, STAFFMEMBERService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddControllersWithViews();

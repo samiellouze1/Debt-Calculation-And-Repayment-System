@@ -1,6 +1,6 @@
-﻿@model IEnumerable<PAYMENTPLAN>
+﻿@model IEnumerable<PAYMENTPLANFULL>
 @{
-    ViewData["Title"] = "All Payment Plans";
+    ViewData["Title"] = "Payment In full Detailed";
 }
 <table class="table " style="width:1500px;margin-left:10%;margin-right:10%;">
     <thead>
@@ -9,9 +9,9 @@
             <th scope="col">Amount</th>
 
             <th scope="col">Paid</th>
+            <th scope="col">Payment Date</th>
             <th scope="col"></th>
             <th scope="col"></th>
-            <th scope="col">StaffMember</th>
             <th scope="col">Student</th>
         </tr>
     </thead>
@@ -29,15 +29,7 @@
                 {
                     <td>No</td>
                 }
-                @if (@item.Type == "I")
-                {
-                    <td><a asp-controller="Installment" asp-action="InstallmentsByPaymentPlanAdmin" asp-route-id=@item.Id>Details</a></td>
-                }
-                else
-                {
-                    <td><a asp-controller="PaymentPlan" asp-action="DetailsByPaymentPlanAdmin" asp-route-id=@item.Id>Details</a></td>
-                }
-                <td>Not Implemented(StaffMember Email)</td>
+                <td>@item.PaymentDate</td>
                 <td>Not Implemented(Student Email)</td>
             </tr>
         }

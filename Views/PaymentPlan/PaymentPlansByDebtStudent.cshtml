@@ -1,0 +1,42 @@
+﻿@@model IEnumerable<PAYMENTPLAN>
+    @{
+        ViewData["Title"] = "Payment Plans By Debt";
+    }
+    <table class="table " style="width:1500px;margin-left:10%;margin-right:10%;">
+        <thead>
+            <tr>
+                <th scope="col">Type</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Paid</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col">StaffMember</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="table">
+                    <td>@item.Type</td>
+                    <td>@item.Amount</td>
+                    @if (@item.Paid == true)
+                    {
+                        <td>Yes</td>
+                    }
+                    else
+                    {
+                        <td>No</td>
+                    }
+                    @if (@item.Type == "I")
+                    {
+                        <td><a asp-controller="Installment" asp-action="InstallmentsByPaymentPlanAdmin" asp-route-id=@item.Id>Details</a></td>
+                    }
+                    else
+                    {
+                        <td><a asp-controller="PaymentPlan" asp-action="DetailsByPaymentPlanAdmin" asp-route-id=@item.Id>Details</a></td>
+                    }
+                    <td>Not Implemented(StaffMember Email)</td>
+                </tr>
+            }
+        </tbody>
+    </table>

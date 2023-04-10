@@ -305,20 +305,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         #endregion
 
         #region getters
-        [Authorize(Roles = "Student")]
-        public async Task<IActionResult> StaffMemberById(string id)
-        {
-            var staffmember = _staffmemberService.GetByIdAsync(id);
-            return View(staffmember);
-        }
-        [Authorize(Roles = "StaffMember")]
-        public async Task<IActionResult> MyStudents(string id)
-        {
-            var staffmemberId = User.FindFirstValue("Id");
-            var staffmember = _staffmemberService.GetByIdAsync(staffmemberId).Result;
-            var students = staffmember.Students.ToList();
-            return View(students);
-        }
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AllUsers()
         {
@@ -336,6 +322,19 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         {
             var students = _studentService.GetAllAsync().Result;
             return View(students);
+        }
+        [Authorize(Roles = "StaffMember")]
+        public async Task<IActionResult> MyStudentsStaffMember(string id)
+        {
+            var staffmemberId = User.FindFirstValue("Id");
+            var staffmember = _staffmemberService.GetByIdAsync(staffmemberId).Result;
+            var students = staffmember.Students.ToList();
+            return View(students);
+        }
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> StudentsByStaffMember(string id)
+        {
+            return View();
         }
         #endregion
 

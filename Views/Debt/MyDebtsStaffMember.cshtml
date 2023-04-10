@@ -1,12 +1,11 @@
 ﻿@model IEnumerable<DEBT>
 @{
-    ViewData["Title"] = "All Debts";
+    ViewData["Title"] = "My Debts";
 }
 <table class="table " style="width:1500px;margin-left:10%;margin-right:10%;">
     <thead>
         <tr>
             <th scope="col">Student</th>
-            <th scope="col">Staff Member</th>
             <th scope="col">Initial Amount</th>
             <th scope="col">Start Date</th>
             <th scope="col">Interest Rate</th>
@@ -18,7 +17,6 @@
         {
             <tr class="table">
                 <td><a asp-controller="Debt" asp-action="DebtsByStudent">Not Implemented(Email of Student)</a></td>
-                <td><a asp-controller="Debt" asp-action="DebtsByStaffMember">Not Implemented(Email of Staff Member)</a></td>
                 <td>@item.InitialAmount</td>
                 <td>@item.StartDate</td>
                 <td>@item.InterestRate</td>
