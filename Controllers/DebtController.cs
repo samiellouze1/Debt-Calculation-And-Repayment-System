@@ -81,7 +81,12 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         [Authorize(Roles = "Admin, StaffMember")]
         public IActionResult CreateDebt()
         {
-            var vm = new CreateDebtVM();
+            var staffid = User.FindFirstValue("Id");
+            var vmstudents = _staffmemberService.GetByIdAsync(staffid).Result.Students.ToList();
+            var vm = new CreateDebtVM() 
+            { 
+                Students = vmstudents
+            };
             return View(vm);
         }
         [HttpPost]
@@ -97,7 +102,16 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 Paid = debtVM.Paid,
                 StudentId = debtVM.StudentId,
             };
-            _debtService.AddAsync(newdebt);
+            try
+            {
+                await _debtService.AddAsync(newdebt);
+            }
+            catch (DbUpdateException ex)
+            {
+                var message = ex.InnerException?.Message ?? ex.Message;
+                Console.WriteLine(message);
+                throw;
+            }
             return RedirectToAction("Index", "Home");
         }
         #endregion

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Debt_Calculation_And_Repayment_System.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Debt_Calculation_And_Repayment_System.Data.ViewModels
 {
@@ -15,5 +16,6 @@ namespace Debt_Calculation_And_Repayment_System.Data.ViewModels
         public bool Paid { get; set; }
         [Required]
         public string StudentId { get; set; }
+        public List<STUDENT> Students { get; set; }
     }
 }

@@ -4,7 +4,7 @@
     ViewData["Title"] = "Create Debt";
 }
 
-<div class="container-fluid px-0 py-5" style="width:1200px;margin-left:10%;margin-right:10%;">
+<div class="container-fluid px-0 py-5" style="width:1200px;">
     <div class="row mx-0 justify-content-center pt-5">
         <div class="col-lg-6">
             <div class="section-title text-center position-relative mb-4">
@@ -13,48 +13,59 @@
             </div>
         </div>
     </div>
-    <div class="row justify-content-center bg-image mx-0 mb-5">
-        <div class="col-lg-9 py-5">
+    <div class="row justify-content-center bg-image mx-5 mb-5">
+        <div class="col-lg-12 py-5">
             <div class="bg-white p-5 my-5">
-                <h1 class="text-center mb-4">Fill in the new password!</h1>
+                <h1 class="text-center mb-4">Fill in information about the new debt</h1>
                 <form asp-action="CreateDebt">
                     <div class="form-row">
                         <div class="col-sm-4">
                             <div class="form-group">
-                                <input asp-for="InitialAmount" type="text" class="form-control bg-light border-0" placeholder="InitialAmount" style="padding: 30px 20px;">
+                                <label>Intial Amount</label>
+                                <input asp-for="InitialAmount" type="number" class="form-control bg-light border-0" placeholder="Enter Initial Amount" style="padding: 30px 20px;">
                                 <span asp-validation-for="InitialAmount" style="color:red"></span>
                             </div>
                         </div>
 
                         <div class="col-sm-4">
                             <div class="form-group">
-                                <input asp-for="InterestRate" type="text" class="form-control bg-light border-0" placeholder="InterestRate" style="padding: 30px 20px;">
+                                <label>Interest Rate</label>
+                                <input asp-for="InterestRate" type="number" step="any" class="form-control bg-light border-0" placeholder="Enter Interest Rate" style="padding: 30px 20px;">
                                 <span asp-validation-for="InterestRate" style="color:red"></span>
                             </div>
                         </div>
                         <div class="col-sm-4">
                             <div class="form-group">
-                                <input asp-for="StartDate" type="datetime" class="form-control bg-light border-0" placeholder="StartDate" style="padding: 30px 20px;">
+                                <label>Start Date</label>
+                                <input asp-for="StartDate" type="datetime" class="form-control bg-light border-0" placeholder="Enter Start Date" style="padding: 30px 20px;">
                                 <span asp-validation-for="StartDate" style="color:red"></span>
                             </div>
                         </div>
                         <div class="col-sm-4">
                             <div class="form-group">
+                                <label>Already Paid</label>
                                 <input asp-for="Paid" type="checkbox" class="form-control bg-light border-0" placeholder="Paid" style="padding: 30px 20px;">
                                 <span asp-validation-for="Paid" style="color:red"></span>
                             </div>
                         </div>
                         <div class="col-sm-4">
                             <div class="form-group">
-                                <input asp-for="StudentId" type="text" class="form-control bg-light border-0" placeholder="StudentId" style="padding: 30px 20px;">
+                                <label asp-for="StudentId">Select a Student</label>
+                                <select asp-for="StudentId" class="form-control bg-light border-0" name="StudentId">
+                                    @foreach (var item in Model.Students)
+                                    {
+                                        <option value="@item.Id">@item.UserName</option>
+                                    }
+                                </select>
                                 <span asp-validation-for="StudentId" style="color:red"></span>
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-6" style="width:50%;margin: 0 auto;">
-                        <button class="btn btn-primary btn-block" type="submit" style="height: 60px;" value="CreateDebt">Create Debt</button>
+                        <button class="btn btn-primary btn-block" type="submit" style="height: 60px;">Create Debt</button>
                     </div>
                 </form>
+
             </div>
         </div>
     </div>
