@@ -20,7 +20,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var installments = paymentplan.Installments.ToList();
             return View(installments);
         }
-        [Authorize(Roles = "Staff Member")]
+        [Authorize(Roles = "StaffMember")]
         public async Task<IActionResult> InstallmentsByPaymentPlanStaffMember(string id)
         {
             var paymentplan = _paymentPlanInstallmentService.GetByIdAsync(id).Result;
