@@ -1,8 +1,8 @@
-﻿@model IEnumerable<PAYMENTPLAN>
+﻿@model List<PAYMENTPLAN>
 @{
     ViewData["Title"] = "All Payment Plans";
 }
-<div class="container-fluid px-0 py-5" style="width:1000px;margin-left:10%;margin-right:10%;">
+<div class="container-fluid px-0 py-5" style="width:1200px;margin-left:10%;margin-right:10%;">
     <div class="row mx-0 justify-content-center pt-5">
         <div class="col-lg-6">
             <div class="section-title text-center position-relative mb-4">
@@ -19,9 +19,10 @@
                         <th scope="col">Type</th>
                         <th scope="col">Amount</th>
                         <th scope="col">Paid</th>
-                        <th scope="col"></th>
+
                         <th scope="col">StaffMember</th>
                         <th scope="col">Student</th>
+                        <th scope="col">Details</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -38,6 +39,8 @@
                             {
                                 <td>No</td>
                             }
+                            <td><a asp-controller="Account" asp-action="StudentsByStaffMemberAdmin" asp-route-id=@item.Debt.Student.StaffMemberId>@item.Debt.Student.StaffMember.UserName</a></td>
+                            <td><a asp-controller="Debt" asp-action="DebtsByStudentAdmin" asp-route-id=@item.Debt.StudentId>@item.Debt.Student.Email</a></td>
                             @if (@item.Type == "I")
                             {
                                 <td><a asp-controller="Installment" asp-action="InstallmentsByPaymentPlanAdmin" asp-route-id=@item.Id>Details</a></td>
@@ -46,8 +49,6 @@
                             {
                                 <td><a asp-controller="PaymentPlan" asp-action="DetailsByPaymentPlanAdmin" asp-route-id=@item.Id>Details</a></td>
                             }
-                            <td>Not Implemented(StaffMember Email)</td>
-                            <td>Not Implemented(Student Email)</td>
                         </tr>
                     }
                 </tbody>
