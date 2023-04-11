@@ -1,3 +1,4 @@
+using Debt_Calculation_And_Repayment_System.Controllers;
 using Debt_Calculation_And_Repayment_System.Data;
 using Debt_Calculation_And_Repayment_System.Data.Extensions;
 using Debt_Calculation_And_Repayment_System.Data.IServices;
@@ -93,6 +94,7 @@ app.MapControllerRoute(
 //Seeding
 AppDbInitializer.SeedUsersAndRolesAsync(app).Wait();
 AppDbInitializer.Seed(app);
+
 
 
 //Running

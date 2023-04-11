@@ -28,19 +28,9 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             _paymentPlanInstallmentService = paymentPlanInstallmentService;
             _installmentService = installmentService;
         }
-        [Authorize(Roles ="Admin")]
-        public async Task<IActionResult> AllPaymentPlans()
-        {
-            var paymentplans = _paymentplanService.GetAllAsync().Result;
-            return View(paymentplans);
-        }
-        public IActionResult GeneratePaymentPlans()
-        {
-            var gppvm = new GeneratePaymentPlansVM();
-            return View(gppvm);
-        }
         [HttpPost]
-        public async Task<IActionResult> GeneratePaymentPlans(GeneratePaymentPlansVM gppvm)
+        [Authorize(Roles = "Admin, StaffMember")]
+        public async Task GeneratePaymentPlans(GeneratePaymentPlansVM gppvm)
         {
             var debt = _debtService.GetByIdAsync(gppvm.DebtId).Result;
             var NumOfMonths = gppvm.NumOfMonths;
@@ -60,25 +50,35 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                     AmountafterInstallments=initialamount*interest*(startdate.AddMonths(monthnum)-startdate.AddMonths(monthnum-1)).Days/36500
                 });
             }
-            await _paymentPlanInstallmentService.AddAsync(new PAYMENTPLANINSTALLMENT()
+            var paymentinstallment = new PAYMENTPLANINSTALLMENT()
             {
                 Amount = debt.InitialAmount,
-                Type="I",
-                Paid=false,
-                DebtId=gppvm.DebtId,
-                NumOfInstallments=NumOfMonths,
+                Type = "I",
+                Paid = false,
+                DebtId = gppvm.DebtId,
+                NumOfInstallments = NumOfMonths,
                 AmountAfterInstallments = insterestcalculs.Sum(ic => ic.AmountafterInstallments),
-            });
+            };
+            await _paymentPlanInstallmentService.AddAsync(paymentinstallment);
             foreach (var ic in insterestcalculs)
             {
                 await _installmentService.AddAsync(new INSTALLMENT()
                 {
-                    /// to be completed i need id of newly created paymentplan
+                    Amount=paymentinstallment.AmountAfterInstallments/NumOfMonths,
+                    Paid=false,
+                    SupposedPaymentDate=ic.PaymentDate,
+                    PaymentPlanInstallmentId=paymentinstallment.Id
                 });
             }
-
-            return View();
         }
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AllPaymentPlans()
+        {
+            var paymentplans = _paymentplanService.GetAllAsync().Result;
+            return View(paymentplans);
+        }
+
+        #region getters
         public async Task<IActionResult> MyPaymentPlansStudent()
         {
             var studentId = User.FindFirstValue("Id");
@@ -183,5 +183,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var paymentplanfull = _paymentPlanFullService.GetByIdAsync(id).Result;
             return View(paymentplanfull);
         }
+        #endregion
     }
 }

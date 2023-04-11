@@ -6,6 +6,7 @@ using System.Security.Claims;
 using Debt_Calculation_And_Repayment_System.Models;
 using Microsoft.EntityFrameworkCore;
 using Debt_Calculation_And_Repayment_System.Data;
+using Debt_Calculation_And_Repayment_System.Data.ViewModels;
 
 namespace Debt_Calculation_And_Repayment_System.Controllers
 {
@@ -20,13 +21,14 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             _studentService = studentService;
             _staffmemberService = staffmemberService;
         }
-        [Authorize(Roles ="Admin")]
+        #region getters
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AllDebts()
         {
             var DEBTs = _debtService.GetAllAsync().Result;
             return View(DEBTs);
         }
-        [Authorize(Roles="Student")]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> MyDebtsStudent()
         {
             var studentId = User.FindFirstValue("Id");
@@ -41,7 +43,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var staff = _staffmemberService.GetByIdAsync(staffId).Result;
             var myStudents = staff.Students.ToList();
             var mydebts = new List<DEBT>();
-            foreach ( var std in myStudents)
+            foreach (var std in myStudents)
             {
                 mydebts.AddRange(std.Debts.ToList());
             }
@@ -73,5 +75,31 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             return View(myDebts);
         }
+        #endregion
+
+        #region create debt
+        [Authorize(Roles = "Admin, StaffMember")]
+        public IActionResult CreateDebt()
+        {
+            var vm = new CreateDebtVM();
+            return View(vm);
+        }
+        [HttpPost]
+        [Authorize(Roles = "Admin, StaffMember")]
+        public async Task<IActionResult> CreateDebt(CreateDebtVM debtVM)
+        {
+            var newdebt = new DEBT()
+            {
+                InitialAmount = debtVM.InitialAmount,
+                InterestRate = debtVM.InterestRate,
+                StartDate = debtVM.StartDate,
+                RegDate = DateTime.Now,
+                Paid = debtVM.Paid,
+                StudentId = debtVM.StudentId,
+            };
+            _debtService.AddAsync(newdebt);
+            return RedirectToAction("Index", "Home");
+        }
+        #endregion
     }
 }
