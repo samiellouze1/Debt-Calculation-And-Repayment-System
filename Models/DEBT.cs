@@ -27,6 +27,7 @@ namespace Debt_Calculation_And_Repayment_System.Models
         public string StudentId { get; set; }
         [ForeignKey("StudentId")]
         public virtual STUDENT Student { get; set; }
+        public virtual List<REQUEST> Requests { get; set; } = new List<REQUEST>();
         public virtual List<PAYMENTPLANFULL> PaymentPlanFulls { get; set; } = new List<PAYMENTPLANFULL>();
         public virtual List<PAYMENTPLANINSTALLMENT> PaymenPlanInstallments { get; set; } = new List<PAYMENTPLANINSTALLMENT>();
     }

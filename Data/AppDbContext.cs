@@ -16,6 +16,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
         public DbSet<PAYMENTPLANFULL> PAYMENTPLANFULLs { get; set; }
         public DbSet<INSTALLMENT> INSTALLMENTs { get; set; }
         public DbSet<DEBT> DEBTs { get; set; }
+        public DbSet<REQUEST> REQUESTs { get; set; }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
 
@@ -27,11 +28,13 @@ namespace Debt_Calculation_And_Repayment_System.Data
             builder.Entity<PAYMENTPLANFULL>().HasOne(pp => pp.Debt).WithMany(d => d.PaymentPlanFulls).HasForeignKey(pp => pp.DebtId);
             builder.Entity<PAYMENTPLANINSTALLMENT>().HasOne(pp => pp.Debt).WithMany(d => d.PaymenPlanInstallments).HasForeignKey(pp => pp.DebtId);
             builder.Entity<INSTALLMENT>().HasOne(i => i.PaymentPlanInstallment).WithMany(ppi => ppi.Installments).HasForeignKey(i => i.PaymentPlanInstallmentId);
+            builder.Entity<REQUEST>().HasOne(r => r.Debt).WithMany(d => d.Requests).HasForeignKey(r => r.DebtId);
             
             builder.Entity<STAFFMEMBER>().Navigation(sm => sm.Students).AutoInclude();
             builder.Entity<STUDENT>().Navigation(s => s.Debts).AutoInclude();
             builder.Entity<DEBT>().Navigation(d => d.PaymentPlanFulls).AutoInclude();
-            builder.Entity<DEBT>().Navigation(d => d.PaymentPlanFulls).AutoInclude();
+            builder.Entity<DEBT>().Navigation(d => d.PaymenPlanInstallments).AutoInclude();
+            builder.Entity<DEBT>().Navigation(d => d.Requests).AutoInclude();
             builder.Entity<PAYMENTPLANINSTALLMENT>().Navigation(pi => pi.Installments).AutoInclude();
 
             builder.Entity<STUDENT>().Navigation(s => s.StaffMember).AutoInclude();
