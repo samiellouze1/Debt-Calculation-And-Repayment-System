@@ -39,8 +39,8 @@
                             {
                                 <td>No</td>
                             }
-                            <td><a asp-controller="Account" asp-action="StudentsByStaffMemberAdmin" asp-route-id=@item.Debt.Student.StaffMemberId>@item.Debt.Student.StaffMember.UserName</a></td>
-                            <td><a asp-controller="Debt" asp-action="DebtsByStudentAdmin" asp-route-id=@item.Debt.StudentId>@item.Debt.Student.Email</a></td>
+                            <td><a asp-controller="Account" asp-action="StaffMemberAdmin" asp-route-id=@item.Debt.Student.StaffMemberId>@item.Debt.Student.StaffMember.UserName</a></td>
+                            <td><a asp-controller="Account" asp-action="StudentAdmin" asp-route-id=@item.Debt.StudentId>@item.Debt.Student.Email</a></td>
                             @if (@item.Type == "I")
                             {
                                 <td><a asp-controller="Installment" asp-action="InstallmentsByPaymentPlanAdmin" asp-route-id=@item.Id>Details</a></td>

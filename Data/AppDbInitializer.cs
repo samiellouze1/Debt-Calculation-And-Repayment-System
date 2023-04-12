@@ -101,6 +101,21 @@ namespace Debt_Calculation_And_Repayment_System.Data
                     context.SaveChanges();
                 }
                 #endregion
+
+                #region request
+                if (!context.REQUESTs.Any())
+                {
+                    context.REQUESTs.AddRange(new List<REQUEST>()
+                    {
+                        new REQUEST()
+                        {
+                            NumOfMonths=3,
+                            Status=true,
+                            DebtId="1"
+                        }
+                    });
+                }
+                #endregion
             }
         }
         public static async Task SeedUsersAndRolesAsync(IApplicationBuilder applicationbuilder)

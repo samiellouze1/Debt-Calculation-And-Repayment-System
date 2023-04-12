@@ -37,7 +37,7 @@
                         }
                         <td>@Model.PaymentDate</td>
                         <td><a asp-controller="Account" asp-action="StudentsByStaffMemberAdmin" asp-route-id=@Model.Debt.Student.StaffMemberId>@Model.Debt.Student.StaffMember.UserName</a></td>
-                        <td><a asp-controller="Debt" asp-action="DebtsByStudentAdmin" asp-route-id=@Model.Debt.StudentId>@Model.Debt.Student.Email</a></td>
+                        <td><a asp-controller="Account" asp-action="StudentAdmin" asp-route-id=@Model.Debt.StudentId>@Model.Debt.Student.Email</a></td>
                     </tr>
                 </tbody>
             </table>

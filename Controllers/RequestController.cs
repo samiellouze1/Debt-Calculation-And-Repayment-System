@@ -93,7 +93,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         {
             var staffid = User.FindFirstValue("Id");
             var staff = await _staffmemberService.GetByIdAsync(staffid);
-            var requests = staff.Students.SelectMany(s => s.Debts).Select(d => d.Requests);
+            var requests = staff.Students.SelectMany(s => s.Debts).SelectMany(d => d.Requests).ToList();
             return View(requests);
         }
         [Authorize(Roles ="Student")]
@@ -101,7 +101,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         {
             var studentid = User.FindFirstValue("Id");
             var student = await _studentService.GetByIdAsync(studentid);
-            var requests = student.Debts.SelectMany(d => d.Requests);
+            var requests = student.Debts.SelectMany(d => d.Requests).ToList();
             return View(requests);
         }
         #endregion

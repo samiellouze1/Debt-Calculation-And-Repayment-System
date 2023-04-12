@@ -6,12 +6,12 @@ namespace Debt_Calculation_And_Repayment_System.Data.ViewModels
     public class CreateDebtVM
     {
         [Required]
-        public decimal? InitialAmount { get; set; }
+        public decimal InitialAmount { get; set; }
         [Required]
         [Range(0, 1)]
-        public decimal? InterestRate { get; set; }
+        public decimal InterestRate { get; set; }
         [Required]
-        public DateTime? StartDate { get; set; }
+        public DateTime StartDate { get; set; }
         [Required]
         public bool? Paid { get; set; }
         [Required]

@@ -12,7 +12,7 @@ namespace Debt_Calculation_And_Repayment_System.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string? Id { get; set; }
         [Required]
-        public string? NumOfMonths { get; set; }
+        public int NumOfMonths { get; set; }
         [Required]
         public bool? Status { get; set; }
         [Required]

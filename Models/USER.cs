@@ -12,7 +12,7 @@ namespace Debt_Calculation_And_Repayment_System.Models
         [Required]
         public string? SurName { get; set; }
         [Required]
-        public DateTime? RegDate { get; set; }
+        public DateTime RegDate { get; set; }
         [Required]
         public string? Address { get; set; }
     }

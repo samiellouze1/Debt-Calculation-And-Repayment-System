@@ -13,14 +13,14 @@ namespace Debt_Calculation_And_Repayment_System.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string? Id { get; set; }
         [Required]
-        public decimal? InitialAmount { get; set; }
+        public decimal InitialAmount { get; set; }
         [Required]
         [Range(0,1)]
-        public decimal? InterestRate { get; set; }
+        public decimal InterestRate { get; set; }
         [Required]
-        public DateTime? StartDate { get; set; }
+        public DateTime StartDate { get; set; }
         [Required]
-        public DateTime? RegDate { get; set; }
+        public DateTime RegDate { get; set; }
         [Required]
         public bool? Paid { get; set; }
         [Required]
