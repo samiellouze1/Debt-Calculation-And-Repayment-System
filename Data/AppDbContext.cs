@@ -24,12 +24,14 @@ namespace Debt_Calculation_And_Repayment_System.Data
         {
             builder.Entity<STUDENT>().HasOne(s => s.StaffMember).WithMany(sm => sm.Students).HasForeignKey(s => s.StaffMemberId).OnDelete(DeleteBehavior.ClientSetNull);
             builder.Entity<DEBT>().HasOne(d => d.Student).WithMany(s => s.Debts).HasForeignKey(d => d.StudentId);
-            builder.Entity<PAYMENTPLAN>().HasOne(pp => pp.Debt).WithMany(d => d.PaymentPlans).HasForeignKey(pp => pp.DebtId);
+            builder.Entity<PAYMENTPLANFULL>().HasOne(pp => pp.Debt).WithMany(d => d.PaymentPlanFulls).HasForeignKey(pp => pp.DebtId);
+            builder.Entity<PAYMENTPLANINSTALLMENT>().HasOne(pp => pp.Debt).WithMany(d => d.PaymenPlanInstallments).HasForeignKey(pp => pp.DebtId);
             builder.Entity<INSTALLMENT>().HasOne(i => i.PaymentPlanInstallment).WithMany(ppi => ppi.Installments).HasForeignKey(i => i.PaymentPlanInstallmentId);
             
             builder.Entity<STAFFMEMBER>().Navigation(sm => sm.Students).AutoInclude();
             builder.Entity<STUDENT>().Navigation(s => s.Debts).AutoInclude();
-            builder.Entity<DEBT>().Navigation(d => d.PaymentPlans).AutoInclude();
+            builder.Entity<DEBT>().Navigation(d => d.PaymentPlanFulls).AutoInclude();
+            builder.Entity<DEBT>().Navigation(d => d.PaymentPlanFulls).AutoInclude();
             builder.Entity<PAYMENTPLANINSTALLMENT>().Navigation(pi => pi.Installments).AutoInclude();
 
             builder.Entity<STUDENT>().Navigation(s => s.StaffMember).AutoInclude();

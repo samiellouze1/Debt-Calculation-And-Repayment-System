@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Debt_Calculation_And_Repayment_System.Data.Repository;
+using Debt_Calculation_And_Repayment_System.Data.Services;
 
 namespace Debt_Calculation_And_Repayment_System.Models
 {
@@ -26,6 +27,7 @@ namespace Debt_Calculation_And_Repayment_System.Models
         public string StudentId { get; set; }
         [ForeignKey("StudentId")]
         public virtual STUDENT Student { get; set; }
-        public virtual List<PAYMENTPLAN> PaymentPlans { get; set; } = new List<PAYMENTPLAN>();
+        public virtual List<PAYMENTPLANFULL> PaymentPlanFulls { get; set; } = new List<PAYMENTPLANFULL>();
+        public virtual List<PAYMENTPLANINSTALLMENT> PaymenPlanInstallments { get; set; } = new List<PAYMENTPLANINSTALLMENT>();
     }
 }

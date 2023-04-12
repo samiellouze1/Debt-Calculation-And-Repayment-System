@@ -4,6 +4,7 @@ using Debt_Calculation_And_Repayment_System.Data.ViewModels;
 using Debt_Calculation_And_Repayment_System.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Configuration;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 
@@ -37,8 +38,13 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var startdate = debt.StartDate;
             var interest = debt.InterestRate;
             var initialamount = debt.InitialAmount;
-            var amoundpaidfull = debt.PaymentPlans.Where(pp => pp.Type == "F").ToList().Sum(pp=>pp.Amount);
-            var amounttopayinstallment = debt.InitialAmount - amoundpaidfull;
+            var amoundpaidfull = debt.PaymentPlanFulls.ToList().Sum(ppf=>ppf.Amount);
+            var amountpaidinstallment = debt.PaymenPlanInstallments.ToList().Where(ppi => ppi.Paid == true).Sum(ppi => ppi.Amount);
+            var amounttopayinstallment = debt.InitialAmount - amoundpaidfull - amountpaidinstallment;
+            foreach( var ppi in debt.PaymenPlanInstallments.ToList())
+            {
+                await _paymentPlanInstallmentService.DeleteAsync(ppi.Id);
+            }
             var insterestcalculs = new List<InterestCalculVM>();
             var installments = new List<INSTALLMENT>();
             for (var monthnum = 1; monthnum<=NumOfMonths; monthnum++)
@@ -85,9 +91,10 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var student = _studentService.GetByIdAsync(studentId).Result;
             var myDebts = student.Debts.ToList();
             var mypaymentplans = new List<PAYMENTPLAN>();
-            foreach (var sd in myDebts)
+            foreach (var d in myDebts)
             {
-                mypaymentplans.AddRange(sd.PaymentPlans.ToList());
+                mypaymentplans.AddRange(d.PaymentPlanFulls.ToList());
+                mypaymentplans.AddRange(d.PaymenPlanInstallments.ToList());
             }
             return View(mypaymentplans);
         }
@@ -100,7 +107,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             {
                 foreach (var sd in std.Debts)
                 {
-                    paymentplans.AddRange(sd.PaymentPlans);
+                    paymentplans.AddRange(sd.PaymentPlanFulls);
+                    paymentplans.AddRange(sd.PaymenPlanInstallments);
                 }
             }
             return View(paymentplans);
@@ -109,21 +117,29 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         public async Task<IActionResult> PaymentPlansByDebtAdmin(string id)
         {
             var Debt = _debtService.GetByIdAsync(id).Result;
-            var paymentplans = Debt.PaymentPlans.ToList();
+            var paymentplans = new List<PAYMENTPLAN>();
+            var paymentplanfulls = Debt.PaymentPlanFulls.ToList();
+            var paymentplaninstallments = Debt.PaymenPlanInstallments.ToList();
+            paymentplans.AddRange(paymentplanfulls);
+            paymentplans.AddRange(paymentplaninstallments);
             return View(paymentplans);
         }
         [Authorize(Roles = "StaffMember")]
         public async Task<IActionResult> PaymentPlansByDebtStaffMember(string id)
         {
             var Debt = _debtService.GetByIdAsync(id).Result;
-            var paymentplans = Debt.PaymentPlans;
+            var paymentplans = new List<PAYMENTPLAN>();
+            paymentplans.AddRange(Debt.PaymentPlanFulls.ToList());
+            paymentplans.AddRange(Debt.PaymenPlanInstallments.ToList());
             return View(paymentplans);
         }
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> PaymentPlansByDebtStudent(string id)
         {
             var Debt = _debtService.GetByIdAsync(id).Result;
-            var paymentplans = Debt.PaymentPlans;
+            var paymentplans = new List<PAYMENTPLAN>();
+            paymentplans.AddRange(Debt.PaymentPlanFulls.ToList());
+            paymentplans.AddRange(Debt.PaymenPlanInstallments.ToList());
             return View(paymentplans);
         }
         [Authorize(Roles ="Admin")]
@@ -136,7 +152,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             {
                 foreach (var debt in std.Debts.ToList())
                 {
-                    paymentplans.AddRange(debt.PaymentPlans.ToList());
+                    paymentplans.AddRange(debt.PaymentPlanFulls.ToList());
+                    paymentplans.AddRange(debt.PaymenPlanInstallments.ToList());
                 }
             }
             return View(paymentplans);
@@ -149,7 +166,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var paymentplans = new List<PAYMENTPLAN>();
             foreach (var debt in debts)
             {
-                paymentplans.AddRange(debt.PaymentPlans.ToList());
+                paymentplans.AddRange(debt.PaymentPlanFulls.ToList());
+                paymentplans.AddRange(debt.PaymenPlanInstallments.ToList());
             }
             return View(paymentplans);
         }
@@ -161,7 +179,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var paymentplans = new List<PAYMENTPLAN>();
             foreach (var debt in debts)
             {
-                paymentplans.AddRange(debt.PaymentPlans.ToList());
+                paymentplans.AddRange(debt.PaymentPlanFulls.ToList());
+                paymentplans.AddRange(debt.PaymenPlanInstallments.ToList());
             }
             return View(paymentplans);
         }
