@@ -89,13 +89,9 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         {
             var studentId = User.FindFirstValue("Id");
             var student = await _studentService.GetByIdAsync(studentId);
-            var myDebts = student.Debts.ToList();
             var mypaymentplans = new List<PAYMENTPLAN>();
-            foreach (var d in myDebts)
-            {
-                mypaymentplans.AddRange(d.PaymentPlanFulls.ToList());
-                mypaymentplans.AddRange(d.PaymenPlanInstallments.ToList());
-            }
+            mypaymentplans.AddRange(student.Debts.SelectMany(d => d.PaymenPlanInstallments).ToList());
+            mypaymentplans.AddRange(student.Debts.SelectMany(d => d.PaymentPlanFulls).ToList());
             return View(mypaymentplans);
         }
         public async Task<IActionResult> MyPaymentPlansStaffMember()
@@ -104,14 +100,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var staff = await _staffmemberService.GetByIdAsync(staffId);
             var students = staff.Students;
             var paymentplans = new List<PAYMENTPLAN>();
-            foreach (var std in students)
-            {
-                foreach (var sd in std.Debts)
-                {
-                    paymentplans.AddRange(sd.PaymentPlanFulls);
-                    paymentplans.AddRange(sd.PaymenPlanInstallments);
-                }
-            }
+            paymentplans.AddRange(students.SelectMany(s => s.Debts).SelectMany(d => d.PaymenPlanInstallments).ToList());
+            paymentplans.AddRange(students.SelectMany(s => s.Debts).SelectMany(d => d.PaymentPlanFulls).ToList());
             return View(paymentplans);
         }
         [Authorize(Roles ="Admin")]
@@ -165,11 +155,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var student = await _studentService.GetByIdAsync(id);
             var debts = student.Debts.ToList();
             var paymentplans = new List<PAYMENTPLAN>();
-            foreach (var debt in debts)
-            {
-                paymentplans.AddRange(debt.PaymentPlanFulls.ToList());
-                paymentplans.AddRange(debt.PaymenPlanInstallments.ToList());
-            }
+            paymentplans.AddRange(debts.SelectMany(d => d.PaymentPlanFulls).ToList());
+            paymentplans.AddRange(debts.SelectMany(d => d.PaymenPlanInstallments).ToList());
             return View(paymentplans);
         }
         [Authorize(Roles ="StaffMember")]
@@ -178,11 +165,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var student = await _studentService.GetByIdAsync(id);
             var debts = student.Debts.ToList();
             var paymentplans = new List<PAYMENTPLAN>();
-            foreach (var debt in debts)
-            {
-                paymentplans.AddRange(debt.PaymentPlanFulls.ToList());
-                paymentplans.AddRange(debt.PaymenPlanInstallments.ToList());
-            }
+            paymentplans.AddRange(debts.SelectMany(d => d.PaymentPlanFulls).ToList());
+            paymentplans.AddRange(debts.SelectMany(d => d.PaymenPlanInstallments).ToList());
             return View(paymentplans);
         }
         [Authorize(Roles = "Admin")]

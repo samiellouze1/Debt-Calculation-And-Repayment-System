@@ -43,10 +43,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var staff = await _staffmemberService.GetByIdAsync(staffId);
             var myStudents = staff.Students.ToList();
             var mydebts = new List<DEBT>();
-            foreach (var std in myStudents)
-            {
-                mydebts.AddRange(std.Debts.ToList());
-            }
+            mydebts.AddRange(myStudents.SelectMany(s => s.Debts).ToList());
             return View(mydebts);
         }
         [Authorize(Roles = "Admin")]
@@ -69,10 +66,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var staff = await _staffmemberService.GetByIdAsync(id);
             var mystudents = staff.Students;
             var myDebts = new List<DEBT>();
-            foreach (var std in mystudents)
-            {
-                myDebts.AddRange(std.Debts);
-            }
+            myDebts.AddRange(mystudents.SelectMany(s=>s.Debts).ToList());
             return View(myDebts);
         }
         #endregion
