@@ -62,7 +62,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         }
         public async Task<IActionResult> EditUser(string id)
         {
-            var user = _userManager.FindByIdAsync(id).Result;
+            var user = await _userManager.FindByIdAsync(id);
             var vm = new EditVM()
             {
                 FirstName = user.FirstName,
@@ -96,7 +96,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         #region specialregistration
 
         [Authorize(Roles = "Admin, StaffMember")]
-        public async Task<IActionResult> RegisterAStudent()
+        public IActionResult RegisterAStudent()
         {
             var response = new RegisterAStudentVM();
             return View(response);
@@ -139,7 +139,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             return RedirectToAction("Index", "Home");
         }
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> RegisterAStaffMember()
+        public IActionResult RegisterAStaffMember()
         {
             var response = new RegisterAStaffMemberVM();
             return View(response);
@@ -222,7 +222,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             //return RedirectToAction("Index", "Home");
         }
         [HttpGet]
-        public async Task<IActionResult> ResetPassword(string email, string code)
+        public  IActionResult ResetPassword(string email, string code)
         {
             // Verify that the email and code are valid
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(code))
@@ -262,10 +262,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            else
-            {
-                return RedirectToAction("Login", "Account");
-            }
+
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
@@ -307,27 +304,27 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AllStaffMembers()
         {
-            var staffmembers = _staffmemberService.GetAllAsync().Result;
+            var staffmembers = await _staffmemberService.GetAllAsync();
             return View(staffmembers);
         }
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AllStudents()
         {
-            var students = _studentService.GetAllAsync().Result;
+            var students = await _studentService.GetAllAsync();
             return View(students);
         }
         [Authorize(Roles = "StaffMember")]
         public async Task<IActionResult> MyStudentsStaffMember(string id)
         {
             var staffmemberId = User.FindFirstValue("Id");
-            var staffmember = _staffmemberService.GetByIdAsync(staffmemberId).Result;
-            var students = staffmember.Students.ToList();
+            var staffmember = await _staffmemberService.GetByIdAsync(staffmemberId);
+            var students = staffmember.Students;
             return View(students);
         }
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> StudentsByStaffMemberAdmin(string id)
         {
-            var staff = _staffmemberService.GetByIdAsync(id).Result;
+            var staff = await _staffmemberService.GetByIdAsync(id);
             var students = staff.Students.ToList();
             return View(students);
         }

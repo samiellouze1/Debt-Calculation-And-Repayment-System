@@ -113,11 +113,30 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DebtId");
-
                     b.ToTable("PAYMENTPLANs");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("PAYMENTPLAN");
+                });
+
+            modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.REQUEST", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("DebtId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("NumOfMonths")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DebtId");
+
+                    b.ToTable("REQUESTs");
                 });
 
             modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.USER", b =>
@@ -346,6 +365,8 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     b.Property<DateTime>("PaymentDate")
                         .HasColumnType("datetime2");
 
+                    b.HasIndex("DebtId");
+
                     b.HasDiscriminator().HasValue("PAYMENTPLANFULL");
                 });
 
@@ -359,6 +380,8 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
 
                     b.Property<int>("NumOfInstallments")
                         .HasColumnType("int");
+
+                    b.HasIndex("DebtId");
 
                     b.HasDiscriminator().HasValue("PAYMENTPLANINSTALLMENT");
                 });
@@ -405,10 +428,10 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     b.Navigation("PaymentPlanInstallment");
                 });
 
-            modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.PAYMENTPLAN", b =>
+            modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.REQUEST", b =>
                 {
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.DEBT", "Debt")
-                        .WithMany("PaymentPlans")
+                        .WithMany("Requests")
                         .HasForeignKey("DebtId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -467,6 +490,28 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.PAYMENTPLANFULL", b =>
+                {
+                    b.HasOne("Debt_Calculation_And_Repayment_System.Models.DEBT", "Debt")
+                        .WithMany("PaymentPlanFulls")
+                        .HasForeignKey("DebtId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Debt");
+                });
+
+            modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.PAYMENTPLANINSTALLMENT", b =>
+                {
+                    b.HasOne("Debt_Calculation_And_Repayment_System.Models.DEBT", "Debt")
+                        .WithMany("PaymenPlanInstallments")
+                        .HasForeignKey("DebtId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Debt");
+                });
+
             modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.STUDENT", b =>
                 {
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.STAFFMEMBER", "StaffMember")
@@ -479,7 +524,11 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
 
             modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.DEBT", b =>
                 {
-                    b.Navigation("PaymentPlans");
+                    b.Navigation("PaymenPlanInstallments");
+
+                    b.Navigation("PaymentPlanFulls");
+
+                    b.Navigation("Requests");
                 });
 
             modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.PAYMENTPLANINSTALLMENT", b =>

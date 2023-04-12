@@ -16,21 +16,21 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> InstallmentsByPaymentPlanAdmin( string id)
         {
-            var paymentplan = _paymentPlanInstallmentService.GetByIdAsync(id).Result;
+            var paymentplan = await _paymentPlanInstallmentService.GetByIdAsync(id);
             var installments = paymentplan.Installments.ToList();
             return View(installments);
         }
         [Authorize(Roles = "StaffMember")]
         public async Task<IActionResult> InstallmentsByPaymentPlanStaffMember(string id)
         {
-            var paymentplan = _paymentPlanInstallmentService.GetByIdAsync(id).Result;
+            var paymentplan = await _paymentPlanInstallmentService.GetByIdAsync(id);
             var installments = paymentplan.Installments.ToList();
             return View(installments);
         }
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> InstallmentsByPaymentPlanStudent(string id)
         {
-            var paymentplan = _paymentPlanInstallmentService.GetByIdAsync(id).Result;
+            var paymentplan = await _paymentPlanInstallmentService.GetByIdAsync(id);
             var installments = paymentplan.Installments.ToList();
             return View(installments);
         }

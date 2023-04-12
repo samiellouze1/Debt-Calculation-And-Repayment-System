@@ -39,7 +39,8 @@ namespace Debt_Calculation_And_Repayment_System.Data
 
             builder.Entity<STUDENT>().Navigation(s => s.StaffMember).AutoInclude();
             builder.Entity<DEBT>().Navigation(d => d.Student).AutoInclude();
-            builder.Entity<PAYMENTPLAN>().Navigation(pp => pp.Debt).AutoInclude();
+            builder.Entity<PAYMENTPLANFULL>().Navigation(ppf => ppf.Debt).AutoInclude();
+            builder.Entity<PAYMENTPLANINSTALLMENT>().Navigation(ppi => ppi.Debt).AutoInclude();
             builder.Entity<INSTALLMENT>().Navigation(i => i.PaymentPlanInstallment).AutoInclude();
 
             builder.Entity<DEBT>().Property(d => d.InitialAmount).HasPrecision(18, 4);

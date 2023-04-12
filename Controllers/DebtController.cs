@@ -25,14 +25,14 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AllDebts()
         {
-            var DEBTs = _debtService.GetAllAsync().Result;
+            var DEBTs = await _debtService.GetAllAsync();
             return View(DEBTs);
         }
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> MyDebtsStudent()
         {
             var studentId = User.FindFirstValue("Id");
-            var student = _studentService.GetByIdAsync(studentId).Result;
+            var student = await _studentService.GetByIdAsync(studentId);
             var myDEBTs = student.Debts.ToList();
             return View(myDEBTs);
         }
@@ -40,7 +40,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         public async Task<IActionResult> MyDebtsStaffMember()
         {
             var staffId = User.FindFirstValue("Id");
-            var staff = _staffmemberService.GetByIdAsync(staffId).Result;
+            var staff = await _staffmemberService.GetByIdAsync(staffId);
             var myStudents = staff.Students.ToList();
             var mydebts = new List<DEBT>();
             foreach (var std in myStudents)
@@ -52,22 +52,22 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DebtsByStudentAdmin(string id)
         {
-            var student = _studentService.GetByIdAsync(id).Result;
-            var Debts = student.Debts.ToList();
+            var student = await _studentService.GetByIdAsync(id);
+            var Debts = student.Debts;
             return View(Debts);
         }
         [Authorize(Roles = "StaffMember")]
         public async Task<IActionResult> DebtsByStudentStaffMember(string id)
         {
-            var student = _studentService.GetByIdAsync(id).Result;
-            var DEBTs = student.Debts;
-            return View(DEBTs);
+            var student = await _studentService.GetByIdAsync(id);
+            var Debts = student.Debts;
+            return View(Debts);
         }
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DebtsByStaffMemberAdmin(string id)
         {
-            var staff = _staffmemberService.GetByIdAsync(id).Result;
-            var mystudents = staff.Students.ToList();
+            var staff = await _staffmemberService.GetByIdAsync(id);
+            var mystudents = staff.Students;
             var myDebts = new List<DEBT>();
             foreach (var std in mystudents)
             {

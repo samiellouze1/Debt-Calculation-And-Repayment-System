@@ -80,7 +80,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AllPaymentPlans()
         {
-            var paymentplans = _paymentplanService.GetAllAsync().Result;
+            var paymentplans = await _paymentplanService.GetAllAsync();
             return View(paymentplans);
         }
 
@@ -88,7 +88,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         public async Task<IActionResult> MyPaymentPlansStudent()
         {
             var studentId = User.FindFirstValue("Id");
-            var student = _studentService.GetByIdAsync(studentId).Result;
+            var student = await _studentService.GetByIdAsync(studentId);
             var myDebts = student.Debts.ToList();
             var mypaymentplans = new List<PAYMENTPLAN>();
             foreach (var d in myDebts)
@@ -101,7 +101,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         public async Task<IActionResult> MyPaymentPlansStaffMember()
         {
             var staffId = User.FindFirstValue("Id");
-            var students = _staffmemberService.GetByIdAsync(staffId).Result.Students;
+            var staff = await _staffmemberService.GetByIdAsync(staffId);
+            var students = staff.Students;
             var paymentplans = new List<PAYMENTPLAN>();
             foreach (var std in students)
             {
@@ -116,7 +117,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> PaymentPlansByDebtAdmin(string id)
         {
-            var Debt = _debtService.GetByIdAsync(id).Result;
+            var Debt = await _debtService.GetByIdAsync(id);
             var paymentplans = new List<PAYMENTPLAN>();
             var paymentplanfulls = Debt.PaymentPlanFulls.ToList();
             var paymentplaninstallments = Debt.PaymenPlanInstallments.ToList();
@@ -127,7 +128,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         [Authorize(Roles = "StaffMember")]
         public async Task<IActionResult> PaymentPlansByDebtStaffMember(string id)
         {
-            var Debt = _debtService.GetByIdAsync(id).Result;
+            var Debt = await _debtService.GetByIdAsync(id);
             var paymentplans = new List<PAYMENTPLAN>();
             paymentplans.AddRange(Debt.PaymentPlanFulls.ToList());
             paymentplans.AddRange(Debt.PaymenPlanInstallments.ToList());
@@ -136,7 +137,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> PaymentPlansByDebtStudent(string id)
         {
-            var Debt = _debtService.GetByIdAsync(id).Result;
+            var Debt = await _debtService.GetByIdAsync(id);
             var paymentplans = new List<PAYMENTPLAN>();
             paymentplans.AddRange(Debt.PaymentPlanFulls.ToList());
             paymentplans.AddRange(Debt.PaymenPlanInstallments.ToList());
@@ -145,7 +146,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> PaymentPlansByStaffMemberAdmin(string id)
         {
-            var staffmember = _staffmemberService.GetByIdAsync(id).Result;
+            var staffmember = await _staffmemberService.GetByIdAsync(id);
             var students = staffmember.Students.ToList();
             var paymentplans = new List<PAYMENTPLAN>();
             foreach (var std in students)
@@ -161,7 +162,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> PaymentPlansByStudentAdmin(string id)
         {
-            var student = _studentService.GetByIdAsync(id).Result;
+            var student = await _studentService.GetByIdAsync(id);
             var debts = student.Debts.ToList();
             var paymentplans = new List<PAYMENTPLAN>();
             foreach (var debt in debts)
@@ -174,7 +175,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         [Authorize(Roles ="StaffMember")]
         public async Task<IActionResult> PaymentPlansByStudentStaffMember(string id)
         {
-            var student = _studentService.GetByIdAsync(id).Result;
+            var student = await _studentService.GetByIdAsync(id);
             var debts = student.Debts.ToList();
             var paymentplans = new List<PAYMENTPLAN>();
             foreach (var debt in debts)
@@ -187,19 +188,19 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DetailsByPaymentPlanAdmin(string id)
         {
-            var paymentplanfull=_paymentPlanFullService.GetByIdAsync(id).Result;
+            var paymentplanfull = await _paymentPlanFullService.GetByIdAsync(id);
             return View(paymentplanfull);
         }
         [Authorize(Roles = "StaffMember")]
         public async Task<IActionResult> DetailsByPaymentPlanStaffMember(string id)
         {
-            var paymentplanfull = _paymentPlanFullService.GetByIdAsync(id).Result;
+            var paymentplanfull = await _paymentPlanFullService.GetByIdAsync(id);
             return View(paymentplanfull);
         }
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> DetailsByPaymentPlanStudent(string id)
         {
-            var paymentplanfull = _paymentPlanFullService.GetByIdAsync(id).Result;
+            var paymentplanfull = await _paymentPlanFullService.GetByIdAsync(id);
             return View(paymentplanfull);
         }
         #endregion

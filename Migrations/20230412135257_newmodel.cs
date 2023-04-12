@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Debt_Calculation_And_Repayment_System.Migrations
 {
-    public partial class idk : Migration
+    public partial class newmodel : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -199,13 +199,33 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     DebtId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    NumOfInstallments = table.Column<int>(type: "int", nullable: true)
+                    NumOfInstallments = table.Column<int>(type: "int", nullable: true),
+                    AmountAfterInstallments = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PAYMENTPLANs", x => x.Id);
                     table.ForeignKey(
                         name: "FK_PAYMENTPLANs_DEBTs_DebtId",
+                        column: x => x.DebtId,
+                        principalTable: "DEBTs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "REQUESTs",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    NumOfMonths = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DebtId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_REQUESTs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_REQUESTs_DEBTs_DebtId",
                         column: x => x.DebtId,
                         principalTable: "DEBTs",
                         principalColumn: "Id",
@@ -292,6 +312,11 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                 name: "IX_PAYMENTPLANs_DebtId",
                 table: "PAYMENTPLANs",
                 column: "DebtId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_REQUESTs_DebtId",
+                table: "REQUESTs",
+                column: "DebtId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -313,6 +338,9 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
 
             migrationBuilder.DropTable(
                 name: "INSTALLMENTs");
+
+            migrationBuilder.DropTable(
+                name: "REQUESTs");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
