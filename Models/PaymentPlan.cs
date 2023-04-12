@@ -10,16 +10,16 @@ namespace Debt_Calculation_And_Repayment_System.Models
         [Required]
         [ScaffoldColumn(false)]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string Id { get; set; }
+        public string? Id { get; set; }
         [Required]
-        public string Type { get; set; }
+        public string? Type { get; set; }
         [Required]
-        public decimal Amount { get; set; }
+        public decimal? Amount { get; set; }
         [Required]
-        public bool Paid { get; set; }
+        public bool? Paid { get; set; }
         [Required]
-        public string DebtId { get; set; }
+        public string? DebtId { get; set; }
         [ForeignKey("DebtId")]
-        public virtual DEBT Debt { get; set; }
+        public virtual DEBT? Debt { get; set; }
     }
 }

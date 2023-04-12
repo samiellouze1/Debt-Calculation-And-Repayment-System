@@ -8,15 +8,15 @@ namespace Debt_Calculation_And_Repayment_System.Data
 {
     public class AppDbContext: IdentityDbContext<USER>
     {
-        public DbSet<USER> USERs { get; set; }
-        public DbSet<STUDENT> STUDENTs { get; set; }
-        public DbSet<STAFFMEMBER> STAFFMEMBERs { get; set; }
-        public DbSet<PAYMENTPLAN> PAYMENTPLANs { get; set; }
-        public DbSet<PAYMENTPLANINSTALLMENT> PAYMENTPLANINSTALLMENTs { get; set; }
-        public DbSet<PAYMENTPLANFULL> PAYMENTPLANFULLs { get; set; }
-        public DbSet<INSTALLMENT> INSTALLMENTs { get; set; }
-        public DbSet<DEBT> DEBTs { get; set; }
-        public DbSet<REQUEST> REQUESTs { get; set; }
+        public DbSet<USER>? USERs { get; set; }
+        public DbSet<STUDENT>? STUDENTs { get; set; }
+        public DbSet<STAFFMEMBER>? STAFFMEMBERs { get; set; }
+        public DbSet<PAYMENTPLAN>? PAYMENTPLANs { get; set; }
+        public DbSet<PAYMENTPLANINSTALLMENT>? PAYMENTPLANINSTALLMENTs { get; set; }
+        public DbSet<PAYMENTPLANFULL>? PAYMENTPLANFULLs { get; set; }
+        public DbSet<INSTALLMENT>? INSTALLMENTs { get; set; }
+        public DbSet<DEBT>? DEBTs { get; set; }
+        public DbSet<REQUEST>? REQUESTs { get; set; }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
 

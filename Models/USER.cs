@@ -8,12 +8,12 @@ namespace Debt_Calculation_And_Repayment_System.Models
     public class USER : IdentityUser,IEntityBase
     {
         [Required]
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; }
         [Required]
-        public string SurName { get; set; }
+        public string? SurName { get; set; }
         [Required]
-        public DateTime RegDate { get; set; }
+        public DateTime? RegDate { get; set; }
         [Required]
-        public string Address { get; set; }
+        public string? Address { get; set; }
     }
 }

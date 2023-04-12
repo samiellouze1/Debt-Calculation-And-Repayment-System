@@ -2,7 +2,7 @@
 {
     public class SendRequestVM
     {
-        public string NumOfMonths { get; set; }
-        public string DebtId { get; set; }
+        public string? NumOfMonths { get; set; }
+        public string? DebtId { get; set; }
     }
 }

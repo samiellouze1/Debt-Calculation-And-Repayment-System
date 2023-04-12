@@ -11,24 +11,24 @@ namespace Debt_Calculation_And_Repayment_System.Models
         [Required]
         [ScaffoldColumn(false)]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string Id { get; set; }
+        public string? Id { get; set; }
         [Required]
-        public decimal InitialAmount { get; set; }
+        public decimal? InitialAmount { get; set; }
         [Required]
         [Range(0,1)]
-        public decimal InterestRate { get; set; }
+        public decimal? InterestRate { get; set; }
         [Required]
-        public DateTime StartDate { get; set; }
+        public DateTime? StartDate { get; set; }
         [Required]
-        public DateTime RegDate { get; set; }
+        public DateTime? RegDate { get; set; }
         [Required]
-        public bool Paid { get; set; }
+        public bool? Paid { get; set; }
         [Required]
-        public string StudentId { get; set; }
+        public string? StudentId { get; set; }
         [ForeignKey("StudentId")]
-        public virtual STUDENT Student { get; set; }
-        public virtual List<REQUEST> Requests { get; set; } = new List<REQUEST>();
-        public virtual List<PAYMENTPLANFULL> PaymentPlanFulls { get; set; } = new List<PAYMENTPLANFULL>();
-        public virtual List<PAYMENTPLANINSTALLMENT> PaymenPlanInstallments { get; set; } = new List<PAYMENTPLANINSTALLMENT>();
+        public virtual STUDENT? Student { get; set; }
+        public virtual List<REQUEST>? Requests { get; set; } = new List<REQUEST>();
+        public virtual List<PAYMENTPLANFULL>? PaymentPlanFulls { get; set; } = new List<PAYMENTPLANFULL>();
+        public virtual List<PAYMENTPLANINSTALLMENT>? PaymenPlanInstallments { get; set; } = new List<PAYMENTPLANINSTALLMENT>();
     }
 }
