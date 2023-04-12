@@ -36,7 +36,7 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasPrecision(4, 3)
                         .HasColumnType("decimal(4,3)");
 
-                    b.Property<bool?>("Paid")
+                    b.Property<bool>("Paid")
                         .IsRequired()
                         .HasColumnType("bit");
 
@@ -70,7 +70,7 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasPrecision(18, 4)
                         .HasColumnType("decimal(18,4)");
 
-                    b.Property<bool?>("Paid")
+                    b.Property<bool>("Paid")
                         .IsRequired()
                         .HasColumnType("bit");
 
@@ -106,7 +106,7 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("Paid")
+                    b.Property<bool>("Paid")
                         .IsRequired()
                         .HasColumnType("bit");
 
