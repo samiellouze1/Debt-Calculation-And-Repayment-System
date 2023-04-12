@@ -110,7 +110,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                         new REQUEST()
                         {
                             NumOfMonths=3,
-                            Status=true,
+                            Status="not decided",
                             DebtId="1"
                         }
                     });

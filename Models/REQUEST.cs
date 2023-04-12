@@ -14,7 +14,7 @@ namespace Debt_Calculation_And_Repayment_System.Models
         [Required]
         public int NumOfMonths { get; set; }
         [Required]
-        public bool? Status { get; set; }
+        public string? Status { get; set; }
         [Required]
         public string? DebtId { get; set; }
         [ForeignKey("DebtId")]

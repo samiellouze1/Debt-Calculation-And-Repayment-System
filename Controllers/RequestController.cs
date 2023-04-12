@@ -27,6 +27,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var vm = new SendRequestVM();
             return View(vm);
         }
+        [Authorize(Roles ="Student")]
         [HttpPost]
         public async Task<IActionResult> SendRequest(SendRequestVM srvm)
         {
@@ -34,10 +35,23 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             {
                 NumOfMonths= srvm.NumOfMonths,
                 DebtId=srvm.DebtId,
-                Status=false
+                Status="not decided"
             };
             await _requestService.AddAsync(request);
             return RedirectToAction("Index", "Home");
+        }
+        [Authorize(Roles ="StaffMember")]
+        public IActionResult DecideRequest ()
+        {
+            var vm = new DecideRequestVM();
+            return View(vm);
+        }
+        [Authorize(Roles ="StaffMember")]
+        public async Task<IActionResult> DecideRequest(DecideRequestVM vm)
+        {
+            var request = await _requestService.GetByIdAsync(vm.RequestId);
+            await _requestService.UpdateAsync(vm.RequestId,new REQUEST() { NumOfMonths=request.NumOfMonths,Status=vm.decision,DebtId=request.DebtId});
+            return View(vm);
         }
         #region getters
         [Authorize(Roles ="Admin")]
