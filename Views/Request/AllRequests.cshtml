@@ -5,41 +5,42 @@
 @section Title {
     All Requests
 }
-<div class="container-fluid px-0 py-5" style="width:1200px;margin-left:10%;margin-right:10%;">
-    <div class="row mx-0 justify-content-center pt-5">
-        <div class="col-lg-6">
-            <div class="section-title text-center position-relative mb-4">
-                <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">This specific view is only viewed by admins</h6>
-                <h1 class="display-4">All Requests</h1>
+    <div class="container-fluid px-0 py-5" style="max-width:1200px;margin:0 auto;">
+        <div class="row mx-0 justify-content-center pt-5">
+            <div class="col-lg-6">
+                <div class="section-title text-center position-relative mb-4" style="margin-bottom:30px;">
+                    <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">This specific view is only viewed by admins</h6>
+                    <h1 class="display-4">All Requests</h1>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row justify-content-center bg-image mx-0 mb-5">
-        <div class="col-lg-12 py-6">
-            <table class="table " style="width:1000px;margin-left:10%;margin-right:10%;">
-                <thead>
-                    <tr>
-                        <th scope="col">NumOfMonths</th>
-                        <th scope="col">Status</th>
-                        <th scope="col"></th>
-                        <th scope="col">Staff Member</th>
-                        <th scope="col">Student</th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr class="table">
-                            <td>@item.NumOfMonths</td>
-                            <td>@item.Status</td>
-                            <td><a asp-controller="PaymentPlan" asp-action="PaymentPlanByDebtAdmin">Debt</a></td>
-                            <td><a asp-controller="Account" asp-action="StaffMemberAdmin" asp-route=@item.Debt.Student.StaffMemberId>@item.Debt.Student.StaffMember.Email</a></td>
-                            <td><a asp-controller="Account" asp-action="StudentAdmin" asp-route=@item.Debt.StudentId>@item.Debt.StudentId</a></td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+        <div class="row justify-content-center mx-0 mb-5">
+            <div class="col-lg-12 py-6">
+                <div class="table-responsive">
+                    <table class="table" style="table-layout:fixed;width:100%;margin:0 auto;">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="width:10%;">NumOfMonths</th>
+                                <th scope="col" style="width:20%;">Status</th>
+                                <th scope="col" style="width:10%;"></th>
+                                <th scope="col" style="width:30%;">Staff Member</th>
+                                <th scope="col" style="width:30%;">Student</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td style="width:10%;">@item.NumOfMonths</td>
+                                <td style="width:20%;">@item.Status</td>
+                                <td style="width:10%;"><a asp-controller="PaymentPlan" asp-action="PaymentPlanByDebtAdmin">Debt</a></td>
+                                <td style="width:30%;"><a asp-controller="Account" asp-action="StaffMemberAdmin" asp-route-id=@item.Debt.Student.StaffMember.Id>@item.Debt.Student.StaffMember.Email</a></td>
+                                <td style="width:30%;"><a asp-controller="Account" asp-action="StudentAdmin" asp-route-id=@item.Debt.StudentId>@item.Debt.StudentId</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

@@ -32,8 +32,8 @@
                         <tr class="table">
                             <td>@item.NumOfMonths</td>
                             <td>@item.Status</td>
-                            <td><a asp-controller="PaymentPlan" asp-action="PaymentPlanByDebtAdmin">Debt</a></td>
-                            <td><a asp-controller="Account" asp-action="StudentAdmin" asp-route=@item.Debt.StudentId>@item.Debt.StudentId</a></td>
+                            <td><a asp-controller="PaymentPlan" asp-action="PaymentPlanByDebtStaffMemer" asp-route-id=@item.DebtId>Debt</a></td>
+                            <td><a asp-controller="Account" asp-action="StudentStaffMember" asp-route-id=@item.Debt.StudentId>@item.Debt.StudentId</a></td>
                         </tr>
                     }
                 </tbody>

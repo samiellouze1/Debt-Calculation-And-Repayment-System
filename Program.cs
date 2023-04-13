@@ -14,7 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMvc().AddRazorRuntimeCompilation();
 builder.Services.AddDbContext<AppDbContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Add services to the container.
+// Add services to the container
+builder.Services.AddScoped<IREQUESTService, REQUESTService>();
 builder.Services.AddScoped<IPAYMENTPLANFULLService, PAYMENTPLANFULLService>();
 builder.Services.AddScoped<IPAYMENTPLANINSTALLMENTService, PAYMENTPLANINSTALLMENTService>();
 builder.Services.AddScoped<IPAYMENTPLANService, PAYMENTPLANService>();

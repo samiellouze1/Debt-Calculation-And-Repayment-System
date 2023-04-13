@@ -21,10 +21,12 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             _staffmemberService = staffmemberService;
             _debtService = debtService;
         }
+
+        #region sendrequest
         [Authorize(Roles ="Student")]
-        public IActionResult SendRequest()
+        public IActionResult SendRequest(string id)
         {
-            var vm = new SendRequestVM();
+            var vm = new SendRequestVM() { DebtId = id };
             return View(vm);
         }
         [Authorize(Roles ="Student")]
@@ -40,6 +42,10 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             await _requestService.AddAsync(request);
             return RedirectToAction("Index", "Home");
         }
+        [HttpPost]
+        #endregion
+
+        #region deciderequest
         [Authorize(Roles ="StaffMember")]
         public IActionResult DecideRequest ()
         {
@@ -53,6 +59,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             await _requestService.UpdateAsync(vm.RequestId,new REQUEST() { NumOfMonths=request.NumOfMonths,Status=vm.decision,DebtId=request.DebtId});
             return View(vm);
         }
+        #endregion
+
         #region getters
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> RequestsByDebtAdmin(string debtid)
@@ -119,5 +127,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             return View(requests);
         }
         #endregion
+
     }
 }

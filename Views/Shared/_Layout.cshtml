@@ -94,17 +94,21 @@
                                     <a asp-controller="Account" asp-action="AllStudents" class="dropdown-item">Students</a>
                                 </div>
                             </div>
+                            <a asp-controller="Request" asp-action="AllRequests"class="nav-item nav-link active">All Requests</a>
                         }
                         @if (User.IsInRole("StaffMember"))
                         {
                             <a asp-controller="Debt" asp-action="MyDebtsStaffMember" class="nav-item nav-link active">Scolarship Debts</a>
                             <a asp-controller="PaymentPlan" asp-action="MyPaymentPlansStaffMember" class="nav-item nav-link active">Payment Plans</a>
                             <a asp-controller="Account" asp-action="MyStudentsStaffMember" class="nav-item nav-link active">My Students</a>
+                            <a asp-controller="Request" asp-action="MyRequestsStaffMember" class="nav-item nav-link active">My Requests</a>
+
                         }
                         @if (User.IsInRole("Student"))
                         {
                             <a asp-controller="Debt" asp-action="MyDebtsStudent"  class="nav-item nav-link active">Scolarship Debts</a>
                             <a asp-controller="PaymentPlan" asp-action="MyPaymentPlansStudent" class="nav-item nav-link active">Payment Plans</a>
+                            <a asp-controller="Request" asp-action="MyRequestsStudent" class="nav-item nav-link active">My Requests</a>
                         }
                     }
                 </div>

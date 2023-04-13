@@ -23,6 +23,7 @@
                         <th scope="col">Start Date</th>
                         <th scope="col">Interest Rate</th>
                         <th scope="col"></th>
+                        <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -33,6 +34,7 @@
                             <td>@item.StartDate</td>
                             <td>@item.InterestRate</td>
                             <td><a asp-controller="PaymentPlan" asp-action="PaymentPlansByDebtStudent" asp-route-id=@item.Id>Payment Plans</a></td>
+                            <td><a asp-controller="Request" asp-action="SendRequest" asp-route-id=@item.Id>Make Request about this debt</a></td>
                         </tr>
                     }
                 </tbody>
