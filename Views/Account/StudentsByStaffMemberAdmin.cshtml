@@ -23,7 +23,6 @@
                         <th scope="col">FirstName</th>
                         <th scope="col">SurName</th>
                         <th scope="col">PhoneNumber</th>
-                        <th scope="col">Number of Scolarship Debts</th>
                         <th scope="col">Registration Date</th>
                     </tr>
                 </thead>
@@ -31,11 +30,10 @@
                     @foreach (var item in Model)
                     {
                         <tr class="table-primary">
-                            <td>@item.UserName</td>
+                            <td><a asp-controller="Account" asp-action="StudentAdmin" asp-route-id=@item.Id>@item.UserName</a></td>
                             <td>@item.FirstName</td>
                             <td>@item.SurName</td>
                             <td>@item.PhoneNumber</td>
-                            <td><a asp-controller="Debt" asp-action="DebtsByStudentAdmin" asp-route-id=@item.Id>@item.Debts.Count()</a></td>
                             <td>@item.RegDate</td>
                         </tr>
                     }

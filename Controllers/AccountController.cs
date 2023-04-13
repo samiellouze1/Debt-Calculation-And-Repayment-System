@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Net.Mail;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Debt_Calculation_And_Repayment_System.Controllers
 {
@@ -327,6 +328,28 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var staff = await _staffmemberService.GetByIdAsync(id);
             var students = staff.Students.ToList();
             return View(students);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> StaffMemberAdmin(string id)
+        {
+            var staff = await _staffmemberService.GetByIdAsync(id);
+            return View(staff);
+
+        }
+
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> StudentAdmin(string id)
+        {
+            var student = await _studentService.GetByIdAsync(id);
+            return View(student);
+        }
+
+        [Authorize(Roles="StaffMember")]
+        public async Task<IActionResult> StudentStaffMember(string id)
+        {
+            var student = await _studentService.GetByIdAsync(id);
+            return View(student);
         }
         #endregion
 

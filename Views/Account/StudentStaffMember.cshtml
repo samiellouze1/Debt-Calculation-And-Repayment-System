@@ -1,0 +1,21 @@
+﻿@model STUDENT;
+@{
+    ViewData["Title"] = "Student";
+}
+
+
+@section Title {
+            Student @Model.FirstName @Model.SurName
+}
+
+<div class="jumbotron jumbotron-fluid position-relative overlay-bottom mb-0 pb-5">
+    <div class="container text-center my-5 py-5">
+        <h1 class="text-white mt-4 mb-4">Details about student</h1>
+        <h1 class="text-white display-1 mb-5">@Model.FirstName @Model.SurName</h1>
+        <div class="d-flex justify-content-center">
+            <a asp-controller="Debt" asp-action="DebtsByStudentStaffMember" asp-route-id=@Model.Id class="btn btn-secondary px-3 px-lg-5 mr-3">Debts</a>
+            <a asp-controller="PaymentPlan" asp-action="PaymentPlansByStudentStaffMember" asp-route-id=@Model.Id class="btn btn-secondary px-3 px-lg-5 mr-3">Payment Plans</a>
+            <a asp-controller="Request" asp-action="RequestsByStudentStaffMember" asp-route-id=@Model.Id class="btn btn-secondary px-3 px-lg-5 mr-3">Requests</a>
+        </div>
+    </div>
+</div>

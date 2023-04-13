@@ -248,6 +248,5 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             return View(requests);
         }
         #endregion
-
     }
 }

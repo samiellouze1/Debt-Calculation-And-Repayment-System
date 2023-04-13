@@ -37,7 +37,7 @@
                             <td>@item.SurName</td>
                             <td>@item.PhoneNumber</td>
                             <td><a asp-controller="Debt" asp-action="DebtsByStaffMemberAdmin" asp-route-id=@item.Id>Not Implemeted</a></td>
-                            <td><a asp-controller="Account" asp-action="StudentsByStaffMemberAdmin" asp-route-id=@item.Id>@item.Students.Count()</a></td>
+                            <td><a asp-controller="Account" asp-action="StaffMemberAdmin" asp-route-id=@item.Id>@item.Students.Count()</a></td>
                             <td>@item.RegDate</td>
                         </tr>
                     }

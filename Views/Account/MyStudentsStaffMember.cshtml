@@ -31,7 +31,7 @@
                     @foreach (var item in Model)
                     {
                         <tr class="table-primary">
-                            <td>@item.UserName</td>
+                            <td><a asp-controller="Account" asp-action="StudentStaffMember" asp-route-id=@item.Id>@item.UserName</a></td>
                             <td>@item.FirstName</td>
                             <td>@item.SurName</td>
                             <td>@item.PhoneNumber</td>
