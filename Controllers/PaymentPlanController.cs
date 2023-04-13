@@ -17,7 +17,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         private readonly ISTAFFMEMBERService _staffmemberService;
         private readonly IPAYMENTPLANFULLService _paymentPlanFullService;
         private readonly IPAYMENTPLANINSTALLMENTService _paymentPlanInstallmentService;
-        private readonly IINSTALLMENTService _installmentService;
         private readonly ISTUDENTService _studentService;
         public PaymentPlanController(IPAYMENTPLANService paymentplanService, ISTAFFMEMBERService staffmemberService, ISTUDENTService studentService, IDEBTService debtService, IPAYMENTPLANFULLService paymentplanfullService, IPAYMENTPLANINSTALLMENTService paymentPlanInstallmentService, IINSTALLMENTService installmentService)
         {
@@ -27,64 +26,15 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             _debtService = debtService;
             _paymentPlanFullService = paymentplanfullService;
             _paymentPlanInstallmentService = paymentPlanInstallmentService;
-            _installmentService = installmentService;
         }
-        [HttpPost]
-        [Authorize(Roles = "Admin, StaffMember")]
-        public async Task GeneratePaymentPlans(GeneratePaymentPlansVM gppvm)
-        {
-            var debt = _debtService.GetByIdAsync(gppvm.DebtId).Result;
-            var NumOfMonths = gppvm.NumOfMonths;
-            var startdate = debt.StartDate;
-            var interest = debt.InterestRate;
-            var initialamount = debt.InitialAmount;
-            var amoundpaidfull = debt.PaymentPlanFulls.ToList().Sum(ppf=>ppf.Amount);
-            var amountpaidinstallment = debt.PaymenPlanInstallments.ToList().Where(ppi => ppi.Paid == true).Sum(ppi => ppi.Amount);
-            var amounttopayinstallment = debt.InitialAmount - amoundpaidfull - amountpaidinstallment;
-            foreach( var ppi in debt.PaymenPlanInstallments.ToList())
-            {
-                await _paymentPlanInstallmentService.DeleteAsync(ppi.Id);
-            }
-            var insterestcalculs = new List<InterestCalculVM>();
-            var installments = new List<INSTALLMENT>();
-            for (var monthnum = 1; monthnum<=NumOfMonths; monthnum++)
-            {
-                insterestcalculs.Add(new InterestCalculVM()
-                {
-                    PaymentDate= startdate.AddMonths(monthnum),
-                    InitialAmount=initialamount/NumOfMonths,
-                    AmountafterInstallments=initialamount*interest*(startdate.AddMonths(monthnum)-startdate.AddMonths(monthnum-1)).Days/36500
-                });
-            }
-            var paymentinstallment = new PAYMENTPLANINSTALLMENT()
-            {
-                Amount = debt.InitialAmount,
-                Type = "I",
-                Paid = false,
-                DebtId = gppvm.DebtId,
-                NumOfInstallments = NumOfMonths,
-                AmountAfterInstallments = insterestcalculs.Sum(ic => ic.AmountafterInstallments),
-            };
-            await _paymentPlanInstallmentService.AddAsync(paymentinstallment);
-            foreach (var ic in insterestcalculs)
-            {
-                await _installmentService.AddAsync(new INSTALLMENT()
-                {
-                    Amount=paymentinstallment.AmountAfterInstallments/NumOfMonths,
-                    Paid=false,
-                    SupposedPaymentDate=ic.PaymentDate,
-                    PaymentPlanInstallmentId=paymentinstallment.Id
-                });
-            }
-        }
+
+        #region getters
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AllPaymentPlans()
         {
             var paymentplans = await _paymentplanService.GetAllAsync();
             return View(paymentplans);
         }
-
-        #region getters
         public async Task<IActionResult> MyPaymentPlansStudent()
         {
             var studentId = User.FindFirstValue("Id");
@@ -188,5 +138,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             return View(paymentplanfull);
         }
         #endregion
+
     }
 }
