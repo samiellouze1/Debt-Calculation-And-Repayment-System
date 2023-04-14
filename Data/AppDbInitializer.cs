@@ -89,11 +89,18 @@ namespace Debt_Calculation_And_Repayment_System.Data
                         Address = "Turkey",
                         DebtRegister = new DEBTREGISTER()
                         {
-                            DebtsTotal=300m,
+                            Total=300m,
+                            TotalAfterInterest=300m,
+                            TotalAfterRequest=300m,
+                            TotalCash=300m,
                             PaidCash=30m,
+                            NotPaidCash=300m,
+                            TotalInstallment=300m,
+                            TotalInstallmentAfterRequest=300m,
                             PaidInstallment=90m,
                             NotPaidInstallment=50m,
                             InterestRate=0.9m,
+                            RegDate=DateTime.Now,
                             Payments = new List<PAYMENT>()
                             {
                                 new PAYMENT(){Sum=3000m,Paid=true,Type="Full",PaymentDate=new DateTime(2021,2,1)},
@@ -102,23 +109,25 @@ namespace Debt_Calculation_And_Repayment_System.Data
                             },
                             Request = new REQUEST()
                             {
-                                PaidFull=1500m,
+                                ToBePaidFull=1500m,
+                                ToBePaidInstallment=1500m,
                                 NumOfMonths=30,
                                 InterestRate=0.31m,
+                                RegDate=DateTime.Now
                             },
                             Debts = new List<DEBT>()
                             {
                                 new DEBT()
                                 {
-                                    InitialAmount=300m,
+                                    Amount=300m,
                                     StartDate=new DateTime(2021,1,2),
-                                    InterestRate=0.9m
+                                    RegDate=DateTime.Now
                                 },
                                 new DEBT()
                                 {
-                                    InitialAmount=300m,
+                                    Amount=300m,
                                     StartDate=new DateTime(2021,1,2),
-                                    InterestRate=0.9m
+                                    RegDate=DateTime.Now
                                 }
                             },
                             Installments = new List<INSTALLMENT>()

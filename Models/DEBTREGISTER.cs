@@ -12,11 +12,25 @@ namespace Debt_Calculation_And_Repayment_System.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
         [Required]
-        public decimal DebtsTotal { get; set; }
+        public decimal TotalCash { get; set; }
+        [Required]
+        public decimal Total { get; set; }
+        [Required]
+        public decimal TotalAfterInterest { get; set; }
+        [Required]
+        public decimal TotalAfterRequest { get; set; }
         [Required]
         public decimal PaidCash { get; set; }
         [Required]
+        public decimal NotPaidCash { get; set; }
+        [Required]
+        public decimal TotalInstallmentAfterRequest { get; set; }
+        [Required]
+        public decimal TotalInstallment { get; set; }
+        [Required]
         public decimal PaidInstallment { get; set; }
+        [Required]
+        public DateTime RegDate { get; set; }
         [Required]
         public decimal NotPaidInstallment { get; set; }
         [Required]
