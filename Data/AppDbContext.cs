@@ -24,8 +24,8 @@ namespace Debt_Calculation_And_Repayment_System.Data
         {
             builder.Entity<STUDENT>().HasOne(s => s.StaffMember).WithMany(s => s.Students).OnDelete(DeleteBehavior.ClientSetNull);
 
-            builder.Entity<STUDENT>().HasOne(s => s.DebtRegister).WithOne(dr => dr.Student).HasForeignKey<DEBTREGISTER>(dr => dr.Id);
-            builder.Entity<DEBTREGISTER>().HasOne(dr => dr.Request).WithOne(r => r.DebtRegister).HasForeignKey<REQUEST>(r => r.Id);
+            builder.Entity<STUDENT>().HasOne(s => s.DebtRegister).WithOne(dr => dr.Student).HasForeignKey<DEBTREGISTER>(dr => dr.Id).OnDelete(DeleteBehavior.ClientSetNull);            builder.Entity<DEBTREGISTER>().HasOne(dr => dr.Request).WithOne(r => r.DebtRegister).HasForeignKey<REQUEST>(r => r.Id).OnDelete(DeleteBehavior.ClientSetNull);
+
 
             builder.Entity<STAFFMEMBER>().Navigation(sm => sm.Students).AutoInclude();
 

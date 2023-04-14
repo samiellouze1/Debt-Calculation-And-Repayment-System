@@ -24,6 +24,6 @@ namespace Debt_Calculation_And_Repayment_System.Models
         public decimal InterestRate { get; set; }
         public virtual STUDENT Student { get; set; }
         public virtual REQUEST Request { get; set; }
-        public virtual List<DEBT> Debts { get; set; }
+        public virtual List<DEBT> Debts { get; set; } = new List<DEBT>();
     }
 }

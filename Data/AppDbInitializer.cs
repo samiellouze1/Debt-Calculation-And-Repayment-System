@@ -1,7 +1,6 @@
 ﻿using Debt_Calculation_And_Repayment_System.Data.Static;
 using Debt_Calculation_And_Repayment_System.Models;
 using Microsoft.AspNetCore.Identity;
-using System.Drawing.Drawing2D;
 
 namespace Debt_Calculation_And_Repayment_System.Data
 {
@@ -9,80 +8,10 @@ namespace Debt_Calculation_And_Repayment_System.Data
     {
         public static void Seed(IApplicationBuilder applicationBuilder)
         {
-            using (var serviceScope=applicationBuilder.ApplicationServices.CreateScope())
+            using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetService<AppDbContext>();
                 context.Database.EnsureCreated();
-
-                #region debts
-                if (!context.DEBTs.Any())
-                {
-                    context.DEBTs.AddRange(new List<DEBT>()
-                    {
-                        new DEBT() 
-                        { 
-                            //Id="1",
-                            //InitialAmount=3000, 
-                            //StartDate= new DateTime(2021,1,1),
-                            //InterestRate=9m,
-                            //RegDate=DateTime.Now,
-                            //StudentId="3"
-                        },
-                        new DEBT() 
-                        { 
-                            //Id="2",
-                            //InitialAmount=6000,
-                            //StartDate= new DateTime(2020,1,1),
-                            //InterestRate=9m,
-                            //RegDate=DateTime.Now,
-                            //StudentId="3"
-                        },
-                    });
-                    context.SaveChanges();
-                }
-                #endregion
-                #region Installment
-                if (!context.INSTALLMENTs.Any())
-                {
-                    context.INSTALLMENTs.AddRange(new List<INSTALLMENT>()
-                    {
-                        new INSTALLMENT()
-                        {
-                            //Id = "1",
-                            //Amount=1000,
-                            //SupposedPaymentDate=new DateTime(2021,1,1),
-                            //ActualPaymentDate=new DateTime(2021,1,1),
-                            //PaymentPlanInstallmentId="2"
-                        }
-                    });
-                    context.SaveChanges();
-                    context.INSTALLMENTs.AddRange(new List<INSTALLMENT>()
-                    {
-                        new INSTALLMENT()
-                        {
-                            //Id = "2",
-                            //Amount=1000,
-                            //SupposedPaymentDate=new DateTime(2021,2,1),
-                            //ActualPaymentDate=new DateTime(2021,2,1),
-                            //PaymentPlanInstallmentId="2"
-                        }
-                    });
-                    context.SaveChanges();
-                }
-                #endregion
-
-                #region request
-                if (!context.REQUESTs.Any())
-                {
-                    context.REQUESTs.AddRange(new List<REQUEST>()
-                    {
-                        new REQUEST()
-                        {
-                            //
-                        }
-                    });
-                }
-                #endregion
             }
         }
         public static async Task SeedUsersAndRolesAsync(IApplicationBuilder applicationbuilder)
@@ -111,14 +40,13 @@ namespace Debt_Calculation_And_Repayment_System.Data
                 {
                     var newUserAdmin = new USER()
                     {
-                        Id = "1",
                         FirstName = "Admin",
                         SurName = "User",
                         RegDate = DateTime.Now,
                         UserName = useradminemail,
                         PhoneNumber = "12345678",
                         Email = useradminemail,
-                        Address="Turkey"
+                        Address = "Turkey"
                     };
                     await userManager.CreateAsync(newUserAdmin, "Adminuser123@");
                     await userManager.AddToRoleAsync(newUserAdmin, UserRoles.Admin);
@@ -128,11 +56,10 @@ namespace Debt_Calculation_And_Repayment_System.Data
                 #region staffmember
                 string userstaffemail = "staff@debt.com";
                 var userstaff = await userManager.FindByEmailAsync(userstaffemail);
-                if (userstaff==null)
+                if (userstaff == null)
                 {
                     var newUserStaff = new STAFFMEMBER()
                     {
-                        Id = "2",
                         FirstName = "Staff",
                         SurName = "Member",
                         RegDate = DateTime.Now,
@@ -153,15 +80,62 @@ namespace Debt_Calculation_And_Repayment_System.Data
                 {
                     var newUserStudent = new STUDENT()
                     {
-                        //Id = "3",
-                        //FirstName = "Student",
-                        //SurName = "User",
-                        //RegDate = DateTime.Now,
-                        //UserName = userstudentemail,
-                        //PhoneNumber = "12345678",
-                        //Email = userstudentemail,
-                        //StaffMemberId="2",
-                        //Address = "Turkey"
+                        Email = userstudentemail,
+                        UserName = userstudentemail,
+                        FirstName = "Student",
+                        SurName = "User",
+                        RegDate = DateTime.Now,
+                        PhoneNumber = "12345678",
+                        Address = "Turkey",
+                        Payments = new List<PAYMENT>()
+                        {
+                            new PAYMENT(){Sum=3000m,Paid=true,Type="Full",PaymentDate=new DateTime(2021,2,1)},
+                            new PAYMENT(){Sum=3000m,Paid=true,Type="Installment",PaymentDate=new DateTime(2021,2,1)},
+                            new PAYMENT(){Sum=3000m,Paid=true,Type="Full",PaymentDate=new DateTime(2021,2,1)}
+                        },
+                        DebtRegister = new DEBTREGISTER()
+                        {
+                            DebtsTotal=300m,
+                            PaidCash=30m,
+                            PaidInstallment=90m,
+                            NotPaidInstallment=50m,
+                            InterestRate=0.9m,
+                            Request = new REQUEST() 
+                            {
+                                PaidFull=1500m,
+                                NumOfMonths=30,
+                                InterestRate=0.31m,
+                            },
+                            Debts = new List<DEBT>()
+                            {
+                                new DEBT()
+                                {
+                                    Installments=new List<INSTALLMENT>()
+                                    {
+                                        new INSTALLMENT()
+                                        {
+                                            InitialAmount=1500m,
+                                            AmountAfterInterest=1600m,
+                                            StartDate=new DateTime(2021,1,1),
+                                            FinishDate=new DateTime(2022,1,1)
+                                        }
+                                    }
+                                },
+                                new DEBT()
+                                {
+                                    Installments=new List<INSTALLMENT>()
+                                    {
+                                        new INSTALLMENT()
+                                        {
+                                            InitialAmount=1500m,
+                                            AmountAfterInterest=1600m,
+                                            StartDate=new DateTime(2021,1,1),
+                                            FinishDate=new DateTime(2022,1,1)
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     };
                     await userManager.CreateAsync(newUserStudent, "Student123@");
                     await userManager.AddToRoleAsync(newUserStudent, UserRoles.Student);

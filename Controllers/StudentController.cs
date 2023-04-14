@@ -1,6 +1,7 @@
 ﻿using Debt_Calculation_And_Repayment_System.Data.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol;
 using System.Security.Claims;
 
 namespace Debt_Calculation_And_Repayment_System.Controllers
@@ -14,23 +15,19 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             _studentService = studentService;
             _staffmemberService = staffmemberService;
         }
-        [Authorize(Roles ="Admin, StaffMember")]
-        public async Task<IActionResult> Student(string id)
+        public async Task<IActionResult> StudentById(string id)
         {
             var student = _studentService.GetByIdAsync(id);
             return View("Student", student);
         }
-        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> AllStudents()
         {
             var students = await _studentService.GetAllAsync();
             return View("Students",students);
         }
-        [Authorize(Roles ="StaffMember")]
-        public async Task<IActionResult> MyStudents()
+        public async Task<IActionResult> StudentsByStaffMember(string id)
         {
-            var staffid = User.FindFirstValue("Id");
-            var staffmember=await _staffmemberService.GetByIdAsync(staffid);
+            var staffmember = await _staffmemberService.GetByIdAsync(id);
             var students = staffmember.Students;
             return View("Students", students);
         }

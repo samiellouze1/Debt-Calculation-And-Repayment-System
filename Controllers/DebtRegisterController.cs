@@ -16,25 +16,9 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             _debtregisterService = debtregisterService;
             _studentService = studentService;
         }
-        [Authorize(Roles ="Admin")]
-        public async Task<IActionResult> AllDebtRegisters()
+        public async Task<IActionResult> DebtRegisterByStudent(string id)
         {
-            var debtregisters = _debtregisterService.GetAllAsync();
-            return View("DebtRegisters",debtregisters);
-        }
-        [Authorize(Roles ="StaffMember")]
-        public async Task<IActionResult> MyDebtRegistersStaffMember()
-        {
-            var staffid = User.FindFirstValue("Id");
-            var staffmember =await _staffmemberService.GetByIdAsync(staffid);
-            var debtregisters = staffmember.Students.Select(s => s.DebtRegister);
-            return View("DebtRegisters", debtregisters);
-        }
-        [Authorize(Roles ="Student")]
-        public async Task<IActionResult> MyDebtRegisterStudent()
-        {
-            var studentid=User.FindFirstValue("Id");
-            var student= await _studentService.GetByIdAsync(studentid);
+            var student = await _studentService.GetByIdAsync(id);
             var debtregister = student.DebtRegister;
             return View("DebtRegister", debtregister);
         }

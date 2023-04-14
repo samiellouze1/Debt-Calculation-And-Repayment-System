@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Net.Mail;
-using System.Security.Claims;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Debt_Calculation_And_Repayment_System.Controllers
 {
@@ -20,17 +18,43 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         private readonly IUSERService _userService;
         private readonly ISTAFFMEMBERService _staffmemberService;
         private readonly ISTUDENTService _studentService;
-        private readonly AppDbContext _context;
-        public AccountController(UserManager<USER> usermanager, SignInManager<USER> signinmanager, AppDbContext context, ISTAFFMEMBERService staffmemberService, ISTUDENTService studentService, IUSERService userService)
+        public AccountController(UserManager<USER> usermanager, SignInManager<USER> signinmanager, ISTAFFMEMBERService staffmemberService, ISTUDENTService studentService, IUSERService userService)
         {
             _userManager = usermanager;
             _signInManager = signinmanager;
             _staffmemberService = staffmemberService;
-            _context = context;
             _studentService = studentService;
             _userService = userService;
         }
-        #region getters
+        #region affectation
+        public IActionResult AffectStudentToStaffMember()
+        {
+            var vm = new AffectVM();
+            return View(vm);
+        }
+        public async Task<IActionResult> AffectStudentToStaffMember(AffectVM vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(vm);
+            }
+            else
+            {
+                try
+                {
+                    var oldstaffmember = await _staffmemberService.GetByIdAsync(vm.StaffId);
+                    var student = await _studentService.GetByIdAsync(vm.StudentId);
+                    var newstaffmember = new STAFFMEMBER() { FirstName = oldstaffmember.FirstName, SurName = oldstaffmember.SurName, RegDate=oldstaffmember.RegDate,PhoneNumber=oldstaffmember.PhoneNumber,Address=oldstaffmember.Address,Students=oldstaffmember.Students.Concat(new List<STUDENT>() { student}).ToList()};
+                    await _staffmemberService.UpdateAsync(vm.StaffId, newstaffmember);
+                    return RedirectToAction("Index", "Home");
+                }
+                catch (Exception ex)
+                {
+                    TempData["Error"] = ex.Message;
+                    return View(vm);
+                }
+            }
+        }
         #endregion
 
         #region normal registration
@@ -64,31 +88,31 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             TempData["Error"] = "Wrong! Try Again";
             return View(loginvm);
         }
-        public async Task<IActionResult> EditUser(string id)
-        {
-            var user = await _userManager.FindByIdAsync(id);
-            var vm = new EditVM()
-            {
-                FirstName = user.FirstName,
-                SurName = user.SurName,
-            };
-            return View(id, vm);
-        }
-        [HttpPost]
-        public async Task<IActionResult> EditUser(string id, EditVM editStudentVM)
-        {
-            var dbuser = await _userManager.FindByIdAsync(id);
+        //public async Task<IActionResult> EditUser(string id)
+        //{
+        //    var user = await _userManager.FindByIdAsync(id);
+        //    var vm = new EditVM()
+        //    {
+        //        FirstName = user.FirstName,
+        //        SurName = user.SurName,
+        //    };
+        //    return View(id, vm);
+        //}
+        //[HttpPost]
+        //public async Task<IActionResult> EditUser(string id, EditVM editStudentVM)
+        //{
+        //    var dbuser = await _userManager.FindByIdAsync(id);
 
-            if (dbuser != null)
-            {
-                dbuser.FirstName = editStudentVM.FirstName;
-                dbuser.SurName = editStudentVM.SurName;
-                dbuser.PhoneNumber = editStudentVM.PhoneNumber;
-                dbuser.Address = editStudentVM.Address;
-                await _context.SaveChangesAsync();
-            }
-            return RedirectToAction("Index", "Home");
-        }
+        //    if (dbuser != null)
+        //    {
+        //        dbuser.FirstName = editStudentVM.FirstName;
+        //        dbuser.SurName = editStudentVM.SurName;
+        //        dbuser.PhoneNumber = editStudentVM.PhoneNumber;
+        //        dbuser.Address = editStudentVM.Address;
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    return RedirectToAction("Index", "Home");
+        //}
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
@@ -226,7 +250,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             //return RedirectToAction("Index", "Home");
         }
         [HttpGet]
-        public  IActionResult ResetPassword(string email, string code)
+        public IActionResult ResetPassword(string email, string code)
         {
             // Verify that the email and code are valid
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(code))

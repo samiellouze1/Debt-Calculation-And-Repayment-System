@@ -7,6 +7,6 @@ namespace Debt_Calculation_And_Repayment_System.Models
     {
         public virtual STAFFMEMBER StaffMember { get; set; }
         public virtual DEBTREGISTER DebtRegister { get; set; }
-        public virtual List<PAYMENT> Payments { get; set; }
+        public virtual List<PAYMENT> Payments { get; set; } = new List<PAYMENT>();
     }
 }
