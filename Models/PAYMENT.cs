@@ -1,25 +1,22 @@
 ﻿using Debt_Calculation_And_Repayment_System.Data.Repository;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace Debt_Calculation_And_Repayment_System.Models
 {
-    public class PAYMENTPLAN : IEntityBase
+    public class PAYMENT:IEntityBase
     {
         [Key]
         [Required]
         [ScaffoldColumn(false)]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string? Id { get; set; }
+        public string Id { get; set; }
         [Required]
-        public string? Type { get; set; }
-        [Required]
-        public decimal Amount { get; set; }
+        public decimal Sum { get; set; }
         [Required]
         public bool Paid { get; set; }
         [Required]
-        public string? DebtId { get; set; }
-        [ForeignKey("DebtId")]
-        public virtual DEBT? Debt { get; set; }
+        public DateTime PaymentDate { get; set; }
+        public virtual STUDENT Student { get; set; }
     }
 }

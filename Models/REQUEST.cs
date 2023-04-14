@@ -10,15 +10,15 @@ namespace Debt_Calculation_And_Repayment_System.Models
         [Required]
         [ScaffoldColumn(false)]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string? Id { get; set; }
+        public string Id { get; set; }
+        [Required]
+        public decimal PaidFull { get; set; }
         [Required]
         public int NumOfMonths { get; set; }
         [Required]
-        public string? Status { get; set; }
+        public virtual STUDENT Student { get; set; }
         [Required]
-        public string? DebtId { get; set; }
-        [ForeignKey("DebtId")]
-        public virtual DEBT? Debt { get; set; }
-        
+        public virtual DEBTREGISTER DebtRegister { get; set; }
+
     }
 }

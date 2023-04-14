@@ -3,6 +3,6 @@
     public class SendRequestVM
     {
         public int NumOfMonths { get; set; }
-        public string? DebtId { get; set; }
+        public string DebtId { get; set; }
     }
 }

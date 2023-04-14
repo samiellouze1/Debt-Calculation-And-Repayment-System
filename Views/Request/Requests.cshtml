@@ -20,22 +20,14 @@
                     <table class="table" style="table-layout:fixed;width:100%;margin:0 auto;">
                         <thead>
                             <tr>
-                                <th scope="col" style="width:10%;">NumOfMonths</th>
-                                <th scope="col" style="width:20%;">Status</th>
-                                <th scope="col" style="width:10%;"></th>
-                                <th scope="col" style="width:30%;">Staff Member</th>
-                                <th scope="col" style="width:30%;">Student</th>
+                                <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
                         @foreach (var item in Model)
                         {
                             <tr>
-                                <td style="width:10%;">@item.NumOfMonths</td>
-                                <td style="width:20%;">@item.Status</td>
-                                <td style="width:10%;"><a asp-controller="PaymentPlan" asp-action="PaymentPlanByDebtAdmin">Debt</a></td>
-                                <td style="width:30%;"><a asp-controller="Account" asp-action="StaffMemberAdmin" asp-route-id=@item.Debt.Student.StaffMember.Id>@item.Debt.Student.StaffMember.Email</a></td>
-                                <td style="width:30%;"><a asp-controller="Account" asp-action="StudentAdmin" asp-route-id=@item.Debt.StudentId>@item.Debt.StudentId</a></td>
+                                <td></td>
                             </tr>
                         }
                     </tbody>

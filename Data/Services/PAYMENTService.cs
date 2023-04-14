@@ -4,9 +4,9 @@ using Debt_Calculation_And_Repayment_System.Models;
 
 namespace Debt_Calculation_And_Repayment_System.Data.Services
 {
-    public class PAYMENTPLANFULLService: EntityBaseRepository<PAYMENTPLANFULL>,IPAYMENTPLANFULLService
+    public class PAYMENTService: EntityBaseRepository<PAYMENT>,IPAYMENTService
     {
-        public PAYMENTPLANFULLService(AppDbContext context): base(context)
+        public PAYMENTService(AppDbContext context): base(context)
         {
 
         }

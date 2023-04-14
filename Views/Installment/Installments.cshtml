@@ -1,16 +1,16 @@
-﻿@model List<REQUEST>
+﻿@model List<INSTALLMENT>
 @{
-    ViewData["Title"] = "All Requests";
+    ViewData["Title"] = "Installments By Payment Plan";
 }
 @section Title {
-    My Requests
+    Installment By Payment Plan
 }
 <div class="container-fluid px-0 py-5" style="width:1200px;margin-left:10%;margin-right:10%;">
     <div class="row mx-0 justify-content-center pt-5">
         <div class="col-lg-6">
             <div class="section-title text-center position-relative mb-4">
-                <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">This specific view is only viewed by staff members</h6>
-                <h1 class="display-4">My Requests</h1>
+                <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">**************************</h6>
+                <h1 class="display-4">**************************</h1>
             </div>
         </div>
     </div>
@@ -19,10 +19,7 @@
             <table class="table " style="width:1000px;margin-left:10%;margin-right:10%;">
                 <thead>
                     <tr>
-                        <th scope="col">NumOfMonths</th>
-                        <th scope="col">Status</th>
                         <th scope="col"></th>
-                        <th scope="col">Student</th>
 
                     </tr>
                 </thead>
@@ -30,10 +27,7 @@
                     @foreach (var item in Model)
                     {
                         <tr class="table">
-                            <td>@item.NumOfMonths</td>
-                            <td>@item.Status</td>
-                            <td><a asp-controller="PaymentPlan" asp-action="PaymentPlanByDebtStaffMemer" asp-route-id=@item.DebtId>Debt</a></td>
-                            <td><a asp-controller="Account" asp-action="StudentStaffMember" asp-route-id=@item.Debt.StudentId>@item.Debt.StudentId</a></td>
+                            <td></td>
                         </tr>
                     }
                 </tbody>

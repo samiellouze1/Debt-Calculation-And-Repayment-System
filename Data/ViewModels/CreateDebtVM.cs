@@ -15,7 +15,7 @@ namespace Debt_Calculation_And_Repayment_System.Data.ViewModels
         [Required]
         public bool Paid { get; set; }
         [Required]
-        public string? StudentId { get; set; }
+        public string StudentId { get; set; }
         public List<STUDENT>? Students { get; set; }
     }
 }

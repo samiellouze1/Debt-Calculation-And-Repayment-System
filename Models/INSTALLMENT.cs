@@ -10,17 +10,15 @@ namespace Debt_Calculation_And_Repayment_System.Models
         [Required]
         [ScaffoldColumn(false)]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string? Id { get; set; }
+        public string Id { get; set; }
         [Required]
-        public decimal Amount { get; set; }
+        public decimal InitialAmount { get; set; }
         [Required]
-        public bool Paid { get; set; }
+        public decimal AmountAfterInterest { get; set; }
         [Required]
-        public DateTime SupposedPaymentDate {get;set; }
-        public DateTime ActualPaymentDate { get; set; }
+        public DateTime StartDate { get; set; }
         [Required]
-        public string? PaymentPlanInstallmentId { get; set; }
-        [ForeignKey("PaymentPlanInstallmentId")]
-        public PAYMENTPLANINSTALLMENT? PaymentPlanInstallment { get; set; }
+        public DateTime FinishDate { get; set; }
+        public virtual DEBT Debt { get; set; }
     }
 }

@@ -323,7 +323,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             return View(students);
         }
         [Authorize(Roles ="Admin")]
-        public async Task<IActionResult> StudentsByStaffMemberAdmin(string id)
+        public async Task<IActionResult> StudentsByStaffMember(string id)
         {
             var staff = await _staffmemberService.GetByIdAsync(id);
             var students = staff.Students.ToList();
@@ -331,11 +331,10 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> StaffMemberAdmin(string id)
+        public async Task<IActionResult> StaffMember(string id)
         {
             var staff = await _staffmemberService.GetByIdAsync(id);
             return View(staff);
-
         }
 
         [Authorize(Roles ="Admin")]
@@ -346,7 +345,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         }
 
         [Authorize(Roles="StaffMember")]
-        public async Task<IActionResult> StudentStaffMember(string id)
+        public async Task<IActionResult> StudentByStaffMember(string id)
         {
             var student = await _studentService.GetByIdAsync(id);
             return View(student);

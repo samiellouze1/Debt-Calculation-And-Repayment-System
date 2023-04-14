@@ -25,15 +25,15 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AllDebts()
         {
-            var DEBTs = await _debtService.GetAllAsync();
-            return View(DEBTs);
+            var Debts = await _debtService.GetAllAsync();
+            return View(Debts);
         }
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> MyDebtsStudent()
         {
             var studentId = User.FindFirstValue("Id");
             var student = await _studentService.GetByIdAsync(studentId);
-            var myDEBTs = student.Debts.ToList();
+            var myDEBTs = student.DebtRegister.Debts.ToList();
             return View(myDEBTs);
         }
         [Authorize(Roles = "StaffMember")]
@@ -43,30 +43,22 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var staff = await _staffmemberService.GetByIdAsync(staffId);
             var myStudents = staff.Students.ToList();
             var mydebts = new List<DEBT>();
-            mydebts.AddRange(myStudents.SelectMany(s => s.Debts).ToList());
+            mydebts.AddRange(myStudents.Select(s=>s.DebtRegister).SelectMany(s => s.Debts).ToList());
             return View(mydebts);
         }
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DebtsByStudentAdmin(string id)
+
+        public async Task<IActionResult> DebtsByStudent(string id)
         {
             var student = await _studentService.GetByIdAsync(id);
-            var Debts = student.Debts;
+            var Debts = student.DebtRegister.Debts;
             return View(Debts);
         }
-        [Authorize(Roles = "StaffMember")]
-        public async Task<IActionResult> DebtsByStudentStaffMember(string id)
-        {
-            var student = await _studentService.GetByIdAsync(id);
-            var Debts = student.Debts;
-            return View(Debts);
-        }
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DebtsByStaffMemberAdmin(string id)
+        public async Task<IActionResult> DebtsByStaffMember(string id)
         {
             var staff = await _staffmemberService.GetByIdAsync(id);
             var mystudents = staff.Students;
             var myDebts = new List<DEBT>();
-            myDebts.AddRange(mystudents.SelectMany(s=>s.Debts).ToList());
+            myDebts.AddRange(mystudents.Select(s=>s.DebtRegister).SelectMany(s=>s.Debts).ToList());
             return View(myDebts);
         }
         #endregion
@@ -89,23 +81,14 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         {
             var newdebt = new DEBT()
             {
-                InitialAmount = debtVM.InitialAmount,
-                InterestRate = debtVM.InterestRate,
-                StartDate = debtVM.StartDate,
-                RegDate = DateTime.Now,
-                Paid = debtVM.Paid,
-                StudentId = debtVM.StudentId,
+                //InitialAmount = debtVM.InitialAmount,
+                //InterestRate = debtVM.InterestRate,
+                //StartDate = debtVM.StartDate,
+                //RegDate = DateTime.Now,
+                //Paid = debtVM.Paid,
+                //StudentId = debtVM.StudentId,
             };
-            try
-            {
-                await _debtService.AddAsync(newdebt);
-            }
-            catch (DbUpdateException ex)
-            {
-                var message = ex.InnerException?.Message ?? ex.Message;
-                Console.WriteLine(message);
-                throw;
-            }
+            await _debtService.AddAsync(newdebt);
             return RedirectToAction("Index", "Home");
         }
         #endregion

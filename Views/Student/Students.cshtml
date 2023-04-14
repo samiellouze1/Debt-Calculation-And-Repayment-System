@@ -19,26 +19,14 @@
             <table class="table " style="width:1000px;margin-left:10%;margin-right:10%;">
                 <thead>
                     <tr>
-                        <th scope="col">UserName</th>
-                        <th scope="col">FirstName</th>
-                        <th scope="col">SurName</th>
-                        <th scope="col">PhoneNumber</th>
-                        <th scope="col">Scolarship Debts</th>
-                        <th scope="col">Registration Date</th>
-                        <th scope="col">Staff Member</th>
+                        <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model)
                     {
                         <tr class="table-primary">
-                            <td>@item.UserName</td>
-                            <td>@item.FirstName</td>
-                            <td>@item.SurName</td>
-                            <td>@item.PhoneNumber</td>
-                            <td><a asp-controller="Debt" asp-action="DebtsByStudentAdmin" asp-route-id=@item.Id>@item.Debts.Count()</a></td>
-                            <td>@item.RegDate</td>
-                            <td><a asp-controller="Account" asp-action="StaffMemberAdmin" asp-route-id=@item.StaffMemberId>@item.StaffMember.Email</a></td>
+                            <td></td>
                         </tr>
                     }
                 </tbody>
