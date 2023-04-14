@@ -19,6 +19,6 @@ namespace Debt_Calculation_And_Repayment_System.Models
         public string Type { get; set; }
         [Required]
         public DateTime PaymentDate { get; set; }
-        public virtual STUDENT Student { get; set; }
+        public virtual DEBTREGISTER DebtRegister { get; set; }
     }
 }

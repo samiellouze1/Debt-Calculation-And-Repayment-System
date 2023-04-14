@@ -16,9 +16,7 @@ namespace Debt_Calculation_And_Repayment_System.Models
         [Required]
         public decimal AmountAfterInterest { get; set; }
         [Required]
-        public DateTime StartDate { get; set; }
-        [Required]
-        public DateTime FinishDate { get; set; }
-        public virtual DEBT Debt { get; set; }
+        public DateTime PaymentDate { get; set; }
+        public virtual DEBTREGISTER DebtRegister { get; set; }
     }
 }

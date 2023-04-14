@@ -14,12 +14,10 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
     {
         private readonly IDEBTService _debtService;
         private readonly IDEBTREGISTERService _debtregisterService;
-        private readonly ISTUDENTService _studentService;
         private readonly ISTAFFMEMBERService _staffmemberService;
-        public DebtController(IDEBTService debtService, ISTUDENTService studentService, ISTAFFMEMBERService staffmemberService,IDEBTREGISTERService debtregisterService)
+        public DebtController(IDEBTService debtService, ISTAFFMEMBERService staffmemberService,IDEBTREGISTERService debtregisterService)
         {
             _debtService = debtService;
-            _studentService = studentService;
             _staffmemberService = staffmemberService;
             _debtregisterService = debtregisterService;
         }
@@ -61,5 +59,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             return RedirectToAction("Index", "Home");
         }
         #endregion
+
     }
 }

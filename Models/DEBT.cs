@@ -21,7 +21,6 @@ namespace Debt_Calculation_And_Repayment_System.Models
         public DateTime StartDate { get; set; }
         [Required]
         public DateTime RegDate { get; set; }
-        public virtual List<INSTALLMENT> Installments { get; set; } = new List<INSTALLMENT>();
         public virtual DEBTREGISTER DebtRegister { get; set; }
     }
 }

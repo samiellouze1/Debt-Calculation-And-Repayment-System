@@ -87,12 +87,6 @@ namespace Debt_Calculation_And_Repayment_System.Data
                         RegDate = DateTime.Now,
                         PhoneNumber = "12345678",
                         Address = "Turkey",
-                        Payments = new List<PAYMENT>()
-                        {
-                            new PAYMENT(){Sum=3000m,Paid=true,Type="Full",PaymentDate=new DateTime(2021,2,1)},
-                            new PAYMENT(){Sum=3000m,Paid=true,Type="Installment",PaymentDate=new DateTime(2021,2,1)},
-                            new PAYMENT(){Sum=3000m,Paid=true,Type="Full",PaymentDate=new DateTime(2021,2,1)}
-                        },
                         DebtRegister = new DEBTREGISTER()
                         {
                             DebtsTotal=300m,
@@ -100,7 +94,13 @@ namespace Debt_Calculation_And_Repayment_System.Data
                             PaidInstallment=90m,
                             NotPaidInstallment=50m,
                             InterestRate=0.9m,
-                            Request = new REQUEST() 
+                            Payments = new List<PAYMENT>()
+                            {
+                                new PAYMENT(){Sum=3000m,Paid=true,Type="Full",PaymentDate=new DateTime(2021,2,1)},
+                                new PAYMENT(){Sum=3000m,Paid=true,Type="Installment",PaymentDate=new DateTime(2021,2,1)},
+                                new PAYMENT(){Sum=3000m,Paid=true,Type="Full",PaymentDate=new DateTime(2021,2,1)}
+                            },
+                            Request = new REQUEST()
                             {
                                 PaidFull=1500m,
                                 NumOfMonths=30,
@@ -110,29 +110,30 @@ namespace Debt_Calculation_And_Repayment_System.Data
                             {
                                 new DEBT()
                                 {
-                                    Installments=new List<INSTALLMENT>()
-                                    {
-                                        new INSTALLMENT()
-                                        {
-                                            InitialAmount=1500m,
-                                            AmountAfterInterest=1600m,
-                                            StartDate=new DateTime(2021,1,1),
-                                            FinishDate=new DateTime(2022,1,1)
-                                        }
-                                    }
+                                    InitialAmount=300m,
+                                    StartDate=new DateTime(2021,1,2),
+                                    InterestRate=0.9m
                                 },
                                 new DEBT()
                                 {
-                                    Installments=new List<INSTALLMENT>()
-                                    {
-                                        new INSTALLMENT()
-                                        {
-                                            InitialAmount=1500m,
-                                            AmountAfterInterest=1600m,
-                                            StartDate=new DateTime(2021,1,1),
-                                            FinishDate=new DateTime(2022,1,1)
-                                        }
-                                    }
+                                    InitialAmount=300m,
+                                    StartDate=new DateTime(2021,1,2),
+                                    InterestRate=0.9m
+                                }
+                            },
+                            Installments = new List<INSTALLMENT>()
+                            {
+                                new INSTALLMENT()
+                                {
+                                    InitialAmount=1500m,
+                                    AmountAfterInterest=1600m,
+                                    PaymentDate=new DateTime(2021,1,1),
+                                },
+                                new INSTALLMENT()
+                                {
+                                    InitialAmount=1500m,
+                                    AmountAfterInterest=1600m,
+                                    PaymentDate=new DateTime(2021,1,1),
                                 }
                             }
                         }

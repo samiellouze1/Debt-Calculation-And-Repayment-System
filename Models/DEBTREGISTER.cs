@@ -25,5 +25,7 @@ namespace Debt_Calculation_And_Repayment_System.Models
         public virtual STUDENT Student { get; set; }
         public virtual REQUEST Request { get; set; }
         public virtual List<DEBT> Debts { get; set; } = new List<DEBT>();
+        public virtual List<PAYMENT> Payments { get; set; } = new List<PAYMENT>();
+        public virtual List<INSTALLMENT> Installments { get; set; } = new List<INSTALLMENT>();
     }
 }

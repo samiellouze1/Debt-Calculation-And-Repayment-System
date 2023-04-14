@@ -12,16 +12,16 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
 {
     public class PaymentController : Controller
     {
-        private readonly IPAYMENTService _paymentService;
+        private readonly IDEBTREGISTERService _debtregisterService;
         private readonly ISTUDENTService _studentService;
-        public PaymentController(IPAYMENTService paymentService, ISTUDENTService studentService)
+        public PaymentController(IDEBTREGISTERService debtregisterService, ISTUDENTService studentService)
         {
-            _paymentService = paymentService;
             _studentService = studentService;
+            _debtregisterService = debtregisterService;
         }
-        public async Task<IActionResult> PaymentsByStudent(string id)
+        public async Task<IActionResult> PaymentsByDebtRegister(string id)
         {
-            var student = await _studentService.GetByIdAsync(id);
+            var student = await _debtregisterService.GetByIdAsync(id);
             var payments = student.Payments;
             return View("Payments", payments);
         }
