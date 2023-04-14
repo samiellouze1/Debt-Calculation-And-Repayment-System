@@ -20,6 +20,7 @@ namespace Debt_Calculation_And_Repayment_System.Models
         [Required]
         public decimal NotPaidInstallment { get; set; }
         [Required]
+        [Range(0,1)]
         public decimal InterestRate { get; set; }
         public virtual STUDENT Student { get; set; }
         public virtual REQUEST Request { get; set; }

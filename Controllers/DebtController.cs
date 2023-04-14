@@ -26,15 +26,15 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         public async Task<IActionResult> AllDebts()
         {
             var Debts = await _debtService.GetAllAsync();
-            return View(Debts);
+            return View("Debts",Debts);
         }
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> MyDebtsStudent()
         {
             var studentId = User.FindFirstValue("Id");
             var student = await _studentService.GetByIdAsync(studentId);
-            var myDEBTs = student.DebtRegister.Debts.ToList();
-            return View(myDEBTs);
+            var myDebts = student.DebtRegister.Debts.ToList();
+            return View("Debts",myDebts);
         }
         [Authorize(Roles = "StaffMember")]
         public async Task<IActionResult> MyDebtsStaffMember()
@@ -44,9 +44,9 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var myStudents = staff.Students.ToList();
             var mydebts = new List<DEBT>();
             mydebts.AddRange(myStudents.Select(s=>s.DebtRegister).SelectMany(s => s.Debts).ToList());
-            return View(mydebts);
+            return View("Debts",mydebts);
         }
-
+        [Authorize(Roles ="Admin, StaffMember")]
         public async Task<IActionResult> DebtsByStudent(string id)
         {
             var student = await _studentService.GetByIdAsync(id);
@@ -59,7 +59,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var mystudents = staff.Students;
             var myDebts = new List<DEBT>();
             myDebts.AddRange(mystudents.Select(s=>s.DebtRegister).SelectMany(s=>s.Debts).ToList());
-            return View(myDebts);
+            return View("Debts", myDebts);
         }
         #endregion
 

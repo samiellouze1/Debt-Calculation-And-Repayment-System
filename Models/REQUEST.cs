@@ -16,8 +16,8 @@ namespace Debt_Calculation_And_Repayment_System.Models
         [Required]
         public int NumOfMonths { get; set; }
         [Required]
-        public virtual STUDENT Student { get; set; }
-        [Required]
+        [Range(0,1)]
+        public decimal InterestRate { get; set; }
         public virtual DEBTREGISTER DebtRegister { get; set; }
 
     }

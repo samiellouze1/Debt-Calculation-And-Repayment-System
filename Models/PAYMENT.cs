@@ -16,6 +16,8 @@ namespace Debt_Calculation_And_Repayment_System.Models
         [Required]
         public bool Paid { get; set; }
         [Required]
+        public string Type { get; set; }
+        [Required]
         public DateTime PaymentDate { get; set; }
         public virtual STUDENT Student { get; set; }
     }

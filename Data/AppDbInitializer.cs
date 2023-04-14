@@ -21,53 +21,22 @@ namespace Debt_Calculation_And_Repayment_System.Data
                     {
                         new DEBT() 
                         { 
-                            Id="1",
-                            InitialAmount=3000, 
-                            StartDate= new DateTime(2021,1,1),
-                            InterestRate=9m,
-                            RegDate=DateTime.Now,
-                            StudentId="3"
+                            //Id="1",
+                            //InitialAmount=3000, 
+                            //StartDate= new DateTime(2021,1,1),
+                            //InterestRate=9m,
+                            //RegDate=DateTime.Now,
+                            //StudentId="3"
                         },
                         new DEBT() 
                         { 
-                            Id="2",
-                            InitialAmount=6000,
-                            StartDate= new DateTime(2020,1,1),
-                            InterestRate=9m,
-                            RegDate=DateTime.Now,
-                            StudentId="3"
+                            //Id="2",
+                            //InitialAmount=6000,
+                            //StartDate= new DateTime(2020,1,1),
+                            //InterestRate=9m,
+                            //RegDate=DateTime.Now,
+                            //StudentId="3"
                         },
-                    });
-                    context.SaveChanges();
-                }
-                #endregion
-                #region PaymentPlan
-                if (!context.PAYMENTPLANs.Any())
-                {
-                    context.PAYMENTPLANFULLs.AddRange(new List<PAYMENTPLANFULL>()
-                    {
-                        new PAYMENTPLANFULL()
-                        {
-                            Id = "1",
-                            Type= "F",
-                            Amount=1500,
-                            Paid=true,
-                            DebtId="1"
-                        }
-                    });
-                    context.SaveChanges();
-                    context.PAYMENTPLANINSTALLMENTs.AddRange(new List<PAYMENTPLANINSTALLMENT>() 
-                    { 
-                        new PAYMENTPLANINSTALLMENT()
-                        {
-                            Id = "2",
-                            Type= "I",
-                            Amount=1500,
-                            Paid=false,
-                            NumOfInstallments=2,
-                            DebtId="1",
-                            AmountAfterInstallments=2000
-                        }
                     });
                     context.SaveChanges();
                 }
@@ -79,11 +48,11 @@ namespace Debt_Calculation_And_Repayment_System.Data
                     {
                         new INSTALLMENT()
                         {
-                            Id = "1",
-                            Amount=1000,
-                            SupposedPaymentDate=new DateTime(2021,1,1),
-                            ActualPaymentDate=new DateTime(2021,1,1),
-                            PaymentPlanInstallmentId="2"
+                            //Id = "1",
+                            //Amount=1000,
+                            //SupposedPaymentDate=new DateTime(2021,1,1),
+                            //ActualPaymentDate=new DateTime(2021,1,1),
+                            //PaymentPlanInstallmentId="2"
                         }
                     });
                     context.SaveChanges();
@@ -91,11 +60,11 @@ namespace Debt_Calculation_And_Repayment_System.Data
                     {
                         new INSTALLMENT()
                         {
-                            Id = "2",
-                            Amount=1000,
-                            SupposedPaymentDate=new DateTime(2021,2,1),
-                            ActualPaymentDate=new DateTime(2021,2,1),
-                            PaymentPlanInstallmentId="2"
+                            //Id = "2",
+                            //Amount=1000,
+                            //SupposedPaymentDate=new DateTime(2021,2,1),
+                            //ActualPaymentDate=new DateTime(2021,2,1),
+                            //PaymentPlanInstallmentId="2"
                         }
                     });
                     context.SaveChanges();
@@ -109,9 +78,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                     {
                         new REQUEST()
                         {
-                            NumOfMonths=3,
-                            Status="not decided",
-                            DebtId="1"
+                            //
                         }
                     });
                 }
@@ -186,15 +153,15 @@ namespace Debt_Calculation_And_Repayment_System.Data
                 {
                     var newUserStudent = new STUDENT()
                     {
-                        Id = "3",
-                        FirstName = "Student",
-                        SurName = "User",
-                        RegDate = DateTime.Now,
-                        UserName = userstudentemail,
-                        PhoneNumber = "12345678",
-                        Email = userstudentemail,
-                        StaffMemberId="2",
-                        Address = "Turkey"
+                        //Id = "3",
+                        //FirstName = "Student",
+                        //SurName = "User",
+                        //RegDate = DateTime.Now,
+                        //UserName = userstudentemail,
+                        //PhoneNumber = "12345678",
+                        //Email = userstudentemail,
+                        //StaffMemberId="2",
+                        //Address = "Turkey"
                     };
                     await userManager.CreateAsync(newUserStudent, "Student123@");
                     await userManager.AddToRoleAsync(newUserStudent, UserRoles.Student);

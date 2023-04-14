@@ -23,6 +23,8 @@ namespace Debt_Calculation_And_Repayment_System.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<STUDENT>().HasOne(s => s.StaffMember).WithMany(s => s.Students).OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder.Entity<STUDENT>().HasOne(s => s.DebtRegister).WithOne(dr => dr.Student).HasForeignKey<DEBTREGISTER>(dr => dr.Id);
             builder.Entity<DEBTREGISTER>().HasOne(dr => dr.Request).WithOne(r => r.DebtRegister).HasForeignKey<REQUEST>(r => r.Id);
 
             builder.Entity<STAFFMEMBER>().Navigation(sm => sm.Students).AutoInclude();
@@ -41,6 +43,25 @@ namespace Debt_Calculation_And_Repayment_System.Data
             builder.Entity<DEBT>().Navigation(d => d.Installments).AutoInclude();
 
             builder.Entity<INSTALLMENT>().Navigation(i => i.Debt).AutoInclude();
+
+            builder.Entity<DEBT>().Property(d => d.InitialAmount).HasPrecision(18, 4);
+            builder.Entity<DEBT>().Property(d => d.InterestRate).HasPrecision(18, 4);
+
+            builder.Entity<DEBTREGISTER>().Property(dr => dr.DebtsTotal).HasPrecision(18, 4);
+            builder.Entity<DEBTREGISTER>().Property(dr => dr.PaidCash).HasPrecision(18, 4);
+            builder.Entity<DEBTREGISTER>().Property(dr => dr.PaidInstallment).HasPrecision(18, 4);
+            builder.Entity<DEBTREGISTER>().Property(dr => dr.NotPaidInstallment).HasPrecision(18, 4);
+            builder.Entity<DEBTREGISTER>().Property(dr => dr.InterestRate).HasPrecision(18, 4);
+
+            builder.Entity<INSTALLMENT>().Property(i=>i.InitialAmount).HasPrecision(18, 4);
+            builder.Entity<INSTALLMENT>().Property(i=>i.AmountAfterInterest).HasPrecision(18, 4);
+
+            builder.Entity<PAYMENT>().Property(p => p.Sum).HasPrecision(18, 4);
+
+            builder.Entity<REQUEST>().Property(r => r.PaidFull).HasPrecision(18, 4);
+            builder.Entity<REQUEST>().Property(r => r.InterestRate).HasPrecision(18, 4);
+
+
 
             base.OnModelCreating(builder);
         }

@@ -30,6 +30,9 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             _studentService = studentService;
             _userService = userService;
         }
+        #region getters
+        #endregion
+
         #region normal registration
         public IActionResult Login()
         {
@@ -298,61 +301,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             TempData["SuccessMessage"] = "A password reset email has been sent to your email address";
             return RedirectToAction("Index", "Home");
         }
-
-        #endregion
-
-        #region getters
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AllStaffMembers()
-        {
-            var staffmembers = await _staffmemberService.GetAllAsync();
-            return View(staffmembers);
-        }
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AllStudents()
-        {
-            var students = await _studentService.GetAllAsync();
-            return View(students);
-        }
-        [Authorize(Roles = "StaffMember")]
-        public async Task<IActionResult> MyStudentsStaffMember(string id)
-        {
-            var staffmemberId = User.FindFirstValue("Id");
-            var staffmember = await _staffmemberService.GetByIdAsync(staffmemberId);
-            var students = staffmember.Students;
-            return View(students);
-        }
-        [Authorize(Roles ="Admin")]
-        public async Task<IActionResult> StudentsByStaffMember(string id)
-        {
-            var staff = await _staffmemberService.GetByIdAsync(id);
-            var students = staff.Students.ToList();
-            return View(students);
-        }
-
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> StaffMember(string id)
-        {
-            var staff = await _staffmemberService.GetByIdAsync(id);
-            return View(staff);
-        }
-
-        [Authorize(Roles ="Admin")]
-        public async Task<IActionResult> StudentAdmin(string id)
-        {
-            var student = await _studentService.GetByIdAsync(id);
-            return View(student);
-        }
-
-        [Authorize(Roles="StaffMember")]
-        public async Task<IActionResult> StudentByStaffMember(string id)
-        {
-            var student = await _studentService.GetByIdAsync(id);
-            return View(student);
-        }
-        #endregion
-
-        #region generaterandompassword
         public static string GenerateRandomPassword(int length)
         {
             const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+";

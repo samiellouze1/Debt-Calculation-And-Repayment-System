@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Debt_Calculation_And_Repayment_System.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230412140340_newmodelfixed")]
-    partial class newmodelfixed
+    [Migration("20230414034927_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,16 +30,17 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("DebtRegisterId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<decimal>("InitialAmount")
                         .HasPrecision(18, 4)
                         .HasColumnType("decimal(18,4)");
 
                     b.Property<decimal>("InterestRate")
-                        .HasPrecision(4, 3)
-                        .HasColumnType("decimal(4,3)");
-
-                    b.Property<bool>("Paid")
-                        .HasColumnType("bit");
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
 
                     b.Property<DateTime>("RegDate")
                         .HasColumnType("datetime2");
@@ -47,15 +48,42 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("StudentId")
-                        .IsRequired()
+                    b.HasKey("Id");
+
+                    b.HasIndex("DebtRegisterId");
+
+                    b.ToTable("DEBTs");
+                });
+
+            modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.DEBTREGISTER", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("DebtsTotal")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<decimal>("InterestRate")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<decimal>("NotPaidInstallment")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<decimal>("PaidCash")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<decimal>("PaidInstallment")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StudentId");
-
-                    b.ToTable("DEBTs");
+                    b.ToTable("DEBTREGISTERs");
                 });
 
             modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.INSTALLMENT", b =>
@@ -64,37 +92,7 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("ActualPaymentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("Amount")
-                        .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
-
-                    b.Property<bool>("Paid")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("PaymentPlanInstallmentId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("SupposedPaymentDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PaymentPlanInstallmentId");
-
-                    b.ToTable("INSTALLMENTs");
-                });
-
-            modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.PAYMENTPLAN", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<decimal>("Amount")
+                    b.Property<decimal>("AmountAfterInterest")
                         .HasPrecision(18, 4)
                         .HasColumnType("decimal(18,4)");
 
@@ -102,12 +100,41 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("FinishDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("InitialAmount")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DebtId");
+
+                    b.ToTable("INSTALLMENTs");
+                });
+
+            modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.PAYMENT", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("Paid")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("StudentId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("Sum")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -115,9 +142,9 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PAYMENTPLANs");
+                    b.HasIndex("StudentId");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("PAYMENTPLAN");
+                    b.ToTable("PAYMENTs");
                 });
 
             modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.REQUEST", b =>
@@ -126,17 +153,18 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("DebtId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<decimal>("InterestRate")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
 
-                    b.Property<string>("NumOfMonths")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("NumOfMonths")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("PaidFull")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DebtId");
 
                     b.ToTable("REQUESTs");
                 });
@@ -360,34 +388,6 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.PAYMENTPLANFULL", b =>
-                {
-                    b.HasBaseType("Debt_Calculation_And_Repayment_System.Models.PAYMENTPLAN");
-
-                    b.Property<DateTime>("PaymentDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasIndex("DebtId");
-
-                    b.HasDiscriminator().HasValue("PAYMENTPLANFULL");
-                });
-
-            modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.PAYMENTPLANINSTALLMENT", b =>
-                {
-                    b.HasBaseType("Debt_Calculation_And_Repayment_System.Models.PAYMENTPLAN");
-
-                    b.Property<decimal>("AmountAfterInstallments")
-                        .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
-
-                    b.Property<int>("NumOfInstallments")
-                        .HasColumnType("int");
-
-                    b.HasIndex("DebtId");
-
-                    b.HasDiscriminator().HasValue("PAYMENTPLANINSTALLMENT");
-                });
-
             modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.STAFFMEMBER", b =>
                 {
                     b.HasBaseType("Debt_Calculation_And_Repayment_System.Models.USER");
@@ -410,9 +410,20 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
 
             modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.DEBT", b =>
                 {
-                    b.HasOne("Debt_Calculation_And_Repayment_System.Models.STUDENT", "Student")
+                    b.HasOne("Debt_Calculation_And_Repayment_System.Models.DEBTREGISTER", "DebtRegister")
                         .WithMany("Debts")
-                        .HasForeignKey("StudentId")
+                        .HasForeignKey("DebtRegisterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DebtRegister");
+                });
+
+            modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.DEBTREGISTER", b =>
+                {
+                    b.HasOne("Debt_Calculation_And_Repayment_System.Models.STUDENT", "Student")
+                        .WithOne("DebtRegister")
+                        .HasForeignKey("Debt_Calculation_And_Repayment_System.Models.DEBTREGISTER", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -421,24 +432,33 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
 
             modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.INSTALLMENT", b =>
                 {
-                    b.HasOne("Debt_Calculation_And_Repayment_System.Models.PAYMENTPLANINSTALLMENT", "PaymentPlanInstallment")
-                        .WithMany("Installments")
-                        .HasForeignKey("PaymentPlanInstallmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("PaymentPlanInstallment");
-                });
-
-            modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.REQUEST", b =>
-                {
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.DEBT", "Debt")
-                        .WithMany("Requests")
+                        .WithMany("Installments")
                         .HasForeignKey("DebtId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Debt");
+                });
+
+            modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.PAYMENT", b =>
+                {
+                    b.HasOne("Debt_Calculation_And_Repayment_System.Models.STUDENT", "Student")
+                        .WithMany("Payments")
+                        .HasForeignKey("StudentId");
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.REQUEST", b =>
+                {
+                    b.HasOne("Debt_Calculation_And_Repayment_System.Models.DEBTREGISTER", "DebtRegister")
+                        .WithOne("Request")
+                        .HasForeignKey("Debt_Calculation_And_Repayment_System.Models.REQUEST", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DebtRegister");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -492,28 +512,6 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.PAYMENTPLANFULL", b =>
-                {
-                    b.HasOne("Debt_Calculation_And_Repayment_System.Models.DEBT", "Debt")
-                        .WithMany("PaymentPlanFulls")
-                        .HasForeignKey("DebtId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Debt");
-                });
-
-            modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.PAYMENTPLANINSTALLMENT", b =>
-                {
-                    b.HasOne("Debt_Calculation_And_Repayment_System.Models.DEBT", "Debt")
-                        .WithMany("PaymenPlanInstallments")
-                        .HasForeignKey("DebtId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Debt");
-                });
-
             modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.STUDENT", b =>
                 {
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.STAFFMEMBER", "StaffMember")
@@ -526,16 +524,15 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
 
             modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.DEBT", b =>
                 {
-                    b.Navigation("PaymenPlanInstallments");
-
-                    b.Navigation("PaymentPlanFulls");
-
-                    b.Navigation("Requests");
+                    b.Navigation("Installments");
                 });
 
-            modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.PAYMENTPLANINSTALLMENT", b =>
+            modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.DEBTREGISTER", b =>
                 {
-                    b.Navigation("Installments");
+                    b.Navigation("Debts");
+
+                    b.Navigation("Request")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.STAFFMEMBER", b =>
@@ -545,7 +542,10 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
 
             modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.STUDENT", b =>
                 {
-                    b.Navigation("Debts");
+                    b.Navigation("DebtRegister")
+                        .IsRequired();
+
+                    b.Navigation("Payments");
                 });
 #pragma warning restore 612, 618
         }

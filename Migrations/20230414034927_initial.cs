@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Debt_Calculation_And_Repayment_System.Migrations
 {
-    public partial class newmodel : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -166,49 +166,66 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DEBTs",
+                name: "DEBTREGISTERs",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    InitialAmount = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
-                    InterestRate = table.Column<decimal>(type: "decimal(4,3)", precision: 4, scale: 3, nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Paid = table.Column<bool>(type: "bit", nullable: false),
-                    StudentId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    DebtsTotal = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
+                    PaidCash = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
+                    PaidInstallment = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
+                    NotPaidInstallment = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
+                    InterestRate = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DEBTs", x => x.Id);
+                    table.PrimaryKey("PK_DEBTREGISTERs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DEBTs_AspNetUsers_StudentId",
-                        column: x => x.StudentId,
+                        name: "FK_DEBTREGISTERs_AspNetUsers_Id",
+                        column: x => x.Id,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "PAYMENTPLANs",
+                name: "PAYMENTs",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
+                    Sum = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
                     Paid = table.Column<bool>(type: "bit", nullable: false),
-                    DebtId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    NumOfInstallments = table.Column<int>(type: "int", nullable: true),
-                    AmountAfterInstallments = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: true)
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    StudentId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PAYMENTPLANs", x => x.Id);
+                    table.PrimaryKey("PK_PAYMENTs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PAYMENTPLANs_DEBTs_DebtId",
-                        column: x => x.DebtId,
-                        principalTable: "DEBTs",
+                        name: "FK_PAYMENTs_AspNetUsers_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DEBTs",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    InitialAmount = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
+                    InterestRate = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DebtRegisterId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DEBTs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DEBTs_DEBTREGISTERs_DebtRegisterId",
+                        column: x => x.DebtRegisterId,
+                        principalTable: "DEBTREGISTERs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -218,16 +235,17 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    NumOfMonths = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DebtId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    PaidFull = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
+                    NumOfMonths = table.Column<int>(type: "int", nullable: false),
+                    InterestRate = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_REQUESTs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_REQUESTs_DEBTs_DebtId",
-                        column: x => x.DebtId,
-                        principalTable: "DEBTs",
+                        name: "FK_REQUESTs_DEBTREGISTERs_Id",
+                        column: x => x.Id,
+                        principalTable: "DEBTREGISTERs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -237,19 +255,19 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
-                    Paid = table.Column<bool>(type: "bit", nullable: false),
-                    SupposedPaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ActualPaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PaymentPlanInstallmentId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    InitialAmount = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
+                    AmountAfterInterest = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FinishDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DebtId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_INSTALLMENTs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_INSTALLMENTs_PAYMENTPLANs_PaymentPlanInstallmentId",
-                        column: x => x.PaymentPlanInstallmentId,
-                        principalTable: "PAYMENTPLANs",
+                        name: "FK_INSTALLMENTs_DEBTs_DebtId",
+                        column: x => x.DebtId,
+                        principalTable: "DEBTs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -299,24 +317,19 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DEBTs_StudentId",
+                name: "IX_DEBTs_DebtRegisterId",
                 table: "DEBTs",
-                column: "StudentId");
+                column: "DebtRegisterId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_INSTALLMENTs_PaymentPlanInstallmentId",
+                name: "IX_INSTALLMENTs_DebtId",
                 table: "INSTALLMENTs",
-                column: "PaymentPlanInstallmentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PAYMENTPLANs_DebtId",
-                table: "PAYMENTPLANs",
                 column: "DebtId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_REQUESTs_DebtId",
-                table: "REQUESTs",
-                column: "DebtId");
+                name: "IX_PAYMENTs_StudentId",
+                table: "PAYMENTs",
+                column: "StudentId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -340,16 +353,19 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                 name: "INSTALLMENTs");
 
             migrationBuilder.DropTable(
+                name: "PAYMENTs");
+
+            migrationBuilder.DropTable(
                 name: "REQUESTs");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "PAYMENTPLANs");
+                name: "DEBTs");
 
             migrationBuilder.DropTable(
-                name: "DEBTs");
+                name: "DEBTREGISTERs");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
