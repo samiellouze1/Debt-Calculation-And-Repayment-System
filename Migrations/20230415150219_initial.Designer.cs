@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Debt_Calculation_And_Repayment_System.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230415031122_initial")]
+    [Migration("20230415150219_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -184,6 +184,10 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("DebtRegisterId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<decimal>("InterestRate")
                         .HasPrecision(18, 4)
                         .HasColumnType("decimal(18,4)");
@@ -207,6 +211,8 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasColumnType("decimal(18,4)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DebtRegisterId");
 
                     b.ToTable("REQUESTs");
                 });
@@ -497,8 +503,8 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
             modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.REQUEST", b =>
                 {
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.DEBTREGISTER", "DebtRegister")
-                        .WithOne("Request")
-                        .HasForeignKey("Debt_Calculation_And_Repayment_System.Models.REQUEST", "Id")
+                        .WithMany("Requests")
+                        .HasForeignKey("DebtRegisterId")
                         .IsRequired();
 
                     b.Navigation("DebtRegister");
@@ -573,8 +579,7 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
 
                     b.Navigation("Payments");
 
-                    b.Navigation("Request")
-                        .IsRequired();
+                    b.Navigation("Requests");
                 });
 
             modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.STAFFMEMBER", b =>

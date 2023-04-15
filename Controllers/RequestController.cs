@@ -23,7 +23,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         public async Task<IActionResult> RequestByDebtRegister(string id)
         {
             var debtregister = await _debtregisterService.GetByIdAsync(id);
-            var request = debtregister.Request;
+            var request = debtregister.Requests.Where(r => r.Status == "Accepted").ToList()[0];
             return View("Request", request);
         }
         //#region sendrequest

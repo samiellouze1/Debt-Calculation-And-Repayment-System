@@ -69,7 +69,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         {
             var dr = await _debtregisterService.GetByIdAsync(debtregisterid);
             var tiar = installments.Sum(i => i.AmountAfterInterest);
-            var ir = dr.Request.InterestRate;
+            var ir = dr.Requests.Where(r => r.Status == "Accepted").ToList()[0].InterestRate;
             var tar = tiar + dr.TotalCash;
             var newdebtregister = new DEBTREGISTER()
             {
@@ -93,7 +93,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         {
             var debtregister = _debtregisterService.GetByIdAsync(debtregisterid).Result;
             var payments = new List<PAYMENT>();
-            var nom = debtregister.Request.NumOfMonths;
+            var nom = debtregister.Requests.Where(r => r.Status == "Accepted").ToList()[0].NumOfMonths;
             var sum = debtregister.TotalAfterRequest/nom;
             var today = DateTime.Now;
             for (int i = 0; i< nom;i++)

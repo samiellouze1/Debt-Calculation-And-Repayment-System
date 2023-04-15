@@ -10,20 +10,20 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
     {
         private readonly ISTAFFMEMBERService _staffmemberService;
         private readonly ISTUDENTService _studentService;
-        public StudentController(ISTUDENTService studentService,ISTAFFMEMBERService staffmemberService)
+        public StudentController(ISTUDENTService studentService,ISTAFFMEMBERService staffmemberService,IUSERService userService)
         {
             _studentService = studentService;
             _staffmemberService = staffmemberService;
-        }
-        public async Task<IActionResult> StudentById(string id)
-        {
-            var student = await _studentService.GetByIdAsync(id);
-            return View("Student", student);
         }
         public async Task<IActionResult> AllStudents()
         {
             var students = await _studentService.GetAllAsync();
             return View("Students", students);
+        }
+        public async Task<IActionResult> StudentById(string id)
+        {
+            var student = await _studentService.GetByIdAsync(id);
+            return View("Student", student);
         }
         public async Task<IActionResult> MyStudents()
         {

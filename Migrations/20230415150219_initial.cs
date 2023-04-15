@@ -270,14 +270,15 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     NumOfMonths = table.Column<int>(type: "int", nullable: false),
                     RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    InterestRate = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false)
+                    InterestRate = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
+                    DebtRegisterId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_REQUESTs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_REQUESTs_DEBTREGISTERs_Id",
-                        column: x => x.Id,
+                        name: "FK_REQUESTs_DEBTREGISTERs_DebtRegisterId",
+                        column: x => x.DebtRegisterId,
                         principalTable: "DEBTREGISTERs",
                         principalColumn: "Id");
                 });
@@ -339,6 +340,11 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_PAYMENTs_DebtRegisterId",
                 table: "PAYMENTs",
+                column: "DebtRegisterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_REQUESTs_DebtRegisterId",
+                table: "REQUESTs",
                 column: "DebtRegisterId");
         }
 

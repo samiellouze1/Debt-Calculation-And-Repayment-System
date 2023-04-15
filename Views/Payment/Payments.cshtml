@@ -1,5 +1,39 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model List<PAYMENT>
 @{
+    Layout = "~/Views/Shared/_LayoutSecondary.cshtml";
 }
+@section Title {
+    Payments
+}
+    @section Name1{
+    tsiwtsiw
+}
+    @section Name2{
+    niwniw
+}
+    <table class="table ">
+        <thead>
+            <tr>
+                <th scope="col">Sum</th>
+                <th scope="col">Paid</th>
+                <th scope="col">Type</th>
+                <th scope="col">Payment Date</th>
+                <th scope="col">Registration Date</th>
+                <th scope="col"></th>
+
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="table">
+                <td>@item.Sum</td>
+                <td>@item.Paid</td>
+                <td>@item.Type</td>
+                <td>@item.PaymentDate</td>
+                <td>@item.RegDate</td>
+                <td><a asp-controller="DebtRegister" asp-action="DebtRegisterById" asp-route-id=@item.DebtRegister.Id>DebtRegister</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

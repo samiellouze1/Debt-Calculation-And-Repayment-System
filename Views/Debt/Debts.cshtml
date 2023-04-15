@@ -3,7 +3,7 @@
     Layout = "~/Views/Shared/_LayoutSecondary.cshtml";
 }
 @section Title {
-    Installment By Payment Plan
+    Debts
 }
     @section Name1{
     tsiwtsiw
@@ -15,15 +15,20 @@
 <table class="table">
     <thead>
         <tr>
+            <th scope="col">Amount</th>
+            <th scope="col">Start Date</th>
+            <th scope="col">Registration Date</th>
             <th scope="col"></th>
-
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr class="table">
-                <td></td>
+                <td>@item.Amount</td>
+                <td>@item.StartDate</td>
+                <td>@item.RegDate</td>
+                <td><a asp-controller="Debt" asp-action="DebtRegisterById" asp-route-id=@item.DebtRegister.Id>Debt Register</a></td>
             </tr>
         }
     </tbody>

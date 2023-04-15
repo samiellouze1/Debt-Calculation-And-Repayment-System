@@ -107,14 +107,17 @@ namespace Debt_Calculation_And_Repayment_System.Data
                                 new PAYMENT(){Sum=3000m,Paid=true,Type="Installment",PaymentDate=new DateTime(2021,2,1)},
                                 new PAYMENT(){Sum=3000m,Paid=true,Type="Full",PaymentDate=new DateTime(2021,2,1)}
                             },
-                            Request = new REQUEST()
-                            {
-                                Status="Declined",
-                                ToBePaidFull=1500m,
-                                ToBePaidInstallment=1500m,
-                                NumOfMonths=30,
-                                InterestRate=0.31m,
-                                RegDate=DateTime.Now
+                            Requests=new List<REQUEST>() 
+                            { 
+                                new REQUEST()
+                                {
+                                    Status="Declined",
+                                    ToBePaidFull=1500m,
+                                    ToBePaidInstallment=1500m,
+                                    NumOfMonths=30,
+                                    InterestRate=0.31m,
+                                    RegDate=DateTime.Now
+                                } 
                             },
                             Debts = new List<DEBT>()
                             {

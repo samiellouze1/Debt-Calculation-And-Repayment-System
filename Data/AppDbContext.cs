@@ -25,7 +25,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
             #region onetoone
             builder.Entity<STUDENT>().HasOne(s => s.StaffMember).WithMany(s => s.Students).OnDelete(DeleteBehavior.ClientSetNull);
             builder.Entity<STUDENT>().HasOne(s=>s.DebtRegister).WithOne(dr=>dr.Student).HasForeignKey<DEBTREGISTER>(dr => dr.Id).OnDelete(DeleteBehavior.ClientSetNull);
-            builder.Entity<DEBTREGISTER>().HasOne(dr => dr.Request).WithOne(r=>r.DebtRegister).HasForeignKey<REQUEST>(r => r.Id).OnDelete(DeleteBehavior.ClientSetNull);
+            builder.Entity<REQUEST>().HasOne(r => r.DebtRegister).WithMany(r => r.Requests).OnDelete(DeleteBehavior.ClientSetNull);
             #endregion
 
             #region onetomany
@@ -33,10 +33,10 @@ namespace Debt_Calculation_And_Repayment_System.Data
             builder.Entity<STUDENT>().Navigation(s => s.StaffMember).AutoInclude();
             builder.Entity<STUDENT>().Navigation(s => s.DebtRegister).AutoInclude();
             builder.Entity<DEBTREGISTER>().Navigation(dr => dr.Student).AutoInclude();
-            builder.Entity<DEBTREGISTER>().Navigation(dr => dr.Request).AutoInclude();
             builder.Entity<DEBTREGISTER>().Navigation(dr => dr.Debts).AutoInclude();
             builder.Entity<DEBTREGISTER>().Navigation(dr => dr.Payments).AutoInclude();
             builder.Entity<DEBTREGISTER>().Navigation(dr => dr.Installments).AutoInclude();
+            builder.Entity<DEBTREGISTER>().Navigation(dr => dr.Requests).AutoInclude();
             builder.Entity<REQUEST>().Navigation(r => r.DebtRegister).AutoInclude();
             builder.Entity<DEBT>().Navigation(d => d.DebtRegister).AutoInclude();
             builder.Entity<INSTALLMENT>().Navigation(i => i.DebtRegister).AutoInclude();
