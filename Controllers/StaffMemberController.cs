@@ -1,6 +1,7 @@
 ﻿using Debt_Calculation_And_Repayment_System.Data.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.CompilerServices;
 
 namespace Debt_Calculation_And_Repayment_System.Controllers
 {

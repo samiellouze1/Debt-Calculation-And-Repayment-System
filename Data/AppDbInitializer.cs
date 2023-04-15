@@ -56,18 +56,19 @@ namespace Debt_Calculation_And_Repayment_System.Data
                 #region staffmember
                 string userstaffemail = "staff@debt.com";
                 var userstaff = await userManager.FindByEmailAsync(userstaffemail);
+                var newUserStaff = new STAFFMEMBER()
+                {
+                    FirstName = "Staff",
+                    SurName = "Member",
+                    RegDate = DateTime.Now,
+                    UserName = userstaffemail,
+                    PhoneNumber = "12345678",
+                    Email = userstaffemail,
+                    Address = "Turkey"
+                };
                 if (userstaff == null)
                 {
-                    var newUserStaff = new STAFFMEMBER()
-                    {
-                        FirstName = "Staff",
-                        SurName = "Member",
-                        RegDate = DateTime.Now,
-                        UserName = userstaffemail,
-                        PhoneNumber = "12345678",
-                        Email = userstaffemail,
-                        Address = "Turkey"
-                    };
+
                     await userManager.CreateAsync(newUserStaff, "Staffmember123@");
                     await userManager.AddToRoleAsync(newUserStaff, UserRoles.StaffMember);
                 }
@@ -89,26 +90,26 @@ namespace Debt_Calculation_And_Repayment_System.Data
                         Address = "Turkey",
                         DebtRegister = new DEBTREGISTER()
                         {
-                            Total=300m,
-                            TotalAfterInterest=300m,
-                            TotalAfterRequest=300m,
-                            TotalCash=300m,
-                            PaidCash=30m,
-                            NotPaidCash=300m,
-                            TotalInstallment=300m,
-                            TotalInstallmentAfterRequest=300m,
-                            PaidInstallment=90m,
-                            NotPaidInstallment=50m,
-                            InterestRate=0.9m,
-                            RegDate=DateTime.Now,
+                            Total = 300m,
+                            TotalAfterInterest = 300m,
+                            TotalAfterRequest = 300m,
+                            TotalCash = 300m,
+                            PaidCash = 30m,
+                            NotPaidCash = 300m,
+                            TotalInstallment = 300m,
+                            TotalInstallmentAfterRequest = 300m,
+                            PaidInstallment = 90m,
+                            NotPaidInstallment = 50m,
+                            InterestRate = 0.9m,
+                            RegDate = DateTime.Now,
                             Payments = new List<PAYMENT>()
                             {
                                 new PAYMENT(){Sum=3000m,Paid=true,Type="Full",PaymentDate=new DateTime(2021,2,1)},
                                 new PAYMENT(){Sum=3000m,Paid=true,Type="Installment",PaymentDate=new DateTime(2021,2,1)},
                                 new PAYMENT(){Sum=3000m,Paid=true,Type="Full",PaymentDate=new DateTime(2021,2,1)}
                             },
-                            Requests=new List<REQUEST>() 
-                            { 
+                            Requests = new List<REQUEST>()
+                            {
                                 new REQUEST()
                                 {
                                     Status="Declined",
@@ -117,7 +118,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                                     NumOfMonths=30,
                                     InterestRate=0.31m,
                                     RegDate=DateTime.Now
-                                } 
+                                }
                             },
                             Debts = new List<DEBT>()
                             {
@@ -149,7 +150,8 @@ namespace Debt_Calculation_And_Repayment_System.Data
                                     PaymentDate=new DateTime(2021,1,1),
                                 }
                             }
-                        }
+                        },
+                        StaffMember=newUserStaff
                     };
                     await userManager.CreateAsync(newUserStudent, "Student123@");
                     await userManager.AddToRoleAsync(newUserStudent, UserRoles.Student);
