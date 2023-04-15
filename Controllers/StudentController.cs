@@ -17,12 +17,19 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         }
         public async Task<IActionResult> StudentById(string id)
         {
-            var student = _studentService.GetByIdAsync(id);
+            var student = await _studentService.GetByIdAsync(id);
             return View("Student", student);
         }
         public async Task<IActionResult> AllStudents()
         {
             var students = await _studentService.GetAllAsync();
+            return View("Students", students);
+        }
+        public async Task<IActionResult> MyStudents()
+        {
+            var id = User.FindFirstValue("Id");
+            var staffmember = await _staffmemberService.GetByIdAsync(id);
+            var students = staffmember.Students;
             return View("Students",students);
         }
         public async Task<IActionResult> StudentsByStaffMember(string id)

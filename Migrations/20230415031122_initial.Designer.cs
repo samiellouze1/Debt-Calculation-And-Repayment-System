@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Debt_Calculation_And_Repayment_System.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230414224658_greatmodelfixed")]
-    partial class greatmodelfixed
+    [Migration("20230415031122_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,17 +30,13 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
                     b.Property<string>("DebtRegisterId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<decimal>("InitialAmount")
-                        .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
-
-                    b.Property<decimal>("InterestRate")
-                        .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
 
                     b.Property<DateTime>("RegDate")
                         .HasColumnType("datetime2");
@@ -61,11 +57,11 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<decimal>("DebtsTotal")
+                    b.Property<decimal>("InterestRate")
                         .HasPrecision(18, 4)
                         .HasColumnType("decimal(18,4)");
 
-                    b.Property<decimal>("InterestRate")
+                    b.Property<decimal>("NotPaidCash")
                         .HasPrecision(18, 4)
                         .HasColumnType("decimal(18,4)");
 
@@ -78,6 +74,33 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasColumnType("decimal(18,4)");
 
                     b.Property<decimal>("PaidInstallment")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<DateTime>("RegDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Total")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<decimal>("TotalAfterInterest")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<decimal>("TotalAfterRequest")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<decimal>("TotalCash")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<decimal>("TotalInstallment")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<decimal>("TotalInstallmentAfterRequest")
                         .HasPrecision(18, 4)
                         .HasColumnType("decimal(18,4)");
 
@@ -104,7 +127,13 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasPrecision(18, 4)
                         .HasColumnType("decimal(18,4)");
 
+                    b.Property<int>("NumberOfDays")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("RegDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -125,9 +154,13 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("Paid")
+                        .HasPrecision(18, 4)
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("RegDate")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Sum")
@@ -158,7 +191,18 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     b.Property<int>("NumOfMonths")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("PaidFull")
+                    b.Property<DateTime>("RegDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("ToBePaidFull")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<decimal>("ToBePaidInstallment")
                         .HasPrecision(18, 4)
                         .HasColumnType("decimal(18,4)");
 

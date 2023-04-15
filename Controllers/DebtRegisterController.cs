@@ -20,6 +20,13 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             _studentService = studentService;
             _requestService = requestService;
         }
+        public async Task<IActionResult> MyDebtRegister()
+        {
+            var studentid = User.FindFirstValue("Id");
+            var student = await _studentService.GetByIdAsync(studentid);
+            var debtregister = student.DebtRegister;
+            return View("DebtRegister", debtregister);
+        }
         public async Task<IActionResult> DebtRegisterByStudent(string id)
         {
             var student = await _studentService.GetByIdAsync(id);

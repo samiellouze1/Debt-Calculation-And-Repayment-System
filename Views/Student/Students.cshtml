@@ -3,27 +3,40 @@
     Layout = "~/Views/Shared/_LayoutSecondary.cshtml";
 }
 @section Title {
-    Installment By Payment Plan
+    Students
 }
     @section Name1{
-    tsiwtsiw
+    Information about
 }
     @section Name2{
-    niwniw
+    Students
 }
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col"></th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td></td>
-            </tr>
-        }
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Email</th>
+            <th scope="col">First Name</th>
+            <th scope="col">Last Name</th>
+            <th scope="col">Address</th>
+            <th scope="col">Phone Number</th>
+            <th scope="col">Registration Date</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Email</td>
+            <td>@item.FirstName</td>
+            <td>@item.SurName</td>
+            <td>@item.Address</td>
+            <td>@item.PhoneNumber</td>
+            <td>@item.RegDate</td>
+            <td><a asp-controller="DebtRegister" asp-action="DebtRegisterByStudent" asp-route-id=@item.Id>Debt Register</a></td>
+            <td><a asp-controller="StaffMember" asp-action="StaffMemberByStudent" asp-route-id=@item.Id>Staff Member</a></td>
+        </tr>
+    }
     </tbody>
 </table>

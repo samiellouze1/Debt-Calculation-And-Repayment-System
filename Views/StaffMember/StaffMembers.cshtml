@@ -3,26 +3,38 @@
     Layout = "~/Views/Shared/_LayoutSecondary.cshtml";
 }
 @section Title {
-    Installment By Payment Plan
+    Staff Members
 }
     @section Name1{
-    tsiwtsiw
+    Information about
 }
     @section Name2{
-    niwniw
+    Students
 }
-
     <table class="table">
         <thead>
             <tr>
+                <th scope="col">Email</th>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Address</th>
+                <th scope="col">Phone Number</th>
+                <th scope="col">Registration Date</th>
                 <th scope="col"></th>
+
             </tr>
         </thead>
         <tbody>
         @foreach (var item in Model)
         {
             <tr>
-                <td></td>
+                <td>@item.Email</td>
+                <td>@item.FirstName</td>
+                <td>@item.SurName</td>
+                <td>@item.Address</td>
+                <td>@item.PhoneNumber</td>
+                <td>@item.RegDate</td>
+                <td><a asp-controller="Student" asp-action="StudentsByStaffMember" asp-route-id=@item.Id>Students</a></td>
             </tr>
         }
     </tbody>
