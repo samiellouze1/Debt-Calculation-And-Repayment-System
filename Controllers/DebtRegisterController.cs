@@ -34,10 +34,13 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             return View("DebtRegister", debtregister);
         }
         #region business
-        public async Task AcceptRequest(string debtregisterid, string requestid)
+        public async Task AcceptRequest(string requestid)
         {
+            var request =await _requestService.GetByIdAsync(requestid);
+            var debtregisterid = request.DebtRegister.Id;
             var installments = GenerateInstallments(debtregisterid, requestid);
             await UpdateDebtRegisterAfterRequest(debtregisterid, installments);
+            await UpdateRequestAfterRequest(requestid);
             var payments = GeneratePayments(debtregisterid);
             await UpdateDebtRegisterAfterGenrationofPayments(debtregisterid, payments);
         }
@@ -88,6 +91,20 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 Installments = installments,
             };
             await _debtregisterService.UpdateAsync(debtregisterid, newdebtregister);
+        }
+        public async Task UpdateRequestAfterRequest(string requestid)
+        {
+            var request = await _requestService.GetByIdAsync(requestid);
+            var newrequest = new REQUEST()
+            {
+                ToBePaidFull = request.ToBePaidFull,
+                ToBePaidInstallment = request.ToBePaidInstallment,
+                NumOfMonths = request.NumOfMonths,
+                InterestRate = request.InterestRate,
+                RegDate = request.RegDate,
+                Status = "Accepted"
+            };
+            await _requestService.UpdateAsync(requestid, newrequest);
         }
         public List<PAYMENT> GeneratePayments(string debtregisterid)
         {

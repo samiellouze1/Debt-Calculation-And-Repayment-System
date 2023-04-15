@@ -21,6 +21,7 @@
                 <th scope="col">Registration Date</th>
                 <th scope="col">Status</th>
                 <th scope="col">Debt Register</th>
+                <th scope="col">Accept Request</th>
             </tr>
         </thead>
         <tbody>
@@ -34,6 +35,7 @@
                 <td>@item.RegDate</td>
                 <td>@item.Status</td>
                 <td><a asp-controller="DebtRegister" asp-action="DebtRegisterById" asp-route-id=@item.DebtRegister.Id>Debt Register</a></td>
+                <td><a asp-controller="DebtRegister" asp-action="AcceptRequest"></a></td>
             </tr>
         }
     </tbody>
