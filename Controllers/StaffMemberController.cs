@@ -19,10 +19,9 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var staffmembers = _staffmemberService.GetAllAsync();
             return View("StaffMembers", staffmembers);
         }
-        public async Task<IActionResult> StaffMemberByStudent(string id)
+        public async Task<IActionResult> StaffMemberById(string id)
         {
-            var student = await _studentService.GetByIdAsync(id);
-            var staffmember = student.StaffMember;
+            var staffmember = await _staffmemberService.GetByIdAsync(id);
             return View("StaffMember", staffmember);
         }
     }

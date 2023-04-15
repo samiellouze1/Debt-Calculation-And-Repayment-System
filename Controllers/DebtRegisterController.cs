@@ -26,6 +26,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var debtregister = student.DebtRegister;
             return View("DebtRegister", debtregister);
         }
+        #region business
         public async Task AcceptRequest(string debtregisterid, string requestid)
         {
             var installments = GenerateInstallments(debtregisterid, requestid);
@@ -119,5 +120,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             };
             await _debtregisterService.UpdateAsync(debtregisterid, newdebtregister);
         }
+        #endregion
     }
 }

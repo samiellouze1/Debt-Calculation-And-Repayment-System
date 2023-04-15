@@ -18,6 +18,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             _debtregisterService = debtregisterService;
             _requestService = requestService;
         }
+
         public async Task<IActionResult> InstallmentsByDebtRegister(string id)
         {
             var debt=await _debtregisterService.GetByIdAsync(id);

@@ -109,6 +109,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                             },
                             Request = new REQUEST()
                             {
+                                Status="Declined",
                                 ToBePaidFull=1500m,
                                 ToBePaidInstallment=1500m,
                                 NumOfMonths=30,
