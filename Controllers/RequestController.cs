@@ -1,12 +1,8 @@
 ﻿using Debt_Calculation_And_Repayment_System.Data.IServices;
-using Debt_Calculation_And_Repayment_System.Data.Services;
 using Debt_Calculation_And_Repayment_System.Data.ViewModels;
 using Debt_Calculation_And_Repayment_System.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 using System.Security.Claims;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Debt_Calculation_And_Repayment_System.Controllers
 {
@@ -32,22 +28,10 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         public IActionResult PreviewRequest ()
         {
             var vm = new CreateRequestVM();
-            return View("PreviewRequest", vm);
+            return View(vm);
         }
         [HttpPost]
         public async Task<IActionResult> PreviewRequest(CreateRequestVM vm)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(vm);
-            }
-            else
-            {
-                CreateRequest(vm);
-                return RedirectToAction("Index", "Home");
-            }
-        }
-        public async Task<IActionResult> CreateRequest(CreateRequestVM vm)
         {
             if (ModelState.IsValid)
             {
@@ -55,28 +39,47 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 var student = await _studentService.GetByIdAsync(studentid, s => s.DebtRegister);
                 var debtregister = student.DebtRegister;
                 var tobepaideachmonth = 0m;
-                for ( int i=1;i<=vm.NumOfMonths;i++)
+                for (int i = 1; i <= vm.NumOfMonths; i++)
                 {
                     var eachmonthafterinterest = (debtregister.TotalAfterInterest - vm.ToBePaidFull) / vm.NumOfMonths;
-                    var nod = (DateTime.Now.AddMonths(i)-DateTime.Now).Days;
+                    var nod = (DateTime.Now.AddMonths(i) - DateTime.Now).Days;
                     var add = eachmonthafterinterest * (1 + nod * debtregister.InterestRate / 365);
                     tobepaideachmonth += add;
                 }
-                var newvm = new PreviewRequestVM() { ToBePaidFull = vm.ToBePaidFull, NumOfMonths = vm.NumOfMonths, ToBePaidInstallment = debtregister.TotalAfterInterest - vm.ToBePaidFull, ToBePaidEachMonth= tobepaideachmonth};
-                return await CreateRequest(newvm);
+                var newvm = new PreviewRequestVM() { ToBePaidFull = vm.ToBePaidFull, NumOfMonths = vm.NumOfMonths, ToBePaidInstallment = debtregister.TotalAfterInterest - vm.ToBePaidFull, ToBePaidEachMonth = tobepaideachmonth };
+                return View("CreateRequest", newvm ); // Change the view here to "PreviewRequestConfirm"
             }
             else
             {
                 return View(vm);
             }
         }
+
         [HttpPost]
         public async Task<IActionResult> CreateRequest(PreviewRequestVM vm)
         {
+            Console.WriteLine(vm.ToBePaidFull);
+            Console.WriteLine("Hello world");
+            Console.WriteLine("Hello world");
+            Console.WriteLine("Hello world");
+            Console.WriteLine("Hello world");
+            Console.WriteLine("Hello world");
             if (ModelState.IsValid)
             {
+                Console.WriteLine(vm.ToBePaidFull);
+                Console.WriteLine("Hello world");
+                Console.WriteLine("Hello world");
+                Console.WriteLine("Hello world");
+                Console.WriteLine("Hello world");
+                Console.WriteLine("Hello world");
                 if (vm.Accept)
                 {
+                    Console.WriteLine(vm.ToBePaidFull);
+                    Console.WriteLine("Hello world");
+                    Console.WriteLine("Hello world");
+                    Console.WriteLine("Hello world");
+                    Console.WriteLine("Hello world");
+                    Console.WriteLine("Hello world");
                     var studentid = User.FindFirstValue("Id");
                     var student = await _studentService.GetByIdAsync(studentid, s => s.DebtRegister);
                     var debtregister = student.DebtRegister;

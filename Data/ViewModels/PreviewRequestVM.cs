@@ -1,5 +1,5 @@
 ﻿using Debt_Calculation_And_Repayment_System.Models;
-using Microsoft.Build.Framework;
+using System.ComponentModel.DataAnnotations;
 
 namespace Debt_Calculation_And_Repayment_System.Data.ViewModels
 {
