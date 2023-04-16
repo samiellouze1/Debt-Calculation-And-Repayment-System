@@ -9,13 +9,14 @@
 }
 
 <div class="jumbotron jumbotron-fluid position-relative overlay-bottom">
-    <div class="container text-center my-5 py-5">
-            <h1 class="text-white mt-4 mb-4" ><a asp-controller="Student" asp-action="StudentById" asp-route-id=@Model.Student.Id style="color:white;">@Model.Student.FirstName @Model.Student.SurName</a></h1>
-        <h1 class="text-white display-1 mb-5">DEBT REGISTER</h1>
+        <div class="container text-center my-5 py-5">
+            <h1 class="text-white mt-4 mb-4"><a asp-controller="Student" asp-action="StudentById" asp-route-id=@Model.Student.Id style="color:white;">@Model.Student.FirstName @Model.Student.SurName</a></h1>
+            <h1 class="text-white display-1 mb-5">DEBT REGISTER</h1>
             <a asp-controller="Student" asp-action="StudentById" asp-route-id=@Model.Student.Id class="btn btn-secondary px-3 px-lg-5">Student</a>
             <a asp-controller="Request" asp-action="RequestsByDebtRegister" asp-route-id=@Model.Id class="btn btn-secondary px-3 px-lg-5">Requests</a>
             <a asp-controller="Debt" asp-action="DebtsByDebtRegister" asp-route-id=@Model.Id class="btn btn-secondary px-3 px-lg-5">Debts</a>
             <a asp-controller="Installment" asp-action="InstallmentsByDebtRegister" asp-route-id=@Model.Id class="btn btn-secondary px-3 px-lg-5">Installments</a>
             <a asp-controller="Payment" asp-action="PaymentsByDebtRegister" asp-route-id=@Model.Id class="btn btn-secondary px-3 px-lg-5">Payments</a>
-    </div>
+            <a asp-controller="Request" asp-action="CreateRequest" asp-route-id=@Model.Id class="btn btn-secondary px-3 px-lg-5" >CreateRequest</a>
+        </div>
 </div>

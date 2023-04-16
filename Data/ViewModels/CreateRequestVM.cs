@@ -7,6 +7,5 @@
         public int NumOfMonths { get; set;}
         public decimal InterestRate { get; set; }
         public string Status { get; set; }
-        public string DebtRegisterId { get; set; }
     }
 }
