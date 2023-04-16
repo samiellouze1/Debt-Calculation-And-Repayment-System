@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Debt_Calculation_And_Repayment_System.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230416043359_initial")]
-    partial class initial
+    [Migration("20230416192306_pls")]
+    partial class pls
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -37,6 +37,9 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     b.Property<string>("DebtRegisterId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("RegDate")
                         .HasColumnType("datetime2");
@@ -81,10 +84,6 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Total")
-                        .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
-
-                    b.Property<decimal>("TotalAfterInterest")
                         .HasPrecision(18, 4)
                         .HasColumnType("decimal(18,4)");
 
@@ -187,10 +186,6 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     b.Property<string>("DebtRegisterId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<decimal>("InterestRate")
-                        .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
 
                     b.Property<int>("NumOfMonths")
                         .HasColumnType("int");

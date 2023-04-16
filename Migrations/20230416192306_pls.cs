@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Debt_Calculation_And_Repayment_System.Migrations
 {
-    public partial class initial : Migration
+    public partial class pls : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -172,7 +172,6 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     TotalCash = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
                     Total = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
-                    TotalAfterInterest = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
                     TotalAfterRequest = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
                     PaidCash = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
                     NotPaidCash = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
@@ -200,6 +199,7 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DebtRegisterId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
@@ -270,7 +270,6 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     NumOfMonths = table.Column<int>(type: "int", nullable: false),
                     RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    InterestRate = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
                     DebtRegisterId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>

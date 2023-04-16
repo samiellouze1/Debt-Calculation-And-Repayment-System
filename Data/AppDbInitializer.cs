@@ -91,7 +91,6 @@ namespace Debt_Calculation_And_Repayment_System.Data
                         DebtRegister = new DEBTREGISTER()
                         {
                             Total = 300m,
-                            TotalAfterInterest = 300m,
                             TotalAfterRequest = 300m,
                             TotalCash = 300m,
                             PaidCash = 30m,
@@ -125,13 +124,15 @@ namespace Debt_Calculation_And_Repayment_System.Data
                                 {
                                     Amount=300m,
                                     StartDate=new DateTime(2021,1,2),
-                                    RegDate=DateTime.Now
+                                    EndDate=new DateTime(2022,1,2),
+                                    RegDate=DateTime.Now,
                                 },
                                 new DEBT()
                                 {
                                     Amount=300m,
                                     StartDate=new DateTime(2021,1,2),
-                                    RegDate=DateTime.Now
+                                    EndDate = new DateTime(2022,1,3),
+                                    RegDate=DateTime.Now,
                                 }
                             },
                             Installments = new List<INSTALLMENT>()

@@ -28,26 +28,12 @@ namespace Debt_Calculation_And_Repayment_System.Data
             builder.Entity<REQUEST>().HasOne(r => r.DebtRegister).WithMany(r => r.Requests).OnDelete(DeleteBehavior.ClientSetNull);
             #endregion
 
-            #region onetomany
-            //builder.Entity<STAFFMEMBER>().Navigation(sm => sm.Students).AutoInclude();
-            //builder.Entity<STUDENT>().Navigation(s => s.StaffMember).AutoInclude();
-            //builder.Entity<STUDENT>().Navigation(s => s.DebtRegister).AutoInclude();
-            //builder.Entity<DEBTREGISTER>().Navigation(dr => dr.Student).AutoInclude();
-            //builder.Entity<DEBTREGISTER>().Navigation(dr => dr.Debts).AutoInclude();
-            //builder.Entity<DEBTREGISTER>().Navigation(dr => dr.Payments).AutoInclude();
-            //builder.Entity<DEBTREGISTER>().Navigation(dr => dr.Installments).AutoInclude();
-            //builder.Entity<DEBTREGISTER>().Navigation(dr => dr.Requests).AutoInclude();
-            //builder.Entity<REQUEST>().Navigation(r => r.DebtRegister).AutoInclude();
-            //builder.Entity<DEBT>().Navigation(d => d.DebtRegister).AutoInclude();
-            //builder.Entity<INSTALLMENT>().Navigation(i => i.DebtRegister).AutoInclude();
-            //builder.Entity<PAYMENT>().Navigation(p => p.DebtRegister).AutoInclude();
-            #endregion
+
 
             #region precisions
             builder.Entity<DEBT>().Property(d => d.Amount).HasPrecision(18, 4);
 
             builder.Entity<DEBTREGISTER>().Property(dr => dr.Total).HasPrecision(18, 4);
-            builder.Entity<DEBTREGISTER>().Property(dr => dr.TotalAfterInterest).HasPrecision(18, 4);
             builder.Entity<DEBTREGISTER>().Property(dr => dr.TotalAfterRequest).HasPrecision(18, 4);
             builder.Entity<DEBTREGISTER>().Property(dr => dr.TotalCash).HasPrecision(18, 4);
             builder.Entity<DEBTREGISTER>().Property(dr => dr.PaidCash).HasPrecision(18, 4);
@@ -66,6 +52,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
 
             builder.Entity<REQUEST>().Property(r => r.ToBePaidFull).HasPrecision(18, 4);
             builder.Entity<REQUEST>().Property(r => r.ToBePaidInstallment).HasPrecision(18, 4);
+
             #endregion
 
 

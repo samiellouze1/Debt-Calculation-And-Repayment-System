@@ -16,8 +16,6 @@ namespace Debt_Calculation_And_Repayment_System.Models
         [Required]
         public decimal Total { get; set; }
         [Required]
-        public decimal TotalAfterInterest { get; set; }
-        [Required]
         public decimal TotalAfterRequest { get; set; }
         [Required]
         public decimal PaidCash { get; set; }

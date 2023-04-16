@@ -19,41 +19,41 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         private readonly IUSERService _userService;
         private readonly ISTAFFMEMBERService _staffmemberService;
         private readonly ISTUDENTService _studentService;
-        public AccountController(UserManager<USER> usermanager, SignInManager<USER> signinmanager, ISTAFFMEMBERService staffmemberService, ISTUDENTService studentService, IUSERService userService)
+        private readonly AppDbContext _context;
+        public AccountController(UserManager<USER> usermanager, SignInManager<USER> signinmanager, ISTAFFMEMBERService staffmemberService, ISTUDENTService studentService, IUSERService userService, AppDbContext context)
         {
             _userManager = usermanager;
             _signInManager = signinmanager;
             _staffmemberService = staffmemberService;
             _studentService = studentService;
             _userService = userService;
+            _context = context;
         }
         #region affectation
-        public IActionResult AffectStudentToStaffMember()
+        public async Task<IActionResult> AffectStudentToStaffMember()
         {
-            var vm = new AffectVM();
+            var students = await _studentService.GetAllAsync();
+            var staffmembers = await _staffmemberService.GetAllAsync();
+            var vm = new AffectVM() { Students=students.ToList(),StaffMembers=staffmembers.ToList()};
             return View(vm);
         }
+        [HttpPost]
         public async Task<IActionResult> AffectStudentToStaffMember(AffectVM vm)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return View(vm);
+                var oldstaffmember = await _staffmemberService.GetByIdAsync(vm.StaffMemberId, sm => sm.Students);
+                var student = await _studentService.GetByIdAsync(vm.StudentId, s => s.StaffMember, s => s.DebtRegister);
+                //var newstaffmember = new STAFFMEMBER() {Id=oldstaffmember.Id, FirstName = oldstaffmember.FirstName, SurName = oldstaffmember.SurName, RegDate=oldstaffmember.RegDate,PhoneNumber=oldstaffmember.PhoneNumber,Address=oldstaffmember.Address,Students=oldstaffmember.Students.Concat(new List<STUDENT>() { student}).ToList()};
+                //await _staffmemberService.UpdateAsync(vm.StaffMemberId, newstaffmember);
+                oldstaffmember.Students.Add(student);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index", "Home");
             }
-            else
+            catch (Exception ex)
             {
-                try
-                {
-                    var oldstaffmember = await _staffmemberService.GetByIdAsync(vm.StaffId, sm => sm.Students);
-                    var student = await _studentService.GetByIdAsync(vm.StudentId, s => s.StaffMember, s => s.DebtRegister);
-                    var newstaffmember = new STAFFMEMBER() { FirstName = oldstaffmember.FirstName, SurName = oldstaffmember.SurName, RegDate=oldstaffmember.RegDate,PhoneNumber=oldstaffmember.PhoneNumber,Address=oldstaffmember.Address,Students=oldstaffmember.Students.Concat(new List<STUDENT>() { student}).ToList()};
-                    await _staffmemberService.UpdateAsync(vm.StaffId, newstaffmember);
-                    return RedirectToAction("Index", "Home");
-                }
-                catch (Exception ex)
-                {
-                    TempData["Error"] = ex.Message;
-                    return View(vm);
-                }
+                TempData["Error"] = ex.Message;
+                return View(vm);
             }
         }
         #endregion
@@ -211,8 +211,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             return RedirectToAction("Index", "Home");
         }
-        [HttpPost]
-        public async Task SendPasswordResetEmail(string id)
+        public async Task<IActionResult> SendPasswordResetEmail(string id)
         {
             // Look up the user by email address
             var user = await _userService.GetByIdAsync(id);
@@ -221,7 +220,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 // Show an error message to the user
                 TempData["ErrorMessage"] = "Invalid email address";
                 Console.WriteLine("We couldn't find your account");
-                //return RedirectToAction("ForgotPassword", "Account");
+                return RedirectToAction("ForgotPassword", "Account");
             }
 
             // Generate the password reset link
@@ -249,7 +248,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             // Show a success message to the user
             TempData["SuccessMessage"] = "A password reset email has been sent to your email address";
             Console.WriteLine("A password reset email has been sent to your email address");
-            //return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home");
         }
         [HttpGet]
         public IActionResult ResetPassword(string email, string code)
