@@ -89,31 +89,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             TempData["Error"] = "Wrong! Try Again";
             return View(loginvm);
         }
-        //public async Task<IActionResult> EditUser(string id)
-        //{
-        //    var user = await _userManager.FindByIdAsync(id);
-        //    var vm = new EditVM()
-        //    {
-        //        FirstName = user.FirstName,
-        //        SurName = user.SurName,
-        //    };
-        //    return View(id, vm);
-        //}
-        //[HttpPost]
-        //public async Task<IActionResult> EditUser(string id, EditVM editStudentVM)
-        //{
-        //    var dbuser = await _userManager.FindByIdAsync(id);
-
-        //    if (dbuser != null)
-        //    {
-        //        dbuser.FirstName = editStudentVM.FirstName;
-        //        dbuser.SurName = editStudentVM.SurName;
-        //        dbuser.PhoneNumber = editStudentVM.PhoneNumber;
-        //        dbuser.Address = editStudentVM.Address;
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    return RedirectToAction("Index", "Home");
-        //}
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
@@ -143,8 +118,12 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 TempData["Error"] = "This Email Address has already been taken";
                 return View(registerVM);
             }
-            var staffmemberId = User.FindFirstValue("Id");
-            var staffmember = await _staffmemberService.GetByIdAsync(staffmemberId);
+            var staffmember = new STAFFMEMBER();
+            if (User.IsInRole("StaffMember"))
+            {
+                var staffmemberId = User.FindFirstValue("Id");
+                staffmember = await _staffmemberService.GetByIdAsync(staffmemberId);
+            }
             var newStudent = new STUDENT()
             {
                 UserName = registerVM.Email,
@@ -155,6 +134,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 Address = registerVM.Address,
                 PhoneNumber = registerVM.PhoneNumber,
                 StaffMember=staffmember,
+                DebtRegister=new DEBTREGISTER() { InterestRate = registerVM.InterestRate }
             };
             string password = GenerateRandomPassword(8);
             var newUserResponse = await _userManager.CreateAsync(newStudent, password);

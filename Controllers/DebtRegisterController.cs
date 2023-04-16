@@ -30,6 +30,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var studentid = User.FindFirstValue("Id");
             var student = await _studentService.GetByIdAsync(studentid,s=>s.DebtRegister,s=>s.StaffMember);
             var debtregister = student.DebtRegister;
+            await UpdateDebtRegisterDebtsChanged(debtregister.Id);
             return View("DebtRegister", debtregister);
         }
         public async Task<IActionResult> DebtRegisterById(string id)
@@ -42,22 +43,23 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         {
             var request =await _requestService.GetByIdAsync(id,r=>r.DebtRegister);
             var debtregisterid = request.DebtRegister.Id;
-            await UpdateDebtRegisterDebts(debtregisterid);
-            await UpdateDebtRegisterRequest(id);
+            await UpdateDebtRegisterDebtsChanged(debtregisterid);
+            await UpdateDebtRegisterRequestActivated(id);
             var installments = await GenerateInstallments(id);
-            await UpdateRequestAfterRequest(id);
+            await UpdateRequestAfterRequestAccepted(id);
             await UpdateDebtRegisterAfterRequest(debtregisterid, installments);
             var payments = await GeneratePayments(debtregisterid);
             await UpdateDebtRegisterAfterGenrationofPayments(debtregisterid, payments);
             return RedirectToAction("Index", "Home");
         }
-        public async Task UpdateDebtRegisterDebts(string id)
+        public async Task UpdateDebtRegisterDebtsChanged(string id)
         {
             var debtregister = await _debtregisterService.GetByIdAsync(id,dr=>dr.Debts);
             var total=0m;
             foreach (var d in debtregister.Debts)
             {
-                total = total+ d.Amount * (d.StartDate - d.EndDate).Days * debtregister.InterestRate / 365;
+                var add = (d.Amount * (1+(d.EndDate - d.StartDate).Days * debtregister.InterestRate)) / 365;
+                total += add ;
             }
             var newdebtregister = new DEBTREGISTER()
             {
@@ -81,7 +83,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             };
             await _debtregisterService.UpdateAsync(id, newdebtregister);
         }
-        public async Task UpdateDebtRegisterRequest(string id)
+        public async Task UpdateDebtRegisterRequestActivated(string id)
         {
             var request = await _requestService.GetByIdAsync(id,r=>r.DebtRegister);
             var debtregister = request.DebtRegister;
@@ -108,11 +110,20 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 Student = debtregister.Student,
                 Debts = debtregister.Debts
             };
-            await _debtregisterService.UpdateAsync(id, newdebtregister);
+            await _debtregisterService.UpdateAsync(request.DebtRegister.Id, newdebtregister);
         }
         public async Task<List<INSTALLMENT>> GenerateInstallments( string id)
         {
             var request = await _requestService.GetByIdAsync(id,r=>r.DebtRegister);
+            Console.WriteLine(request.NumOfMonths);
+            Console.WriteLine(request.NumOfMonths);
+            Console.WriteLine(request.NumOfMonths);
+            Console.WriteLine(request.NumOfMonths);
+            Console.WriteLine(request.NumOfMonths);
+            Console.WriteLine(request.NumOfMonths);
+            Console.WriteLine(request.NumOfMonths);
+            Console.WriteLine(request.NumOfMonths);
+            Console.WriteLine(request.NumOfMonths);
             var debtregister = request.DebtRegister;
             var installments = new List<INSTALLMENT>();
             var today = DateTime.Now;
@@ -121,7 +132,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 var ia = debtregister.TotalInstallment / request.NumOfMonths;
                 var pd = today.AddMonths(i);
                 var nod = (pd - today).Days;
-                var aai = ia * (debtregister.InterestRate * nod / 365+1);
+                var aai = ia * (1+debtregister.InterestRate * nod / 365);
                 var installment = new INSTALLMENT()
                 {
                     InitialAmount = ia,
@@ -136,7 +147,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             return installments;
         }
         [HttpPost]
-        public async Task UpdateRequestAfterRequest(string requestid)
+        public async Task UpdateRequestAfterRequestAccepted(string requestid)
         {
             var request = await _requestService.GetByIdAsync(requestid, dr => dr.DebtRegister);
             var newrequest = new REQUEST()

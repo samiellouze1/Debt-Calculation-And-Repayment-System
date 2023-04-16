@@ -41,7 +41,7 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label>Number of months for installments</label>
-                            <input asp-for="NumOfMonths" type="number" value=@Model.ToBePaidFull readonly class="form-control bg-light border-0" placeholder="Enter Start Date" style="padding: 30px 20px;">
+                            <input asp-for="NumOfMonths" type="number" value=@Model.NumOfMonths readonly class="form-control bg-light border-0" placeholder="Enter Start Date" style="padding: 30px 20px;">
                             <span asp-validation-for="NumOfMonths" style="color:red"></span>
                         </div>
                     </div>

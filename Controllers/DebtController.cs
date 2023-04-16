@@ -48,24 +48,18 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         [Authorize(Roles = "Admin, StaffMember")]
         public async Task<IActionResult> CreateDebt(CreateDebtVM debtVM)
         {
-            if (!ModelState.IsValid)
+            var student = await _studentService.GetByIdAsync(debtVM.StudentId,s=>s.DebtRegister);
+            var debtregister = student.DebtRegister;
+            var newdebt = new DEBT()
             {
-                return View(debtVM);
-            }
-            else
-            {
-                var student = await _studentService.GetByIdAsync(debtVM.StudentId,s=>s.DebtRegister);
-                var debtregister = student.DebtRegister;
-                var newdebt = new DEBT()
-                {
-                    Amount = debtVM.Amount,
-                    StartDate = debtVM.StartDate,
-                    RegDate = DateTime.Now,
-                    DebtRegister=debtregister
-                };
-                await _debtService.AddAsync(newdebt);
-                return RedirectToAction("Index", "Home");
-            }
+                Amount = debtVM.Amount,
+                StartDate = debtVM.StartDate,
+                RegDate = DateTime.Now,
+                DebtRegister=debtregister,
+                EndDate=debtVM.EndDate,
+            };
+            await _debtService.AddAsync(newdebt);
+            return RedirectToAction("Index", "Home");
         }
         #endregion
 

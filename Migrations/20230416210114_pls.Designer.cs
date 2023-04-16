@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Debt_Calculation_And_Repayment_System.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230416192306_pls")]
+    [Migration("20230416210114_pls")]
     partial class pls
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

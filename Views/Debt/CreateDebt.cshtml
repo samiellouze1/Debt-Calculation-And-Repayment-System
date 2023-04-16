@@ -28,13 +28,6 @@
                                 <span asp-validation-for="Amount" style="color:red"></span>
                             </div>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Interest Rate</label>
-                                <input asp-for="InterestRate" type="number" step="any" class="form-control bg-light border-0" placeholder="Enter Interest Rate" style="padding: 30px 20px;">
-                                <span asp-validation-for="InterestRate" style="color:red"></span>
-                            </div>
-                        </div>
                     </div>
                     <div class="form-row">
                         <div class="col-sm-6">
@@ -44,13 +37,20 @@
                                 <span asp-validation-for="StartDate" style="color:red"></span>
                             </div>
                         </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Start Date</label>
+                                    <input asp-for="EndDate" type="datetime" class="form-control bg-light border-0" placeholder="Enter End Date" style="padding: 30px 20px;">
+                                    <span asp-validation-for="EndDate" style="color:red"></span>
+                                </div>
+                            </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label asp-for="StudentId">Select a Student</label>
                                 <select asp-for="StudentId" class="form-control bg-light border-0" >
                                     @foreach (var item in Model.Students)
                                     {
-                                        <option value="@item.Id">@item.UserName</option>
+                                        <option asp-for="StudentId" value=@item.Id>@item.UserName</option>
                                     }
                                 </select>
                                 <span asp-validation-for="StudentId" style="color:red"></span>

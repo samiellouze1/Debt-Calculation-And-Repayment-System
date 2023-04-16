@@ -8,10 +8,9 @@ namespace Debt_Calculation_And_Repayment_System.Data.ViewModels
         [Required]
         public decimal Amount { get; set; }
         [Required]
-        [Range(0, 1)]
-        public decimal InterestRate { get; set; }
-        [Required]
         public DateTime StartDate { get; set; }
+        [Required]
+        public DateTime EndDate { get; set; }
         [Required]
         public string StudentId { get; set; }
         public List<STUDENT>? Students { get; set; }

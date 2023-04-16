@@ -38,14 +38,15 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 var studentid = User.FindFirstValue("Id");
                 var student = await _studentService.GetByIdAsync(studentid, s => s.DebtRegister);
                 var debtregister = student.DebtRegister;
-                var tobepaideachmonth = 0m;
+                var sum = 0m;
                 for (int i = 1; i <= vm.NumOfMonths; i++)
                 {
-                    var eachmonthafterinterest = (debtregister.Total - vm.ToBePaidFull) / vm.NumOfMonths;
+                    var monthafterinterest = (debtregister.Total - vm.ToBePaidFull) / vm.NumOfMonths;
                     var nod = (DateTime.Now.AddMonths(i) - DateTime.Now).Days;
-                    var add = eachmonthafterinterest * (1 + nod * debtregister.InterestRate / 365);
-                    tobepaideachmonth += add;
+                    var add = monthafterinterest * (1 + nod * debtregister.InterestRate / 365);
+                    sum += add;
                 }
+                var tobepaideachmonth = sum / vm.NumOfMonths;
                 var newvm = new PreviewRequestVM() { ToBePaidFull = vm.ToBePaidFull, NumOfMonths = vm.NumOfMonths, ToBePaidInstallment = debtregister.Total - vm.ToBePaidFull, ToBePaidEachMonth = tobepaideachmonth };
                 return View("CreateRequest", newvm ); // Change the view here to "PreviewRequestConfirm"
             }
