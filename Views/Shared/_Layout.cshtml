@@ -82,7 +82,7 @@
                         }
                         @if (User.IsInRole("Student"))
                         {
-                            <a asp-controller="DebtRegister" asp-action="MyDebtRegister" class="nav-item nav-link active">My Students</a>
+                            <a asp-controller="DebtRegister" asp-action="MyDebtRegister" class="nav-item nav-link active">My Debt Register</a>
                         }
                     }
                 </div>
@@ -92,9 +92,12 @@
                     {
                         <a asp-controller="Account" asp-action="RegisterAStaffMember" class="btn btn-primary py-2 px-4 d-none d-lg-block" style="margin-right:10px;">Register A Staff Member</a>
                     } 
-                    @if (User.IsInRole("Admin")||User.IsInRole("StaffMember"))
+                    @if (User.IsInRole("StaffMember"))
                     {
                         <a asp-controller="Debt" asp-action="CreateDebt" class="btn btn-primary py-2 px-4 d-none d-lg-block" style="margin-right:10px;">Create Debt</a>
+                    }
+                    @if (User.IsInRole("Admin")||User.IsInRole("StaffMember"))
+                    {
                         <a asp-controller="Account" asp-action="RegisterAStudent" class="btn btn-primary py-2 px-4 d-none d-lg-block" style="margin-right:10px;">Register A Student</a>
                     }
                     <form asp-controller="Account" asp-action="Logout">

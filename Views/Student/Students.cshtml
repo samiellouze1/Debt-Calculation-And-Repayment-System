@@ -20,23 +20,22 @@
                 <th scope="col">Address</th>
                 <th scope="col">Phone Number</th>
                 <th scope="col">Registration Date</th>
-                <th scope="col"></th>
-                <th scope="col"></th>
-
+                <th scope="col">StaffMember</th>
+                <th scope="col">Password Reset</th>
             </tr>
         </thead>
         <tbody>
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.Email</td>
+                <td style=><a asp-controller="Student" asp-action="StudentById" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block" >@item.Email</a></td>
                 <td>@item.FirstName</td>
                 <td>@item.SurName</td>
                 <td>@item.Address</td>
                 <td>@item.PhoneNumber</td>
                 <td>@item.RegDate</td>
-                <td><a asp-controller="StaffMember" asp-action="StaffMemberById" asp-route-id=@item.StaffMember.Id>StaffMember</a></td>
-                <td><a asp-controller="DebtRegister" asp-action="DebtRegisterById" asp-route-id=@item.DebtRegister.Id>DebtRegister</a></td>
+                <td><a asp-controller="StaffMember" asp-action="StaffMemberById" asp-route-id=@item.StaffMember.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block">@item.StaffMember.Email</a></td>
+                <td><a asp-controller="Account" asp-action="SendPasswordResetEmail" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block">Send Reset Password Email</a></td>
             </tr>
         }
     </tbody>

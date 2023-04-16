@@ -1,47 +1,63 @@
 ﻿@using Debt_Calculation_And_Repayment_System.Data.ViewModels
-@model CreateRequestVM
+@model CreateRequestVM;
 @{
-    ViewData["Title"] = "Send Request";
+    ViewData["Title"] = "Create Request";
 }
 @section Title {
-    Send Request
+    Login
 }
-<div class="container-fluid px-0 py-5" style="width:1200px;">
-    <div class="row mx-0 justify-content-center pt-5">
-        <div class="col-lg-6">
-            <div class="section-title text-center position-relative mb-4">
-                <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">This specific view is only viewed by students</h6>
-                <h1 class="display-4">Send Request</h1>
+
+    <div class="container-fluid px-0 py-5">
+        <div class="row mx-0 justify-content-center pt-5">
+            <div class="col-lg-6">
+                <div class="section-title text-center position-relative mb-4">
+                    <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">This specific view is only viewed by admins</h6>
+                    <h1 class="display-4">Create Request</h1>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row justify-content-center bg-image mx-5 mb-5">
-        <div class="col-lg-12 py-5">
-            <div class="bg-white p-5 my-5">
-                <h1 class="text-center mb-4">Just fill in the number of months you want for your payment. The debt related is already specified</h1>
-                <form asp-action="SendRequest">
-                    <div class="form-row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Debt (do not modify it)</label>
-                                    <input asp-for="DebtId" type="number" class="form-control bg-light border-0" readonly placeholder="Debt Selected" style="padding: 30px 20px;" id="myInput" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Debt Selected'">
-                                    <span asp-validation-for="DebtId" style="color:red"></span>
+        <div class="row justify-content-center bg-image mx-0 mb-5">
+            <div class="col-lg-6 py-5">
+                <div class="bg-white p-5 my-5">
+                    <h1 class="text-center mb-4">Fill in data about your request</h1>
+                    <form asp-action="CreateRequest">
+                        <div class="form-row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <input asp-for="ToBePaidFull" type="number" class="form-control bg-light border-0" placeholder="To Be Paid Full">
+                                    <span asp-validation-for="ToBePaidFull" style="color:red"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <input asp-for="ToBePaidInstallment" type="number" class="form-control bg-light border-0" placeholder="To Be Paid Installment">
+                                    <span asp-validation-for="ToBePaidInstallment" style="color:red"></span>
+                                </div>
+                            </div>                        
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <input asp-for="NumOfMonths" type="number" class="form-control bg-light border-0" placeholder="Number Of Months">
+                                    <span asp-validation-for="NumOfMonths" style="color:red"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <input asp-for="InterestRate" type="number" class="form-control bg-light border-0" placeholder="Interest Rate">
+                                    <span asp-validation-for="InterestRate" style="color:red"></span>
+                                </div>
+                            </div>                   
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <input asp-for="DebtRegisterId" type="number" readonly class="form-control bg-light border-0" placeholder="Debt Register Selected">
+                                    <span asp-validation-for="DebtRegisterId" style="color:red"></span>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Number Of Months</label>
-                                    <input asp-for="NumOfMonths" type="number" class="form-control bg-light border-0" placeholder="Enter the number of months you want the remaining of your payment to be done in" style="padding: 30px 20px;">
-                                    <span asp-validation-for="NumOfMonths" style="color:red"></span>
-                            </div>
-                        </div>                        
-                    </div>
-                    <div class="col-sm-6" style="width:50%;margin: 0 auto;">
-                        <button class="btn btn-primary btn-block" type="submit" style="height: 60px;" value="SendRequest">Send Request</button>
-                    </div>
-                </form>
+                        <div class="col-sm-6" style="width:50%;margin: 0 auto;">
+                            <button class="btn btn-primary btn-block" type="submit" style="height: 60px;" value="CreateRequest">Create Request</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
-

@@ -6,37 +6,38 @@
     Requests
 }
     @section Name1{
-    tsiwtsiw
+    Student @Model[0].DebtRegister.Student.Email
 }
     @section Name2{
-    niwniw
+    Requests
 }
-    <table class="table ">
-        <thead>
-            <tr>
-                <th scope="col">To Be Paid Full</th>
-                <th scope="col">To Be Paid Installment</th>
-                <th scope="col">Number Of Months for installment</th>
-                <th scope="col">Interest Rate</th>
-                <th scope="col">Registration Date</th>
-                <th scope="col">Status</th>
-                <th scope="col">Debt Register</th>
-                <th scope="col">Accept Request</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var item in Model)
-        {
-            <tr class="table">
-                <td>@item.ToBePaidFull</td>
-                <td>@item.ToBePaidInstallment</td>
-                <td>@item.NumOfMonths</td>
-                <td>@item.InterestRate</td>
-                <td>@item.RegDate</td>
-                <td>@item.Status</td>
-                <td><a asp-controller="DebtRegister" asp-action="DebtRegisterById" asp-route-id=@item.DebtRegister.Id>Debt Register</a></td>
-                <td><a asp-controller="DebtRegister" asp-action="AcceptRequest"></a></td>
-            </tr>
-        }
+<table class="table ">
+    <thead>
+        <tr>
+            <th scope="col">To Be Paid Full</th>
+            <th scope="col">To Be Paid Installment</th>
+            <th scope="col">Number Of Months</th>
+            <th scope="col">Interest Rate</th>
+            <th scope="col">Registration Date</th>
+            <th scope="col">Status</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr class="table">
+            <td>@item.ToBePaidFull</td>
+            <td>@item.ToBePaidInstallment</td>
+            <td>@item.NumOfMonths</td>
+            <td>@item.InterestRate</td>
+            <td>@item.RegDate</td>
+            <td>@item.Status</td>
+            <td><a asp-controller="DebtRegister" asp-action="DebtRegisterById" asp-route-id=@item.DebtRegister.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block" style="width:150px;height:45px;">Debt Register</a></td>
+            <td><a asp-controller="DebtRegister" asp-action="AcceptRequest" class="btn btn-secondary py-2 px-4 d-none d-lg-block" style="width:160px;height:45px;">Accept Request</a></td>
+        </tr>
+    }
+
     </tbody>
 </table>

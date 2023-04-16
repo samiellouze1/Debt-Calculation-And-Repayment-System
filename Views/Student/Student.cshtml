@@ -1,19 +1,17 @@
 ﻿@model STUDENT
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Student";
 }
 
 
 @section Title {
-    Home
+    Student
 }
 
     <div class="jumbotron jumbotron-fluid position-relative overlay-bottom">
         <div class="container text-center my-5 py-5">
-            <h1 class="text-white mt-4 mb-4">Student @Model.FirstName @Model.SurName</h1>
-            <h1 class="text-white display-1 mb-5">PROFILE</h1>
-            <a asp-controller="StaffMember" asp-action="StaffMemberById" asp-route-id=@Model.StaffMember.Id class="btn btn-secondary px-3 px-lg-5">Requests</a>
-            <a asp-controller="DebtRegister" asp-action="DebtRegisterById" asp-route-id=@Model.DebtRegister.Id class="btn btn-secondary px-3 px-lg-5">Debts</a>
-
+            <h1 class="text-white mt-4 mb-4">Profile of Student</h1>
+            <h1 class="text-white display-1 mb-5">@Model.Email</h1>
+            <a asp-controller="DebtRegister" asp-action="DebtRegisterById" asp-route-id=@Model.DebtRegister.Id class="btn btn-secondary px-3 px-lg-5">Debt Register</a>
         </div>
     </div>

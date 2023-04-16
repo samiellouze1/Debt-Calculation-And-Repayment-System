@@ -27,10 +27,9 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var debtregister = student.DebtRegister;
             return View("DebtRegister", debtregister);
         }
-        public async Task<IActionResult> DebtRegisterByStudent(string id)
+        public async Task<IActionResult> DebtRegisterById(string id)
         {
-            var student = await _studentService.GetByIdAsync(id);
-            var debtregister = student.DebtRegister;
+            var debtregister = await _debtregisterService.GetByIdAsync(id);
             return View("DebtRegister", debtregister);
         }
         #region business

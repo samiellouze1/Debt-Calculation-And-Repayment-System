@@ -6,10 +6,10 @@
     Payments
 }
     @section Name1{
-    tsiwtsiw
+    Student @Model[0].DebtRegister.Student.Email
 }
     @section Name2{
-    niwniw
+    Payments
 }
     <table class="table ">
         <thead>
@@ -20,7 +20,6 @@
                 <th scope="col">Payment Date</th>
                 <th scope="col">Registration Date</th>
                 <th scope="col"></th>
-
             </tr>
         </thead>
         <tbody>
@@ -32,7 +31,7 @@
                 <td>@item.Type</td>
                 <td>@item.PaymentDate</td>
                 <td>@item.RegDate</td>
-                <td><a asp-controller="DebtRegister" asp-action="DebtRegisterById" asp-route-id=@item.DebtRegister.Id>DebtRegister</a></td>
+                <td><a asp-controller="DebtRegister" asp-action="DebtRegisterById" asp-route-id=@item.DebtRegister.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block" style="width:150px;height:45px;">Debt Register</a></td>
             </tr>
         }
     </tbody>

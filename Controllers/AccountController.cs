@@ -161,7 +161,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 var result = await _userManager.AddToRoleAsync(newStudent, UserRoles.Student);
                 if (result.Succeeded)
                 {
-                    await SendPasswordResetEmail(newStudent.Email);
+                    RedirectToAction("Index", "Home");
                 }
             }
             return RedirectToAction("Index", "Home");
@@ -204,16 +204,16 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 var result = await _userManager.AddToRoleAsync(newStudent, UserRoles.StaffMember);
                 if (result.Succeeded)
                 {
-                    await SendPasswordResetEmail(newStudent.Email);
+                    return RedirectToAction("Index", "Home");
                 }
             }
             return RedirectToAction("Index", "Home");
         }
         [HttpPost]
-        public async Task SendPasswordResetEmail(string email)
+        public async Task SendPasswordResetEmail(string id)
         {
             // Look up the user by email address
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userService.GetByIdAsync(id);
             if (user == null)
             {
                 // Show an error message to the user
@@ -224,7 +224,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
 
             // Generate the password reset link
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var callbackUrl = Url.Action("ResetPassword", "Account", new { email, code }, Request.Scheme);
+            var callbackUrl = Url.Action("ResetPassword", "Account", new { user.Email, code }, Request.Scheme);
 
             // Send the password reset email to the user
             var message = new MailMessage();
