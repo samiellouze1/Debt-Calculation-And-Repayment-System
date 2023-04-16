@@ -21,39 +21,33 @@
                 <h1 class="text-center mb-4">Fill in information about the new debt</h1>
                 <form asp-action="CreateDebt">
                     <div class="form-row">
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Intial Amount</label>
-                                <input asp-for="InitialAmount" type="number" class="form-control bg-light border-0" placeholder="Enter Initial Amount" style="padding: 30px 20px;">
-                                <span asp-validation-for="InitialAmount" style="color:red"></span>
+                                <input asp-for="Amount" type="number" class="form-control bg-light border-0" placeholder="Amount" style="padding: 30px 20px;">
+                                <span asp-validation-for="Amount" style="color:red"></span>
                             </div>
                         </div>
-
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Interest Rate</label>
                                 <input asp-for="InterestRate" type="number" step="any" class="form-control bg-light border-0" placeholder="Enter Interest Rate" style="padding: 30px 20px;">
                                 <span asp-validation-for="InterestRate" style="color:red"></span>
                             </div>
                         </div>
-                        <div class="col-sm-4">
+                    </div>
+                    <div class="form-row">
+                        <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Start Date</label>
                                 <input asp-for="StartDate" type="datetime" class="form-control bg-light border-0" placeholder="Enter Start Date" style="padding: 30px 20px;">
                                 <span asp-validation-for="StartDate" style="color:red"></span>
                             </div>
                         </div>
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label>Already Paid</label>
-                                <input asp-for="Paid" type="checkbox" class="form-control bg-light border-0" placeholder="Paid" style="padding: 30px 20px;">
-                                <span asp-validation-for="Paid" style="color:red"></span>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
                             <div class="form-group">
                                 <label asp-for="StudentId">Select a Student</label>
-                                <select asp-for="StudentId" class="form-control bg-light border-0" name="StudentId">
+                                <select asp-for="StudentId" class="form-control bg-light border-0" >
                                     @foreach (var item in Model.Students)
                                     {
                                         <option value="@item.Id">@item.UserName</option>

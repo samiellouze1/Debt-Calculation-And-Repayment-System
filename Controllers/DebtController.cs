@@ -15,11 +15,13 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         private readonly IDEBTService _debtService;
         private readonly IDEBTREGISTERService _debtregisterService;
         private readonly ISTAFFMEMBERService _staffmemberService;
-        public DebtController(IDEBTService debtService, ISTAFFMEMBERService staffmemberService,IDEBTREGISTERService debtregisterService)
+        private readonly ISTUDENTService _studentService;
+        public DebtController(IDEBTService debtService, ISTAFFMEMBERService staffmemberService,IDEBTREGISTERService debtregisterService,ISTUDENTService studentService)
         {
             _debtService = debtService;
             _staffmemberService = staffmemberService;
             _debtregisterService = debtregisterService;
+            _studentService = studentService;
         }
         #region getters
         public async Task<IActionResult> DebtsByDebtRegister(string id)
@@ -46,17 +48,24 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         [Authorize(Roles = "Admin, StaffMember")]
         public async Task<IActionResult> CreateDebt(CreateDebtVM debtVM)
         {
-            var newdebt = new DEBT()
+            if (!ModelState.IsValid)
             {
-                //InitialAmount = debtVM.InitialAmount,
-                //InterestRate = debtVM.InterestRate,
-                //StartDate = debtVM.StartDate,
-                //RegDate = DateTime.Now,
-                //Paid = debtVM.Paid,
-                //StudentId = debtVM.StudentId,
-            };
-            await _debtService.AddAsync(newdebt);
-            return RedirectToAction("Index", "Home");
+                return View(debtVM);
+            }
+            else
+            {
+                var student = await _studentService.GetByIdAsync(debtVM.StudentId,s=>s.DebtRegister);
+                var debtregister = student.DebtRegister;
+                var newdebt = new DEBT()
+                {
+                    Amount = debtVM.Amount,
+                    StartDate = debtVM.StartDate,
+                    RegDate = DateTime.Now,
+                    DebtRegister=debtregister
+                };
+                await _debtService.AddAsync(newdebt);
+                return RedirectToAction("Index", "Home");
+            }
         }
         #endregion
 
