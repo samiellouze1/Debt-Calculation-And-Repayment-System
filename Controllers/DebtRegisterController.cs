@@ -132,10 +132,10 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var today = DateTime.Now;
             for (int i = 0; i< nom;i++)
             {
-                var newpaymentinstallment = new PAYMENT() { Sum= sum,Paid=false,Type="Installment",PaymentDate=today.AddMonths(i),RegDate=today};
+                var newpaymentinstallment = new PAYMENT() { Sum= sum,Paid=false,Type="Installment",PaymentDate=today.AddMonths(i),RegDate=today,DebtRegister=debtregister};
                 payments.Add(newpaymentinstallment);
             }
-            var newpaymentfull= new PAYMENT() { Sum=debtregister.TotalCash,PaymentDate=today,Paid=false,Type="Full",RegDate=today};
+            var newpaymentfull= new PAYMENT() { Sum=debtregister.TotalCash,PaymentDate=today,Paid=false,Type="Full",RegDate=today,DebtRegister=debtregister};
             payments.Add(newpaymentfull);
             return payments;
         }
