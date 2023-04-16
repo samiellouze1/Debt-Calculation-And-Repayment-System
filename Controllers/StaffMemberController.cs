@@ -17,17 +17,17 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> AllStaffMembers ()
         {
-            var staffmembers = await _staffmemberService.GetAllAsync();
+            var staffmembers = await _staffmemberService.GetAllAsync(sm => sm.Students);
             return View("StaffMembers", staffmembers);
         }
         public async Task<IActionResult> StaffMemberById(string id)
         {
-            var staffmember = await _staffmemberService.GetByIdAsync(id);
+            var staffmember = await _staffmemberService.GetByIdAsync(id, sm => sm.Students);
             return View("StaffMember", staffmember);
         }
         public async Task<IActionResult> StaffMemberByStudent(string id)
         {
-            var student = await _studentService.GetByIdAsync(id);
+            var student = await _studentService.GetByIdAsync(id, s => s.StaffMember, s => s.DebtRegister);
             var staffmember = student.StaffMember;
             return View("StaffMember", staffmember);
         }

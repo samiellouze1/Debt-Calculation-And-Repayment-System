@@ -24,7 +24,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         #region getters
         public async Task<IActionResult> DebtsByDebtRegister(string id)
         {
-            var debtregister = await _debtregisterService.GetByIdAsync(id);
+            var debtregister = await _debtregisterService.GetByIdAsync(id, dr => dr.Requests, dr => dr.Payments, dr => dr.Installments, dr => dr.Student, dr => dr.Debts);
             var debts = debtregister.Debts;
             return View("Debts",debts);
         }
@@ -35,7 +35,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         public IActionResult CreateDebt()
         {
             var staffid = User.FindFirstValue("Id");
-            var vmstudents = _staffmemberService.GetByIdAsync(staffid).Result.Students.ToList();
+            var vmstudents = _staffmemberService.GetByIdAsync(staffid, sm => sm.Students).Result.Students.ToList();
             var vm = new CreateDebtVM() 
             { 
                 Students = vmstudents

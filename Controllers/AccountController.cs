@@ -42,8 +42,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             {
                 try
                 {
-                    var oldstaffmember = await _staffmemberService.GetByIdAsync(vm.StaffId);
-                    var student = await _studentService.GetByIdAsync(vm.StudentId);
+                    var oldstaffmember = await _staffmemberService.GetByIdAsync(vm.StaffId, sm => sm.Students);
+                    var student = await _studentService.GetByIdAsync(vm.StudentId, s => s.StaffMember, s => s.DebtRegister);
                     var newstaffmember = new STAFFMEMBER() { FirstName = oldstaffmember.FirstName, SurName = oldstaffmember.SurName, RegDate=oldstaffmember.RegDate,PhoneNumber=oldstaffmember.PhoneNumber,Address=oldstaffmember.Address,Students=oldstaffmember.Students.Concat(new List<STUDENT>() { student}).ToList()};
                     await _staffmemberService.UpdateAsync(vm.StaffId, newstaffmember);
                     return RedirectToAction("Index", "Home");

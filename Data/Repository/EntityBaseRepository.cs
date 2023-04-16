@@ -48,10 +48,20 @@ namespace Debt_Calculation_And_Repayment_System.Data.Repository
 
         public async Task UpdateAsync(string id, T entity)
         {
-            EntityEntry entityEntry = _context.Entry<T>(entity);
-            entityEntry.State = EntityState.Modified;
+            var existingEntity = await _context.Set<T>().FindAsync(id);
 
-            await _context.SaveChangesAsync();
+            if (existingEntity != null)
+            {
+                _context.Entry(existingEntity).CurrentValues.SetValues(entity);
+                _context.Entry(existingEntity).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                _context.Set<T>().Attach(entity);
+                _context.Entry(entity).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task SaveChangesAsync()

@@ -29,18 +29,18 @@ namespace Debt_Calculation_And_Repayment_System.Data
             #endregion
 
             #region onetomany
-            builder.Entity<STAFFMEMBER>().Navigation(sm => sm.Students).AutoInclude();
-            builder.Entity<STUDENT>().Navigation(s => s.StaffMember).AutoInclude();
-            builder.Entity<STUDENT>().Navigation(s => s.DebtRegister).AutoInclude();
-            builder.Entity<DEBTREGISTER>().Navigation(dr => dr.Student).AutoInclude();
-            builder.Entity<DEBTREGISTER>().Navigation(dr => dr.Debts).AutoInclude();
-            builder.Entity<DEBTREGISTER>().Navigation(dr => dr.Payments).AutoInclude();
-            builder.Entity<DEBTREGISTER>().Navigation(dr => dr.Installments).AutoInclude();
-            builder.Entity<DEBTREGISTER>().Navigation(dr => dr.Requests).AutoInclude();
-            builder.Entity<REQUEST>().Navigation(r => r.DebtRegister).AutoInclude();
-            builder.Entity<DEBT>().Navigation(d => d.DebtRegister).AutoInclude();
-            builder.Entity<INSTALLMENT>().Navigation(i => i.DebtRegister).AutoInclude();
-            builder.Entity<PAYMENT>().Navigation(p => p.DebtRegister).AutoInclude();
+            //builder.Entity<STAFFMEMBER>().Navigation(sm => sm.Students).AutoInclude();
+            //builder.Entity<STUDENT>().Navigation(s => s.StaffMember).AutoInclude();
+            //builder.Entity<STUDENT>().Navigation(s => s.DebtRegister).AutoInclude();
+            //builder.Entity<DEBTREGISTER>().Navigation(dr => dr.Student).AutoInclude();
+            //builder.Entity<DEBTREGISTER>().Navigation(dr => dr.Debts).AutoInclude();
+            //builder.Entity<DEBTREGISTER>().Navigation(dr => dr.Payments).AutoInclude();
+            //builder.Entity<DEBTREGISTER>().Navigation(dr => dr.Installments).AutoInclude();
+            //builder.Entity<DEBTREGISTER>().Navigation(dr => dr.Requests).AutoInclude();
+            //builder.Entity<REQUEST>().Navigation(r => r.DebtRegister).AutoInclude();
+            //builder.Entity<DEBT>().Navigation(d => d.DebtRegister).AutoInclude();
+            //builder.Entity<INSTALLMENT>().Navigation(i => i.DebtRegister).AutoInclude();
+            //builder.Entity<PAYMENT>().Navigation(p => p.DebtRegister).AutoInclude();
             #endregion
 
             #region precisions
