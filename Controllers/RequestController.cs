@@ -4,6 +4,7 @@ using Debt_Calculation_And_Repayment_System.Data.ViewModels;
 using Debt_Calculation_And_Repayment_System.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 
@@ -28,28 +29,82 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var request = debtregister.Requests;
             return View("Requests", request);
         }
-        public IActionResult CreateRequest ()
+        public IActionResult PreviewRequest ()
         {
             var vm = new CreateRequestVM();
-            return View("CreateRequest", vm);
+            return View("PreviewRequest", vm);
         }
         [HttpPost]
+        public async Task<IActionResult> PreviewRequest(CreateRequestVM vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(vm);
+            }
+            else
+            {
+                CreateRequest(vm);
+                return RedirectToAction("Index", "Home");
+            }
+        }
         public async Task<IActionResult> CreateRequest(CreateRequestVM vm)
         {
-            var studentid = User.FindFirstValue("Id");
-            var student= await _studentService.GetByIdAsync(studentid, s => s.StaffMember, s => s.DebtRegister);
-            var debtregister = student.DebtRegister;
-            var newRequest = new REQUEST()
+            if (ModelState.IsValid)
             {
-                ToBePaidFull = vm.ToBePaidFull,
-                ToBePaidInstallment = vm.ToBePaidInstallment,
-                NumOfMonths = vm.NumOfMonths,
-                RegDate = DateTime.Now,
-                Status = "Not Specified",
-                DebtRegister=debtregister
-            };
-            await _requestService.AddAsync(newRequest);
-            return RedirectToAction("Index","Home");
+                var studentid = User.FindFirstValue("Id");
+                var student = await _studentService.GetByIdAsync(studentid, s => s.DebtRegister);
+                var debtregister = student.DebtRegister;
+                var tobepaideachmonth = 0m;
+                for ( int i=1;i<=vm.NumOfMonths;i++)
+                {
+                    var eachmonthafterinterest = (debtregister.TotalAfterInterest - vm.ToBePaidFull) / vm.NumOfMonths;
+                    var nod = (DateTime.Now.AddMonths(i)-DateTime.Now).Days;
+                    var add = eachmonthafterinterest * (1 + nod * debtregister.InterestRate / 365);
+                    tobepaideachmonth += add;
+                }
+                var newvm = new PreviewRequestVM() { ToBePaidFull = vm.ToBePaidFull, NumOfMonths = vm.NumOfMonths, ToBePaidInstallment = debtregister.TotalAfterInterest - vm.ToBePaidFull, ToBePaidEachMonth= tobepaideachmonth};
+                return await CreateRequest(newvm);
+            }
+            else
+            {
+                return View(vm);
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateRequest(PreviewRequestVM vm)
+        {
+            if (ModelState.IsValid)
+            {
+                if (vm.Accept)
+                {
+                    var studentid = User.FindFirstValue("Id");
+                    var student = await _studentService.GetByIdAsync(studentid, s => s.DebtRegister);
+                    var debtregister = student.DebtRegister;
+                    var newrequest = new REQUEST()
+                    {
+                        ToBePaidFull = vm.ToBePaidFull,
+                        ToBePaidInstallment = vm.ToBePaidInstallment,
+                        NumOfMonths = vm.NumOfMonths,
+                        RegDate = DateTime.Now,
+                        Status = "Not Defined",
+                        DebtRegister = debtregister,
+                    };
+                    await _requestService.AddAsync(newrequest);
+                    return RedirectToAction("Index", "Home");
+                }
+                else if (!vm.Accept)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    return View(vm);
+                }
+            }
+            else
+            {
+                return View(vm);
+            }
         }
     }
 }

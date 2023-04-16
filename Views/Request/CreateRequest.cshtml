@@ -1,47 +1,27 @@
 ﻿@using Debt_Calculation_And_Repayment_System.Data.ViewModels
-@model CreateRequestVM;
+@model PreviewRequestVM
 @{
-    ViewData["Title"] = "Create Request";
-}
-@section Title {
-    Login
+    ViewData["Title"] = "Preview Request";
 }
 
-    <div class="container-fluid px-0 py-5">
-        <div class="row mx-0 justify-content-center pt-5">
-            <div class="col-lg-6">
-                <div class="section-title text-center position-relative mb-4">
-                    <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">This specific view is only viewed by admins</h6>
-                    <h1 class="display-4">Create Request</h1>
+
+@section Title {
+    Preview Request
+}
+
+    <div class="jumbotron jumbotron-fluid position-relative overlay-bottom">
+        <div class="container text-center my-5 py-5">
+            <h1 class="text-white mt-4 mb-4">Details about your request</h1>
+            <h1 class="text-white display-1 mb-5">You will pay in full: @Model.ToBePaidFull</h1>
+            <h1 class="text-white display-1 mb-5">You will pay in installment: @Model.ToBePaidInstallment</h1>
+            <h1 class="text-white display-1 mb-5">You will pay each month in installment: @Model.ToBePaidEachMonth</h1>
+            <form asp-action="CreateRequest">
+                <label>I accept the terms above</label>
+                <input asp-for="Accept" type="checkbox" class="form-control bg-light border-0"  >
+                <div class="col-sm-6" style="width:50%;margin: 0 auto;">
+                    <button class="btn btn-primary btn-block" type="submit" value="CreateReques" style="height: 60px;">Create Request</button>
                 </div>
-            </div>
-        </div>
-        <div class="row justify-content-center bg-image mx-0 mb-5">
-            <div class="col-lg-6 py-5">
-                <div class="bg-white p-5 my-5">
-                    <h1 class="text-center mb-4">Fill in data about your request</h1>
-                    <form asp-action="CreateRequest">
-                        <div class="form-row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>To be paid in Full</label>
-                                    <input asp-for="ToBePaidFull" type="number" class="form-control bg-light border-0" placeholder="To Be Paid Full">
-                                    <span asp-validation-for="ToBePaidFull" style="color:red"></span>
-                                </div>
-                            </div> 
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>Number Of Months</label>
-                                    <input asp-for="NumOfMonths" type="number" class="form-control bg-light border-0" placeholder="Number of Months">
-                                    <span asp-validation-for="NumOfMonths" style="color:red"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6" style="width:50%;margin: 0 auto;">
-                            <button class="btn btn-primary btn-block" type="submit" style="height: 60px;" value="CreateRequest">Create Request</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+            </form>
+
     </div>
+</div>

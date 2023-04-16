@@ -58,7 +58,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 var ia = debtregister.TotalInstallment / request.NumOfMonths;
                 var pd = today.AddMonths(i);
                 var nod = (pd - today).Days;
-                var aai = ia * (debtregister.InterestRate * nod / 36500+1);
+                var aai = ia * (debtregister.InterestRate * nod / 365+1);
                 var installment = new INSTALLMENT()
                 {
                     InitialAmount = ia,
