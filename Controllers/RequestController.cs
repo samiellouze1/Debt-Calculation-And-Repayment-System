@@ -44,7 +44,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 ToBePaidFull = vm.ToBePaidFull,
                 ToBePaidInstallment = vm.ToBePaidInstallment,
                 NumOfMonths = vm.NumOfMonths,
-                InterestRate = vm.InterestRate,
                 RegDate = DateTime.Now,
                 Status = "Not Specified",
                 DebtRegister=debtregister

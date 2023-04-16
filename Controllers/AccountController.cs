@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Net.Mail;
+using System.Security.Claims;
 
 namespace Debt_Calculation_And_Repayment_System.Controllers
 {
@@ -123,13 +124,11 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
 
         #region specialregistration
 
-        [Authorize(Roles = "Admin, StaffMember")]
         public IActionResult RegisterAStudent()
         {
             var response = new RegisterAStudentVM();
             return View(response);
         }
-        [Authorize(Roles = "Admin, StaffMember")]
         [HttpPost]
         public async Task<IActionResult> RegisterAStudent(RegisterAStudentVM registerVM)
         {
@@ -144,6 +143,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 TempData["Error"] = "This Email Address has already been taken";
                 return View(registerVM);
             }
+            var staffmemberId = User.FindFirstValue("Id");
+            var staffmember = await _staffmemberService.GetByIdAsync(staffmemberId);
             var newStudent = new STUDENT()
             {
                 UserName = registerVM.Email,
@@ -153,6 +154,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 RegDate = DateTime.Now,
                 Address = registerVM.Address,
                 PhoneNumber = registerVM.PhoneNumber,
+                StaffMember=staffmember,
             };
             string password = GenerateRandomPassword(8);
             var newUserResponse = await _userManager.CreateAsync(newStudent, password);
@@ -187,7 +189,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 TempData["Error"] = "This Email Address has already been taken";
                 return View(registerVM);
             }
-            var newStudent = new STUDENT()
+            var newStaffMember = new STAFFMEMBER()
             {
                 UserName = registerVM.Email,
                 Email = registerVM.Email,
@@ -198,10 +200,10 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 PhoneNumber = registerVM.PhoneNumber,
             };
             string password = GenerateRandomPassword(8);
-            var newUserResponse = await _userManager.CreateAsync(newStudent, password);
+            var newUserResponse = await _userManager.CreateAsync(newStaffMember, password);
             if (newUserResponse.Succeeded)
             {
-                var result = await _userManager.AddToRoleAsync(newStudent, UserRoles.StaffMember);
+                var result = await _userManager.AddToRoleAsync(newStaffMember, UserRoles.StaffMember);
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Index", "Home");

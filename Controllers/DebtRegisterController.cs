@@ -58,7 +58,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 var ia = debtregister.TotalInstallment / request.NumOfMonths;
                 var pd = today.AddMonths(i);
                 var nod = (pd - today).Days;
-                var aai = ia * (request.InterestRate * nod / 36500+1);
+                var aai = ia * (debtregister.InterestRate * nod / 36500+1);
                 var installment = new INSTALLMENT()
                 {
                     InitialAmount = ia,
@@ -82,7 +82,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 ToBePaidFull = request.ToBePaidFull,
                 ToBePaidInstallment = request.ToBePaidInstallment,
                 NumOfMonths = request.NumOfMonths,
-                InterestRate = request.InterestRate,
                 RegDate = request.RegDate,
                 Status = "Accepted",
                 DebtRegister=request.DebtRegister
@@ -94,7 +93,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         {
             var dr = await _debtregisterService.GetByIdAsync(id, dr => dr.Requests, dr => dr.Payments, dr => dr.Installments, dr => dr.Student, dr => dr.Debts);
             var tiar = installments.Sum(i => i.AmountAfterInterest);
-            var ir = dr.Requests.Where(r => r.Status == "Accepted").ToList()[0].InterestRate;
+            var ir = dr.InterestRate;
             var tar = tiar + dr.TotalCash;
             foreach (var installment in installments)
             {

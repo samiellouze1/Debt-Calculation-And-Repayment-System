@@ -38,5 +38,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var students = staffmember.Students;
             return View("Students", students);
         }
+
     }
 }

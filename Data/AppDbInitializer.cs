@@ -116,7 +116,6 @@ namespace Debt_Calculation_And_Repayment_System.Data
                                     ToBePaidFull=1500m,
                                     ToBePaidInstallment=1500m,
                                     NumOfMonths=30,
-                                    InterestRate=0.31m,
                                     RegDate=DateTime.Now
                                 }
                             },

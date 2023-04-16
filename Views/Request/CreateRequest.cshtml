@@ -28,28 +28,14 @@
                                     <input asp-for="ToBePaidFull" type="number" class="form-control bg-light border-0" placeholder="To Be Paid Full">
                                     <span asp-validation-for="ToBePaidFull" style="color:red"></span>
                                 </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>To be Paid in installments</label>
-                                    <input asp-for="ToBePaidInstallment" type="number" class="form-control bg-light border-0" placeholder="To Be Paid Installment">
-                                    <span asp-validation-for="ToBePaidInstallment" style="color:red"></span>
-                                </div>
-                            </div>                        
+                            </div> 
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label>Number Of Months</label>
-                                    <input asp-for="NumOfMonths" type="number" class="form-control bg-light border-0" placeholder="Number Of Months">
+                                    <input asp-for="NumOfMonths" type="number" class="form-control bg-light border-0" placeholder="Number of Months">
                                     <span asp-validation-for="NumOfMonths" style="color:red"></span>
                                 </div>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>Interest Rate</label>
-                                    <input asp-for="InterestRate" type="number" class="form-control bg-light border-0" placeholder="Interest Rate">
-                                    <span asp-validation-for="InterestRate" style="color:red"></span>
-                                </div>
-                            </div>                   
                         </div>
                         <div class="col-sm-6" style="width:50%;margin: 0 auto;">
                             <button class="btn btn-primary btn-block" type="submit" style="height: 60px;" value="CreateRequest">Create Request</button>

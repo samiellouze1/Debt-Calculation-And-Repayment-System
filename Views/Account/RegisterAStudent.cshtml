@@ -23,13 +23,13 @@
                     <div class="form-row">
                         <div class="col-sm-4">
                             <div class="form-group">
-                                <input asp-for="FirstName" type="text" class="form-control bg-light border-0" placeholder="FirstName" style="padding: 30px 20px;">
+                                <input asp-for="FirstName" type="text" class="form-control bg-light border-0" placeholder="First Name" style="padding: 30px 20px;">
                                 <span asp-validation-for="FirstName" style="color:red"></span>
                             </div>
                         </div>
                         <div class="col-sm-4">
                             <div class="form-group">
-                                <input asp-for="SurName" type="text" class="form-control bg-light border-0" placeholder="SurName" style="padding: 30px 20px;">
+                                <input asp-for="SurName" type="text" class="form-control bg-light border-0" placeholder="Last Name" style="padding: 30px 20px;">
                                 <span asp-validation-for="SurName" style="color:red"></span>
                             </div>
                         </div>
@@ -39,9 +39,21 @@
                                 <span asp-validation-for="Email" style="color:red"></span>
                             </div>
                         </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <input asp-for="PhoneNumber" type="number" class="form-control bg-light border-0" placeholder="Phone Number" style="padding: 30px 20px;">
+                                <span asp-validation-for="PhoneNumber" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <input asp-for="Address" type="text" class="form-control bg-light border-0" placeholder="Address" style="padding: 30px 20px;">
+                                <span asp-validation-for="Address" style="color:red"></span>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-sm-6" style="width:50%;margin: 0 auto;">
-                        <button class="btn btn-primary btn-block" type="submit" style="height: 60px;" value="RegisterAStudent">Register The Student (An email will be sent to complete the registration)</button>
+                        <button class="btn btn-primary btn-block" type="submit" style="height: 60px;" value="RegisterAStudent">Register The Student </button>
                     </div>
                 </form>
             </div>

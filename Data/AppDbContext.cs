@@ -66,7 +66,6 @@ namespace Debt_Calculation_And_Repayment_System.Data
 
             builder.Entity<REQUEST>().Property(r => r.ToBePaidFull).HasPrecision(18, 4);
             builder.Entity<REQUEST>().Property(r => r.ToBePaidInstallment).HasPrecision(18, 4);
-            builder.Entity<REQUEST>().Property(r => r.InterestRate).HasPrecision(18, 4);
             #endregion
 
 
