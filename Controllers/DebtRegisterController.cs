@@ -7,6 +7,8 @@ using System.Security.Claims;
 using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
+using Debt_Calculation_And_Repayment_System.Data.Static;
+using System.Linq.Expressions;
 
 namespace Debt_Calculation_And_Repayment_System.Controllers
 {
@@ -17,14 +19,17 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         private readonly IDEBTREGISTERService _debtregisterService;
         private readonly IINSTALLMENTService _installmentService;
         private readonly IPAYMENTService _paymentService;
-        public DebtRegisterController(IDEBTREGISTERService debtregisterService, ISTUDENTService studentService, IREQUESTService requestService,IINSTALLMENTService installmentService,IPAYMENTService paymentService)
+        private readonly ISTAFFMEMBERService _staffmemberService;
+        public DebtRegisterController(IDEBTREGISTERService debtregisterService, ISTUDENTService studentService, IREQUESTService requestService,IINSTALLMENTService installmentService,IPAYMENTService paymentService, ISTAFFMEMBERService staffmemberService)
         {
             _debtregisterService = debtregisterService;
             _studentService = studentService;
             _requestService = requestService;
             _installmentService = installmentService;
             _paymentService = paymentService;
+            _staffmemberService = staffmemberService;
         }
+        [Authorize(Roles ="Student")]
         public async Task<IActionResult> MyDebtRegister()
         {
             var studentid = User.FindFirstValue("Id");
@@ -33,24 +38,61 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             await UpdateDebtRegisterDebtsChanged(debtregister.Id);
             return View("DebtRegister", debtregister);
         }
+        [Authorize(Roles ="Admin, StaffMember")]
         public async Task<IActionResult> DebtRegisterById(string id)
         {
-            var debtregister = await _debtregisterService.GetByIdAsync(id,drg=>drg.Requests,drg=>drg.Payments,drg=>drg.Student,d=>d.Installments,d=>d.Debts);
-            return View("DebtRegister", debtregister);
+            bool authorize = true;
+            var debtregister = await _debtregisterService.GetByIdAsync(id, drg => drg.Requests, drg => drg.Payments, drg => drg.Student, d => d.Installments, d => d.Debts);
+            if (User.IsInRole(UserRoles.StaffMember))
+            {
+                var staffid = User.FindFirstValue("Id");
+                var staff = await _staffmemberService.GetByIdAsync(id,sm=>sm.Students);
+                var studentids = staff.Students.Select(s => s.Id).ToList();
+                authorize = studentids.Contains(debtregister.Student.Id);
+            }
+            if (authorize)
+            {
+                return View("DebtRegister", debtregister);
+            }
+            else
+            {
+                ViewData["Error"] = "You tried to enter a page to which you are not allowed";
+                return RedirectToAction("Error", "Home");
+            }
         }
         #region business
+        [Authorize(Roles ="Admin, StaffMember")]
         public async Task<IActionResult> AcceptRequest(string id)
         {
-            var request =await _requestService.GetByIdAsync(id,r=>r.DebtRegister);
-            var debtregisterid = request.DebtRegister.Id;
-            await UpdateDebtRegisterDebtsChanged(debtregisterid);
-            await UpdateDebtRegisterRequestActivated(id);
-            var installments = await GenerateInstallments(id);
-            await UpdateRequestAfterRequestAccepted(id);
-            await UpdateDebtRegisterAfterRequest(debtregisterid, installments);
-            var payments = await GeneratePayments(debtregisterid);
-            await UpdateDebtRegisterAfterGenrationofPayments(debtregisterid, payments);
-            return RedirectToAction("Index", "Home");
+            bool authorize = true;
+            if (User.IsInRole("StaffMember"))
+            {
+                var userid = User.FindFirstValue("Id");
+                var includeProperties = new Expression<Func<STAFFMEMBER, object>>[]
+                {
+                        x => x.Students.Select(s => s.DebtRegister.Requests)
+                };
+                var staffuser = await _staffmemberService.GetByIdAsync(userid,includeProperties);
+                authorize = staffuser.Students.Select(s => s.DebtRegister).SelectMany(dr => dr.Requests).Select(r=>r.Id).ToList().Contains(id);
+            }
+            if (authorize)
+            {
+                var request = await _requestService.GetByIdAsync(id, r => r.DebtRegister);
+                var debtregisterid = request.DebtRegister.Id;
+                await UpdateDebtRegisterDebtsChanged(debtregisterid);
+                await UpdateDebtRegisterRequestActivated(id);
+                var installments = await GenerateInstallments(id);
+                await UpdateRequestAfterRequestAccepted(id);
+                await UpdateDebtRegisterAfterRequest(debtregisterid, installments);
+                var payments = await GeneratePayments(debtregisterid);
+                await UpdateDebtRegisterAfterGenrationofPayments(debtregisterid, payments);
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                ViewData["Error"] = "You tried to enter a page to which you are not allowed";
+                return RedirectToAction("Error", "Home");
+            }
         }
         public async Task UpdateDebtRegisterDebtsChanged(string id)
         {
