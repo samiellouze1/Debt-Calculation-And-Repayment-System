@@ -1,7 +1,9 @@
 ﻿using Debt_Calculation_And_Repayment_System.Data.IServices;
 using Debt_Calculation_And_Repayment_System.Data.ViewModels;
 using Debt_Calculation_And_Repayment_System.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
 using System.Security.Claims;
 
 namespace Debt_Calculation_And_Repayment_System.Controllers
@@ -11,25 +13,48 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         private readonly IREQUESTService _requestService;
         private readonly IDEBTREGISTERService _debtregisterService;
         private readonly ISTUDENTService _studentService;
+        private readonly ISTAFFMEMBERService _staffmemberService;
 
-        public RequestController(IREQUESTService requestService, IDEBTREGISTERService debtregisterService,ISTUDENTService studentService)
+        public RequestController(IREQUESTService requestService, IDEBTREGISTERService debtregisterService,ISTUDENTService studentService, ISTAFFMEMBERService staffmemberService)
         {
             _requestService = requestService;
             _debtregisterService = debtregisterService;
             _studentService = studentService;
+            _staffmemberService = staffmemberService;
         }
 
         public async Task<IActionResult> RequestsByDebtRegister(string id)
         {
+            bool authorize = true;
             var debtregister = await _debtregisterService.GetByIdAsync(id, dr => dr.Requests, dr => dr.Payments, dr => dr.Installments, dr => dr.Student, dr => dr.Debts);
-            var request = debtregister.Requests;
-            return View("Requests", request);
+            if (User.IsInRole("StaffMember"))
+            {
+                var userid = User.FindFirstValue("Id");
+                var includeProperties = new Expression<Func<STAFFMEMBER, object>>[]
+                {
+                        x => x.Students.Select(s=>s.DebtRegister)
+                };
+                var staff = await _staffmemberService.GetByIdAsync(userid, includeProperties);
+                authorize = staff.Students.Select(s => s.DebtRegister).Select(dr => dr.Id).ToList().Contains(id);
+            }
+            if (authorize)
+            {
+                var request = debtregister.Requests;
+                return View("Requests", request);
+            }
+            else
+            {
+                ViewData["Error"] = "You tried to enter a page to which you are not allowed";
+                return RedirectToAction("Error", "Home");
+            }
         }
+        [Authorize(Roles ="Student")]
         public IActionResult PreviewRequest ()
         {
             var vm = new CreateRequestVM();
             return View(vm);
         }
+        [Authorize(Roles ="Student")]
         [HttpPost]
         public async Task<IActionResult> PreviewRequest(CreateRequestVM vm)
         {
@@ -55,32 +80,14 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 return View(vm);
             }
         }
-
+        [Authorize(Roles ="Student")]
         [HttpPost]
         public async Task<IActionResult> CreateRequest(PreviewRequestVM vm)
         {
-            Console.WriteLine(vm.ToBePaidFull);
-            Console.WriteLine("Hello world");
-            Console.WriteLine("Hello world");
-            Console.WriteLine("Hello world");
-            Console.WriteLine("Hello world");
-            Console.WriteLine("Hello world");
             if (ModelState.IsValid)
             {
-                Console.WriteLine(vm.ToBePaidFull);
-                Console.WriteLine("Hello world");
-                Console.WriteLine("Hello world");
-                Console.WriteLine("Hello world");
-                Console.WriteLine("Hello world");
-                Console.WriteLine("Hello world");
                 if (vm.Accept)
                 {
-                    Console.WriteLine(vm.ToBePaidFull);
-                    Console.WriteLine("Hello world");
-                    Console.WriteLine("Hello world");
-                    Console.WriteLine("Hello world");
-                    Console.WriteLine("Hello world");
-                    Console.WriteLine("Hello world");
                     var studentid = User.FindFirstValue("Id");
                     var student = await _studentService.GetByIdAsync(studentid, s => s.DebtRegister);
                     var debtregister = student.DebtRegister;

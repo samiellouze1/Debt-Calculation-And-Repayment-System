@@ -20,7 +20,10 @@
             <th scope="col">Registration Date</th>
             <th scope="col">Status</th>
             <th scope="col"></th>
-            <th scope="col"></th>
+            @if (User.IsInRole("Admin, StaffMember"))
+            {
+                <th scope="col"></th>
+            }
         </tr>
     </thead>
     <tbody>
@@ -33,7 +36,10 @@
             <td>@item.RegDate</td>
             <td>@item.Status</td>
             <td><a asp-controller="DebtRegister" asp-action="DebtRegisterById" asp-route-id=@item.DebtRegister.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block" style="width:150px;height:45px;">Debt Register</a></td>
+                @if (User.IsInRole("Admin, StaffMember"))
+                {
             <td><a asp-controller="DebtRegister" asp-action="AcceptRequest" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block" style="width:160px;height:45px;">Accept Request</a></td>
+                }
         </tr>
     }
 
