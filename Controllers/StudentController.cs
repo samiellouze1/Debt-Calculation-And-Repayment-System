@@ -25,13 +25,12 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         public async Task<IActionResult> MyProfile ()
         {
             var id = User.FindFirstValue("Id");
-            var student = _studentService.GetByIdAsync(id);
-            return View(student);
+            var student = await _studentService.GetByIdAsync(id);
+            return View("Student",student);
         }
-        [Authorize(Roles ="Admin,StaffMember")]
         public async Task<IActionResult> StudentById(string id)
         {
-            var student = await _studentService.GetByIdAsync(id, s => s.StaffMember, s => s.StaffMember, s => s.DebtRegister);
+            var student = await _studentService.GetByIdAsync(id, s => s.StaffMember, s => s.DebtRegister);
             bool authorize=true;
             if (User.IsInRole("StaffMember"))
             {
@@ -42,7 +41,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             if ( User.IsInRole("Student"))
             {
-                authorize = false;
+                var studentid = User.FindFirstValue("Id");
+                authorize = studentid==id;
             }
             if (authorize)
             {

@@ -22,11 +22,10 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             _studentService = studentService;
             _staffmemberService = staffmemberService;
         }
-
         public async Task<IActionResult> RequestsByDebtRegister(string id)
         {
             bool authorize = true;
-            var debtregister = await _debtregisterService.GetByIdAsync(id, dr => dr.Requests, dr => dr.Payments, dr => dr.Installments, dr => dr.Student, dr => dr.Debts);
+            var debtregister = await _debtregisterService.GetByIdAsync(id, dr => dr.Requests, dr => dr.Student);
             if (User.IsInRole("StaffMember"))
             {
                 var userid = User.FindFirstValue("Id");

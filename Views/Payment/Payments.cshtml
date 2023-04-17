@@ -6,7 +6,11 @@
     Payments
 }
     @section Name1{
-    Student @Model[0].DebtRegister.Student.Email
+    Student @try
+    {
+        @Model[0].DebtRegister.Student.Email
+    }
+    catch {}
 }
     @section Name2{
     Payments

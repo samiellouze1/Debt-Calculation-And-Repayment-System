@@ -38,17 +38,22 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             await UpdateDebtRegisterDebtsChanged(debtregister.Id);
             return View("DebtRegister", debtregister);
         }
-        [Authorize(Roles ="Admin, StaffMember")]
         public async Task<IActionResult> DebtRegisterById(string id)
         {
             bool authorize = true;
-            var debtregister = await _debtregisterService.GetByIdAsync(id, drg => drg.Requests, drg => drg.Payments, drg => drg.Student, d => d.Installments, d => d.Debts);
+            var debtregister = await _debtregisterService.GetByIdAsync(id,drg=>drg.Student,drg=>drg.Requests,s=>s.Payments,s=>s.Installments,s=>s.Debts);
             if (User.IsInRole(UserRoles.StaffMember))
             {
                 var staffid = User.FindFirstValue("Id");
-                var staff = await _staffmemberService.GetByIdAsync(id,sm=>sm.Students);
+                var staff = await _staffmemberService.GetByIdAsync(staffid,sm=>sm.Students);
+                var students = staff.Students;
                 var studentids = staff.Students.Select(s => s.Id).ToList();
                 authorize = studentids.Contains(debtregister.Student.Id);
+            }
+            else if (User.IsInRole(UserRoles.Student))
+            {
+                var studentid = User.FindFirstValue("Id");
+                authorize = studentid==debtregister.Student.Id;
             }
             if (authorize)
             {
@@ -60,7 +65,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 return RedirectToAction("Error", "Home");
             }
         }
-        #region business
         [Authorize(Roles ="Admin, StaffMember")]
         public async Task<IActionResult> AcceptRequest(string id)
         {
@@ -94,6 +98,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 return RedirectToAction("Error", "Home");
             }
         }
+
+        #region business
         public async Task UpdateDebtRegisterDebtsChanged(string id)
         {
             var debtregister = await _debtregisterService.GetByIdAsync(id,dr=>dr.Debts);

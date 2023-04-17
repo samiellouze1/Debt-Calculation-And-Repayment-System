@@ -26,13 +26,19 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
 
         public async Task<IActionResult> PaymentsByDebtRegister(string id)
         {
-            var debtregister = await _debtregisterService.GetByIdAsync(id, dr => dr.Requests, dr => dr.Payments, dr => dr.Installments, dr => dr.Student, dr => dr.Debts);
+            var debtregister = await _debtregisterService.GetByIdAsync(id,  dr => dr.Payments, dr => dr.Student);
             bool authorize = true;
             if (User.IsInRole(UserRoles.StaffMember))
             {
                 var userid = User.FindFirstValue("Id");
                 var staff = await _staffmemberService.GetByIdAsync(userid,sm=>sm.Students);
                 authorize = staff.Students.Select(s => s.Id).ToList().Contains(debtregister.Student.Id);
+            }
+            else if (User.IsInRole(UserRoles.Student))
+            {
+                var userid = User.FindFirstValue("Id");
+                var student = await _studentService.GetByIdAsync(userid);
+                authorize = student.Id == debtregister.Student.Id;
             }
             if (authorize)
             {

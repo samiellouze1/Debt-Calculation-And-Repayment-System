@@ -27,30 +27,22 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         #region getters
         public async Task<IActionResult> DebtsByDebtRegister(string id)
         {
+            var debtregister = await _debtregisterService.GetByIdAsync(id, dr => dr.Student, dr => dr.Debts);
             bool authorize = true;
             if (User.IsInRole("StaffMember"))
             {
                 var userid = User.FindFirstValue("Id");
-                var includeProperties = new Expression<Func<STAFFMEMBER, object>>[]
-                {
-                        x => x.Students.Select(s => s.DebtRegister.Debts)
-                };
-                var staffuser = await _staffmemberService.GetByIdAsync(userid, includeProperties);
-                authorize = staffuser.Students.Select(s => s.DebtRegister).SelectMany(dr => dr.Debts).Select(r => r.Id).ToList().Contains(id);
+                var staffuser = await _staffmemberService.GetByIdAsync(userid, sm=>sm.Students);
+                authorize = staffuser.Students.Select(s => s.Id).ToList().Contains(debtregister.Student.Id);
             }
             else if (User.IsInRole("Student"))
             {
                 var userid = User.FindFirstValue("Id");
-                var includeProperties = new Expression<Func<STUDENT, object>>[]
-                {
-                        x => x.DebtRegister.Requests
-                };
-                var student = await _studentService.GetByIdAsync(userid, includeProperties);
-                authorize = student.DebtRegister.Requests.Select(r => r.Id).ToList().Contains(id);
+                var student = await _studentService.GetByIdAsync(userid);
+                authorize = debtregister.Student.Id==student.Id;
             }
             if (authorize)
             {
-                var debtregister = await _debtregisterService.GetByIdAsync(id, dr => dr.Requests, dr => dr.Payments, dr => dr.Installments, dr => dr.Student, dr => dr.Debts);
                 var debts = debtregister.Debts;
                 return View("Debts", debts);
             }
