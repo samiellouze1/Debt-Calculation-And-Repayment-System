@@ -7,6 +7,7 @@ using Debt_Calculation_And_Repayment_System.Models;
 using Microsoft.EntityFrameworkCore;
 using Debt_Calculation_And_Repayment_System.Data;
 using Debt_Calculation_And_Repayment_System.Data.ViewModels;
+using System.Linq.Expressions;
 
 namespace Debt_Calculation_And_Repayment_System.Controllers
 {
@@ -26,9 +27,28 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         #region getters
         public async Task<IActionResult> DebtsByDebtRegister(string id)
         {
-            var debtregister = await _debtregisterService.GetByIdAsync(id, dr => dr.Requests, dr => dr.Payments, dr => dr.Installments, dr => dr.Student, dr => dr.Debts);
-            var debts = debtregister.Debts;
-            return View("Debts",debts);
+            bool authorize = true;
+            if (User.IsInRole("StaffMember"))
+            {
+                var userid = User.FindFirstValue("Id");
+                var includeProperties = new Expression<Func<STAFFMEMBER, object>>[]
+                {
+                        x => x.Students.Select(s => s.DebtRegister.Debts)
+                };
+                var staffuser = await _staffmemberService.GetByIdAsync(userid, includeProperties);
+                authorize = staffuser.Students.Select(s => s.DebtRegister).SelectMany(dr => dr.Debts).Select(r => r.Id).ToList().Contains(id);
+            }
+            if (authorize)
+            {
+                var debtregister = await _debtregisterService.GetByIdAsync(id, dr => dr.Requests, dr => dr.Payments, dr => dr.Installments, dr => dr.Student, dr => dr.Debts);
+                var debts = debtregister.Debts;
+                return View("Debts", debts);
+            }
+            else
+            {
+                ViewData["Error"] = "You tried to enter a page to which you are not allowed";
+                return RedirectToAction("Error", "Home");
+            }
         }
         #endregion
 
