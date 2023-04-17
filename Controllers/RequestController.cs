@@ -29,12 +29,13 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             if (User.IsInRole("StaffMember"))
             {
                 var userid = User.FindFirstValue("Id");
-                var includeProperties = new Expression<Func<STAFFMEMBER, object>>[]
-                {
-                        x => x.Students.Select(s=>s.DebtRegister)
-                };
-                var staff = await _staffmemberService.GetByIdAsync(userid, includeProperties);
-                authorize = staff.Students.Select(s => s.DebtRegister).Select(dr => dr.Id).ToList().Contains(id);
+                var staff = await _staffmemberService.GetByIdAsync(userid, sm=>sm.Students);
+                authorize = staff.Students.Select(s => s.Id).ToList().Contains(debtregister.Student.Id);
+            }
+            if (User.IsInRole("Student"))
+            {
+                var userid = User.FindFirstValue("Id");
+                authorize = debtregister.Student.Id == userid;
             }
             if (authorize)
             {
@@ -66,7 +67,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 for (int i = 1; i <= vm.NumOfMonths; i++)
                 {
                     var monthafterinterest = (debtregister.Total - vm.ToBePaidFull) / vm.NumOfMonths;
-                    var nod = (DateTime.Now.AddMonths(i) - DateTime.Now).Days;
+                    var nod = (new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day).AddMonths(i) - new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day)).Days;
                     var add = monthafterinterest * (1 + nod * debtregister.InterestRate / 365);
                     sum += add;
                 }
@@ -95,7 +96,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                         ToBePaidFull = vm.ToBePaidFull,
                         ToBePaidInstallment = vm.ToBePaidInstallment,
                         NumOfMonths = vm.NumOfMonths,
-                        RegDate = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
+                        RegDate = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
                         Status = "Not Defined",
                         DebtRegister = debtregister,
                     };

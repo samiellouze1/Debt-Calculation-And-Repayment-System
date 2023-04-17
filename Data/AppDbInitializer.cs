@@ -42,7 +42,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                     {
                         FirstName = "Admin",
                         SurName = "User",
-                        RegDate = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
+                        RegDate = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
                         UserName = useradminemail,
                         PhoneNumber = "12345678",
                         Email = useradminemail,
@@ -60,7 +60,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                 {
                     FirstName = "Staff",
                     SurName = "Member",
-                    RegDate = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
+                    RegDate = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
                     UserName = userstaffemail,
                     PhoneNumber = "12345678",
                     Email = userstaffemail,
@@ -85,7 +85,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                         UserName = userstudentemail,
                         FirstName = "Student",
                         SurName = "User",
-                        RegDate = new DateOnly(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                        RegDate = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
                         PhoneNumber = "12345678",
                         Address = "Turkey",
                         DebtRegister = new DEBTREGISTER()
@@ -94,22 +94,22 @@ namespace Debt_Calculation_And_Repayment_System.Data
                             InterestAmount=3262.97m,
                             Total = 4862.97m,
                             InterestRate = 0.09m,
-                            RegDate = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
+                            RegDate = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
                             Debts = new List<DEBT>()
                             {
                                 new DEBT()
                                 {
                                     Amount=1800m,
-                                    StartDate=new DateOnly(2012,12,22),
-                                    EndDate=new DateOnly(2023,1,16),
-                                    RegDate=new DateOnly(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                                    StartDate=new DateTime(2012,12,22),
+                                    EndDate=new DateTime(2023,1,16),
+                                    RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
                                 },
                                 new DEBT()
                                 {
                                     Amount=1800m,
-                                    StartDate=new DateOnly(2012,12,23),
-                                    EndDate=new DateOnly(2023,1,16),
-                                    RegDate=new DateOnly(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                                    StartDate=new DateTime(2012,12,23),
+                                    EndDate=new DateTime(2023,1,16),
+                                    RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
                                 }
                             },
                         },

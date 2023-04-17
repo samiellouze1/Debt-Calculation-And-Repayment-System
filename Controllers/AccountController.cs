@@ -130,7 +130,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 Email = registerVM.Email,
                 FirstName = registerVM.FirstName,
                 SurName = registerVM.SurName,
-                RegDate = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
+                RegDate = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
                 Address = registerVM.Address,
                 PhoneNumber = registerVM.PhoneNumber,
                 StaffMember=staffmember,
@@ -175,7 +175,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 Email = registerVM.Email,
                 FirstName = registerVM.FirstName,
                 SurName = registerVM.SurName,
-                RegDate = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
+                RegDate = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
                 Address = registerVM.Address,
                 PhoneNumber = registerVM.PhoneNumber,
             };

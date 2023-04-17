@@ -106,8 +106,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var total=0m;
             foreach (var d in debtregister.Debts)
             {
-                var ed = new DateTime(d.EndDate.Year,d.EndDate.Month,d.EndDate.Day);
-                var sd = new DateTime(d.StartDate.Year,d.StartDate.Month,d.StartDate.Day);
+                var ed = d.EndDate;
+                var sd = d.StartDate;
                 var add = (d.Amount * (1+(ed-sd).Days * debtregister.InterestRate)) / 365;
                 total += add ;
             }
@@ -124,7 +124,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 //PaidInstallment=debtregister.PaidInstallment,
                 //NotPaidInstallment=debtregister.NotPaidInstallment,
                 //InterestRate=debtregister.InterestRate,
-                //RegDate=DateOnly.Now,
+                //RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
                 //Installments = debtregister.Installments,
                 //Payments = debtregister.Payments,
                 //Requests = debtregister.Requests,
@@ -153,7 +153,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 //PaidInstallment = debtregister.PaidInstallment,
                 //NotPaidInstallment = debtregister.NotPaidInstallment,
                 //InterestRate = debtregister.InterestRate,
-                //RegDate = DateOnly.Now,
+                //RegDate = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
                 //Installments = debtregister.Installments,
                 //Payments = debtregister.Payments,
                 //Requests = debtregister.Requests,
@@ -168,7 +168,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
 
             var debtregister = request.DebtRegister;
             var installments = new List<INSTALLMENT>();
-            var today = DateTime.Now;
+            var today = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day);
             for (int i = 0; i < request.NumOfMonths; i++)
             {
                 var ia = debtregister.TotalInstallment / request.NumOfMonths;
@@ -179,7 +179,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 {
                     InitialAmount = ia,
                     AmountAfterInterest = aai,
-                    PaymentDate = new DateOnly(pd.Year,pd.Month,pd.Day),
+                    PaymentDate = pd,
                     NumberOfDays=nod,
                     DebtRegister=debtregister
                 };
@@ -241,7 +241,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var payments = new List<PAYMENT>();
             //var nom = debtregister.Requests.Where(r => r.Status == "Accepted").ToList()[0].NumOfMonths;
             //var sum = debtregister.TotalAfterRequest/nom;
-            //var today = DateOnly.Now;
+            //var today = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day);
             //for (int i = 0; i< nom;i++)
             //{
             //    var newpaymentinstallment = new PAYMENT() { Sum= sum,Paid=false,Type="Installment",PaymentDate=today.AddMonths(i),RegDate=today,DebtRegister=debtregister};
