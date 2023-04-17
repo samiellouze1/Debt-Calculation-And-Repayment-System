@@ -13,5 +13,9 @@
             <h1 class="text-white mt-4 mb-4">Profile of Student</h1>
             <h1 class="text-white display-1 mb-5">@Model.Email</h1>
             <a asp-controller="DebtRegister" asp-action="DebtRegisterById" asp-route-id=@Model.DebtRegister.Id class="btn btn-secondary px-3 px-lg-5">Debt Register</a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-controller="StaffMember" asp-action="StaffMemberByStudent" asp-route-id=@Model.Id class="btn btn-secondary px-3 px-lg-5">Debt Register</a>
+        }
         </div>
     </div>

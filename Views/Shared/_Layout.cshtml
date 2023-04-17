@@ -78,10 +78,12 @@
                         }
                         @if (User.IsInRole("StaffMember"))
                         {
-                            <a asp-controller="Student" asp-action="MyStudents"  class="nav-item nav-link active">My Students</a>
+                            <a asp-controller="StaffMember" asp-action="MyProfile" class="nav-item nav-link active">My Profile</a>
+                            <a asp-controller="Student" asp-action="MyStudents" class="nav-item nav-link active">My Students</a>
                         }
                         @if (User.IsInRole("Student"))
                         {
+                            <a asp-controller="Student" asp-action="MyProfile" class="nav-item nav-link active">My profile</a>
                             <a asp-controller="DebtRegister" asp-action="MyDebtRegister" class="nav-item nav-link active">My Debt Register</a>
                         }
                     }

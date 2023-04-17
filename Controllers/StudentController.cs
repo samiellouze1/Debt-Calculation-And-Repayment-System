@@ -15,16 +15,46 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             _studentService = studentService;
             _staffmemberService = staffmemberService;
         }
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> AllStudents()
         {
             var students = await _studentService.GetAllAsync(s => s.StaffMember, s => s.DebtRegister);
             return View("Students", students);
         }
+        [Authorize(Roles="Student")]
+        public async Task<IActionResult> MyProfile ()
+        {
+            var id = User.FindFirstValue("Id");
+            var student = _studentService.GetByIdAsync(id);
+            return View(student);
+        }
+        [Authorize(Roles ="Admin,StaffMember")]
         public async Task<IActionResult> StudentById(string id)
         {
-            var student = await _studentService.GetByIdAsync(id,s=>s.StaffMember, s => s.StaffMember, s => s.DebtRegister);
-            return View("Student", student);
+            var student = await _studentService.GetByIdAsync(id, s => s.StaffMember, s => s.StaffMember, s => s.DebtRegister);
+            bool authorize=true;
+            if (User.IsInRole("StaffMember"))
+            {
+                var staffid = User.FindFirstValue("Id");
+                var staff = await _staffmemberService.GetByIdAsync(staffid, sm=>sm.Students);
+                var staffstudentids = staff.Students.Select(s => s.Id).ToList();
+                authorize = staffstudentids.Contains(student.Id);
+            }
+            if ( User.IsInRole("Student"))
+            {
+                authorize = false;
+            }
+            if (authorize)
+            {
+                return View("Student", student);
+            }
+            else
+            {
+                ViewData["Error"] = "You tried to enter a page to which you are not allowed";
+                return RedirectToAction("Error", "Home");
+            }
         }
+        [Authorize(Roles ="StaffMember")]
         public async Task<IActionResult> MyStudents()
         {
             var id = User.FindFirstValue("Id");
@@ -32,11 +62,25 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var students = staffmember.Students;
             return View("Students",students);
         }
+        [Authorize(Roles ="Admin, StaffMember")]
         public async Task<IActionResult> StudentsByStaffMember(string id)
         {
-            var staffmember = await _staffmemberService.GetByIdAsync(id, sm => sm.Students);
-            var students = staffmember.Students;
-            return View("Students", students);
+            bool authorize = true;
+            if (User.IsInRole("StaffMember"))
+            {
+                authorize = id == User.FindFirstValue("Id");
+            }
+            if (authorize)
+            {
+                var staffmember = await _staffmemberService.GetByIdAsync(id, sm => sm.Students);
+                var students = staffmember.Students;
+                return View("Students", students);
+            }
+            else
+            {
+                ViewData["Error"] = "You tried to enter a page to which you are not allowed";
+                return RedirectToAction("Error", "Home");
+            }
         }
 
     }
