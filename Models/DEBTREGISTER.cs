@@ -12,28 +12,22 @@ namespace Debt_Calculation_And_Repayment_System.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
         [Required]
-        public decimal TotalCash { get; set; }
+        public decimal Amount { get; set; }
+        [Required]
+        public decimal InterestAmount { get; set; }
         [Required]
         public decimal Total { get; set; }
-        [Required]
-        public decimal TotalAfterRequest { get; set; }
-        [Required]
-        public decimal PaidCash { get; set; }
-        [Required]
-        public decimal NotPaidCash { get; set; }
-        [Required]
-        public decimal TotalInstallmentAfterRequest { get; set; }
-        [Required]
+        public decimal ToBePaid { get; set; }
+        public decimal TotalCash { get; set; }
         public decimal TotalInstallment { get; set; }
-        [Required]
         public decimal PaidInstallment { get; set; }
-        [Required]
-        public DateTime RegDate { get; set; }
-        [Required]
-        public decimal NotPaidInstallment { get; set; }
+        public decimal ToBePaidCash { get; set; }
+        public decimal ToBePaidInstallment { get; set; }
         [Required]
         [Range(0,1)]
         public decimal InterestRate { get; set; }
+        [Required]
+        public DateOnly RegDate { get; set; }
         public virtual STUDENT Student { get; set; }
         public virtual List<DEBT> Debts { get; set; } = new List<DEBT>();
         public virtual List<PAYMENT> Payments { get; set; } = new List<PAYMENT>();

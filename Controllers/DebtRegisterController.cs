@@ -106,28 +106,30 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var total=0m;
             foreach (var d in debtregister.Debts)
             {
-                var add = (d.Amount * (1+(d.EndDate - d.StartDate).Days * debtregister.InterestRate)) / 365;
+                var ed = new DateTime(d.EndDate.Year,d.EndDate.Month,d.EndDate.Day);
+                var sd = new DateTime(d.StartDate.Year,d.StartDate.Month,d.StartDate.Day);
+                var add = (d.Amount * (1+(ed-sd).Days * debtregister.InterestRate)) / 365;
                 total += add ;
             }
             var newdebtregister = new DEBTREGISTER()
             {
-                Id = id,
-                Total = total,
-                TotalAfterRequest = debtregister.TotalAfterRequest,
-                TotalCash=debtregister.TotalCash,
-                PaidCash=debtregister.PaidCash,
-                NotPaidCash=debtregister.NotPaidCash,
-                TotalInstallment=debtregister.TotalInstallment,
-                TotalInstallmentAfterRequest=debtregister.TotalInstallmentAfterRequest,
-                PaidInstallment=debtregister.PaidInstallment,
-                NotPaidInstallment=debtregister.NotPaidInstallment,
-                InterestRate=debtregister.InterestRate,
-                RegDate=DateTime.Now,
-                Installments = debtregister.Installments,
-                Payments = debtregister.Payments,
-                Requests = debtregister.Requests,
-                Student = debtregister.Student,
-                Debts = debtregister.Debts
+                //Id = id,
+                //Total = total,
+                //TotalAfterRequest = debtregister.TotalAfterRequest,
+                //TotalCash=debtregister.TotalCash,
+                //PaidCash=debtregister.PaidCash,
+                //NotPaidCash=debtregister.NotPaidCash,
+                //TotalInstallment=debtregister.TotalInstallment,
+                //TotalInstallmentAfterRequest=debtregister.TotalInstallmentAfterRequest,
+                //PaidInstallment=debtregister.PaidInstallment,
+                //NotPaidInstallment=debtregister.NotPaidInstallment,
+                //InterestRate=debtregister.InterestRate,
+                //RegDate=DateOnly.Now,
+                //Installments = debtregister.Installments,
+                //Payments = debtregister.Payments,
+                //Requests = debtregister.Requests,
+                //Student = debtregister.Student,
+                //Debts = debtregister.Debts
             };
             await _debtregisterService.UpdateAsync(id, newdebtregister);
         }
@@ -140,38 +142,30 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
 
             var newdebtregister = new DEBTREGISTER()
             {
-                Id = debtregister.Id,
-                Total = debtregister.Total,
-                TotalAfterRequest = debtregister.TotalAfterRequest,
-                TotalCash = tc,
-                PaidCash = debtregister.PaidCash,
-                NotPaidCash = debtregister.NotPaidCash,
-                TotalInstallment = ti,
-                TotalInstallmentAfterRequest = debtregister.TotalInstallmentAfterRequest,
-                PaidInstallment = debtregister.PaidInstallment,
-                NotPaidInstallment = debtregister.NotPaidInstallment,
-                InterestRate = debtregister.InterestRate,
-                RegDate = DateTime.Now,
-                Installments = debtregister.Installments,
-                Payments = debtregister.Payments,
-                Requests = debtregister.Requests,
-                Student = debtregister.Student,
-                Debts = debtregister.Debts
+                //Id = debtregister.Id,
+                //Total = debtregister.Total,
+                //TotalAfterRequest = debtregister.TotalAfterRequest,
+                //TotalCash = tc,
+                //PaidCash = debtregister.PaidCash,
+                //NotPaidCash = debtregister.NotPaidCash,
+                //TotalInstallment = ti,
+                //TotalInstallmentAfterRequest = debtregister.TotalInstallmentAfterRequest,
+                //PaidInstallment = debtregister.PaidInstallment,
+                //NotPaidInstallment = debtregister.NotPaidInstallment,
+                //InterestRate = debtregister.InterestRate,
+                //RegDate = DateOnly.Now,
+                //Installments = debtregister.Installments,
+                //Payments = debtregister.Payments,
+                //Requests = debtregister.Requests,
+                //Student = debtregister.Student,
+                //Debts = debtregister.Debts
             };
             await _debtregisterService.UpdateAsync(request.DebtRegister.Id, newdebtregister);
         }
         public async Task<List<INSTALLMENT>> GenerateInstallments( string id)
         {
             var request = await _requestService.GetByIdAsync(id,r=>r.DebtRegister);
-            Console.WriteLine(request.NumOfMonths);
-            Console.WriteLine(request.NumOfMonths);
-            Console.WriteLine(request.NumOfMonths);
-            Console.WriteLine(request.NumOfMonths);
-            Console.WriteLine(request.NumOfMonths);
-            Console.WriteLine(request.NumOfMonths);
-            Console.WriteLine(request.NumOfMonths);
-            Console.WriteLine(request.NumOfMonths);
-            Console.WriteLine(request.NumOfMonths);
+
             var debtregister = request.DebtRegister;
             var installments = new List<INSTALLMENT>();
             var today = DateTime.Now;
@@ -185,9 +179,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 {
                     InitialAmount = ia,
                     AmountAfterInterest = aai,
-                    PaymentDate = pd,
+                    PaymentDate = new DateOnly(pd.Year,pd.Month,pd.Day),
                     NumberOfDays=nod,
-                    RegDate=DateTime.Now,
                     DebtRegister=debtregister
                 };
                 installments.Add(installment);
@@ -222,40 +215,40 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             var newdebtregister = new DEBTREGISTER()
             {
-                Id=dr.Id,
-                Total = dr.Total,
-                TotalAfterRequest = tar,
-                TotalCash = dr.TotalCash,
-                PaidCash = dr.PaidCash,
-                NotPaidCash = dr.NotPaidCash,
-                TotalInstallment = dr.TotalInstallment,
-                TotalInstallmentAfterRequest = tiar,
-                PaidInstallment = dr.PaidInstallment,
-                NotPaidInstallment = dr.NotPaidInstallment,
-                InterestRate = dr.InterestRate,
-                RegDate = dr.RegDate,
-                Installments = installments,
-                Payments = dr.Payments,
-                Requests = dr.Requests,
-                Student=dr.Student,
-                Debts=dr.Debts
+                //Id=dr.Id,
+                //Total = dr.Total,
+                //TotalAfterRequest = tar,
+                //TotalCash = dr.TotalCash,
+                //PaidCash = dr.PaidCash,
+                //NotPaidCash = dr.NotPaidCash,
+                //TotalInstallment = dr.TotalInstallment,
+                //TotalInstallmentAfterRequest = tiar,
+                //PaidInstallment = dr.PaidInstallment,
+                //NotPaidInstallment = dr.NotPaidInstallment,
+                //InterestRate = dr.InterestRate,
+                //RegDate = dr.RegDate,
+                //Installments = installments,
+                //Payments = dr.Payments,
+                //Requests = dr.Requests,
+                //Student=dr.Student,
+                //Debts=dr.Debts
             };
             await _debtregisterService.UpdateAsync(id, newdebtregister);
         }
         public async Task<List<PAYMENT>> GeneratePayments(string id)
         {
-            var debtregister = await _debtregisterService.GetByIdAsync(id, dr => dr.Requests, dr => dr.Payments, dr => dr.Installments, dr => dr.Student, dr => dr.Debts);
+            //var debtregister = await _debtregisterService.GetByIdAsync(id, dr => dr.Requests, dr => dr.Payments, dr => dr.Installments, dr => dr.Student, dr => dr.Debts);
             var payments = new List<PAYMENT>();
-            var nom = debtregister.Requests.Where(r => r.Status == "Accepted").ToList()[0].NumOfMonths;
-            var sum = debtregister.TotalAfterRequest/nom;
-            var today = DateTime.Now;
-            for (int i = 0; i< nom;i++)
-            {
-                var newpaymentinstallment = new PAYMENT() { Sum= sum,Paid=false,Type="Installment",PaymentDate=today.AddMonths(i),RegDate=today,DebtRegister=debtregister};
-                payments.Add(newpaymentinstallment);
-            }
-            var newpaymentfull= new PAYMENT() { Sum=debtregister.TotalCash,PaymentDate=today,Paid=false,Type="Full",RegDate=today,DebtRegister=debtregister};
-            payments.Add(newpaymentfull);
+            //var nom = debtregister.Requests.Where(r => r.Status == "Accepted").ToList()[0].NumOfMonths;
+            //var sum = debtregister.TotalAfterRequest/nom;
+            //var today = DateOnly.Now;
+            //for (int i = 0; i< nom;i++)
+            //{
+            //    var newpaymentinstallment = new PAYMENT() { Sum= sum,Paid=false,Type="Installment",PaymentDate=today.AddMonths(i),RegDate=today,DebtRegister=debtregister};
+            //    payments.Add(newpaymentinstallment);
+            //}
+            //var newpaymentfull= new PAYMENT() { Sum=debtregister.TotalCash,PaymentDate=today,Paid=false,Type="Full",RegDate=today,DebtRegister=debtregister};
+            //payments.Add(newpaymentfull);
             return payments;
         }
         [HttpPost]
@@ -268,23 +261,23 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             var newdebtregister = new DEBTREGISTER()
             {
-                Id = dr.Id,
-                Total = dr.Total,
-                TotalAfterRequest = dr.TotalAfterRequest,
-                TotalCash = dr.TotalCash,
-                PaidCash = dr.PaidCash,
-                NotPaidCash = dr.NotPaidCash,
-                TotalInstallment = dr.TotalInstallment,
-                TotalInstallmentAfterRequest = dr.TotalInstallmentAfterRequest,
-                PaidInstallment = dr.PaidInstallment,
-                NotPaidInstallment = dr.NotPaidInstallment,
-                InterestRate = dr.InterestRate,
-                RegDate = dr.RegDate,
-                Installments = dr.Installments,
-                Payments = payments,
-                Debts = dr.Debts,
-                Requests=dr.Requests,
-                Student=dr.Student
+                //Id = dr.Id,
+                //Total = dr.Total,
+                //TotalAfterRequest = dr.TotalAfterRequest,
+                //TotalCash = dr.TotalCash,
+                //PaidCash = dr.PaidCash,
+                //NotPaidCash = dr.NotPaidCash,
+                //TotalInstallment = dr.TotalInstallment,
+                //TotalInstallmentAfterRequest = dr.TotalInstallmentAfterRequest,
+                //PaidInstallment = dr.PaidInstallment,
+                //NotPaidInstallment = dr.NotPaidInstallment,
+                //InterestRate = dr.InterestRate,
+                //RegDate = dr.RegDate,
+                //Installments = dr.Installments,
+                //Payments = payments,
+                //Debts = dr.Debts,
+                //Requests=dr.Requests,
+                //Student=dr.Student
             };
             await _debtregisterService.UpdateAsync(id, newdebtregister);
         }

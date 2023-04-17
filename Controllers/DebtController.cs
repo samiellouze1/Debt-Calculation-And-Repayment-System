@@ -76,7 +76,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             {
                 Amount = debtVM.Amount,
                 StartDate = debtVM.StartDate,
-                RegDate = DateTime.Now,
+                RegDate = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
                 DebtRegister=debtregister,
                 EndDate=debtVM.EndDate,
             };

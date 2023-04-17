@@ -31,27 +31,27 @@ namespace Debt_Calculation_And_Repayment_System.Data
 
 
             #region precisions
-            builder.Entity<DEBT>().Property(d => d.Amount).HasPrecision(18, 4);
+            builder.Entity<DEBT>().Property(d => d.Amount).HasPrecision(10, 2);
 
-            builder.Entity<DEBTREGISTER>().Property(dr => dr.Total).HasPrecision(18, 4);
-            builder.Entity<DEBTREGISTER>().Property(dr => dr.TotalAfterRequest).HasPrecision(18, 4);
-            builder.Entity<DEBTREGISTER>().Property(dr => dr.TotalCash).HasPrecision(18, 4);
-            builder.Entity<DEBTREGISTER>().Property(dr => dr.PaidCash).HasPrecision(18, 4);
-            builder.Entity<DEBTREGISTER>().Property(dr => dr.NotPaidCash).HasPrecision(18, 4);
-            builder.Entity<DEBTREGISTER>().Property(dr => dr.TotalInstallmentAfterRequest).HasPrecision(18, 4);
-            builder.Entity<DEBTREGISTER>().Property(dr => dr.TotalInstallment).HasPrecision(18, 4);
-            builder.Entity<DEBTREGISTER>().Property(dr => dr.PaidInstallment).HasPrecision(18, 4);
-            builder.Entity<DEBTREGISTER>().Property(dr => dr.NotPaidInstallment).HasPrecision(18, 4);
-            builder.Entity<DEBTREGISTER>().Property(dr => dr.InterestRate).HasPrecision(18, 4);
+            builder.Entity<DEBTREGISTER>().Property(dr => dr.Amount).HasPrecision(10, 2);
+            builder.Entity<DEBTREGISTER>().Property(dr => dr.InterestAmount).HasPrecision(10, 2);
+            builder.Entity<DEBTREGISTER>().Property(dr => dr.Total).HasPrecision(10, 2);
+            builder.Entity<DEBTREGISTER>().Property(dr => dr.ToBePaid).HasPrecision(10, 2);
+            builder.Entity<DEBTREGISTER>().Property(dr => dr.TotalCash).HasPrecision(10, 2);
+            builder.Entity<DEBTREGISTER>().Property(dr => dr.TotalInstallment).HasPrecision(10, 2);
+            builder.Entity<DEBTREGISTER>().Property(dr => dr.PaidInstallment).HasPrecision(10, 2);
+            builder.Entity<DEBTREGISTER>().Property(dr => dr.ToBePaidCash).HasPrecision(10, 2);
+            builder.Entity<DEBTREGISTER>().Property(dr => dr.ToBePaidInstallment).HasPrecision(10, 2);
+            builder.Entity<DEBTREGISTER>().Property(dr => dr.InterestRate).HasPrecision(10, 2);
 
-            builder.Entity<INSTALLMENT>().Property(i=>i.AmountAfterInterest).HasPrecision(18, 4);
-            builder.Entity<INSTALLMENT>().Property(i=>i.InitialAmount).HasPrecision(18, 4);
+            builder.Entity<INSTALLMENT>().Property(i=>i.AmountAfterInterest).HasPrecision(10, 2);
+            builder.Entity<INSTALLMENT>().Property(i=>i.InitialAmount).HasPrecision(10, 2);
 
-            builder.Entity<PAYMENT>().Property(p => p.Sum).HasPrecision(18, 4);
-            builder.Entity<PAYMENT>().Property(p => p.Paid).HasPrecision(18, 4);
+            builder.Entity<PAYMENT>().Property(p => p.Sum).HasPrecision(10, 2);
+            builder.Entity<PAYMENT>().Property(p => p.Paid).HasPrecision(10, 2);
 
-            builder.Entity<REQUEST>().Property(r => r.ToBePaidFull).HasPrecision(18, 4);
-            builder.Entity<REQUEST>().Property(r => r.ToBePaidInstallment).HasPrecision(18, 4);
+            builder.Entity<REQUEST>().Property(r => r.ToBePaidFull).HasPrecision(10, 2);
+            builder.Entity<REQUEST>().Property(r => r.ToBePaidInstallment).HasPrecision(10, 2);
 
             #endregion
 

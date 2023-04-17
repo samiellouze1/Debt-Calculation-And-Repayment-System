@@ -18,7 +18,7 @@ namespace Debt_Calculation_And_Repayment_System.Models
         [Required]
         public int NumOfMonths { get; set; }
         [Required]
-        public DateTime RegDate { get; set; }
+        public DateOnly RegDate { get; set; }
         [Required]
         public string Status { get; set; }
         public virtual DEBTREGISTER DebtRegister { get; set; }

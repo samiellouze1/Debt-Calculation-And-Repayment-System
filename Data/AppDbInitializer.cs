@@ -42,7 +42,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                     {
                         FirstName = "Admin",
                         SurName = "User",
-                        RegDate = DateTime.Now,
+                        RegDate = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
                         UserName = useradminemail,
                         PhoneNumber = "12345678",
                         Email = useradminemail,
@@ -60,7 +60,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                 {
                     FirstName = "Staff",
                     SurName = "Member",
-                    RegDate = DateTime.Now,
+                    RegDate = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
                     UserName = userstaffemail,
                     PhoneNumber = "12345678",
                     Email = userstaffemail,
@@ -85,71 +85,33 @@ namespace Debt_Calculation_And_Repayment_System.Data
                         UserName = userstudentemail,
                         FirstName = "Student",
                         SurName = "User",
-                        RegDate = DateTime.Now,
+                        RegDate = new DateOnly(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
                         PhoneNumber = "12345678",
                         Address = "Turkey",
                         DebtRegister = new DEBTREGISTER()
                         {
-                            Total = 300m,
-                            TotalAfterRequest = 300m,
-                            TotalCash = 300m,
-                            PaidCash = 30m,
-                            NotPaidCash = 300m,
-                            TotalInstallment = 300m,
-                            TotalInstallmentAfterRequest = 300m,
-                            PaidInstallment = 90m,
-                            NotPaidInstallment = 50m,
-                            InterestRate = 0.9m,
-                            RegDate = DateTime.Now,
-                            Payments = new List<PAYMENT>()
-                            {
-                                new PAYMENT(){Sum=3000m,Paid=true,Type="Full",PaymentDate=new DateTime(2021,2,1)},
-                                new PAYMENT(){Sum=3000m,Paid=true,Type="Installment",PaymentDate=new DateTime(2021,2,1)},
-                                new PAYMENT(){Sum=3000m,Paid=true,Type="Full",PaymentDate=new DateTime(2021,2,1)}
-                            },
-                            Requests = new List<REQUEST>()
-                            {
-                                new REQUEST()
-                                {
-                                    Status="Declined",
-                                    ToBePaidFull=1500m,
-                                    ToBePaidInstallment=1500m,
-                                    NumOfMonths=30,
-                                    RegDate=DateTime.Now
-                                }
-                            },
+                            Amount = 3600m,
+                            InterestAmount=3262.97m,
+                            Total = 4862.97m,
+                            InterestRate = 0.09m,
+                            RegDate = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
                             Debts = new List<DEBT>()
                             {
                                 new DEBT()
                                 {
-                                    Amount=300m,
-                                    StartDate=new DateTime(2021,1,2),
-                                    EndDate=new DateTime(2022,1,2),
-                                    RegDate=DateTime.Now,
+                                    Amount=1800m,
+                                    StartDate=new DateOnly(2012,12,22),
+                                    EndDate=new DateOnly(2023,1,16),
+                                    RegDate=new DateOnly(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
                                 },
                                 new DEBT()
                                 {
-                                    Amount=300m,
-                                    StartDate=new DateTime(2021,1,2),
-                                    EndDate = new DateTime(2022,1,3),
-                                    RegDate=DateTime.Now,
+                                    Amount=1800m,
+                                    StartDate=new DateOnly(2012,12,23),
+                                    EndDate=new DateOnly(2023,1,16),
+                                    RegDate=new DateOnly(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
                                 }
                             },
-                            Installments = new List<INSTALLMENT>()
-                            {
-                                new INSTALLMENT()
-                                {
-                                    InitialAmount=1500m,
-                                    AmountAfterInterest=1600m,
-                                    PaymentDate=new DateTime(2021,1,1),
-                                },
-                                new INSTALLMENT()
-                                {
-                                    InitialAmount=1500m,
-                                    AmountAfterInterest=1600m,
-                                    PaymentDate=new DateTime(2021,1,1),
-                                }
-                            }
                         },
                         StaffMember=newUserStaff
                     };

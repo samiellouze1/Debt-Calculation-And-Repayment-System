@@ -15,11 +15,11 @@ namespace Debt_Calculation_And_Repayment_System.Models
         [Required]
         public decimal Amount { get; set; }
         [Required]
-        public DateTime StartDate { get; set; }
+        public DateOnly StartDate { get; set; }
         [Required]
-        public DateTime EndDate { get; set; }
+        public DateOnly EndDate { get; set; }
         [Required]
-        public DateTime RegDate { get; set; }
+        public DateOnly RegDate { get; set; }
         public virtual DEBTREGISTER DebtRegister { get; set; }
     }
 }
