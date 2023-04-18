@@ -23,10 +23,8 @@
         <tr>
             <th scope="col">IntialAmount</th>
             <th scope="col">Amount After Interest</th>
-            <th scope="col">Payment Date</th>
-            <th scope="col">Registration Date</th>
             <th scope="col">Number Of Days</th>
-            <th scope="col"></th>
+            <th scope="col">Payment Date</th>
         </tr>
     </thead>
     <tbody>
@@ -35,9 +33,8 @@
             <tr class="table">
                 <td>@item.InitialAmount</td>
                 <td>@item.AmountAfterInterest</td>
-                <td>@item.PaymentDate</td>
                 <td>@item.NumberOfDays</td>
-                <td><a asp-controller="DebtRegister" asp-action="DebtRegisterById" asp-route-id=@item.DebtRegister.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block" style="width:150px;height:45px;">Debt Register</a></td>
+                <td>@item.PaymentDate</td>
             </tr>
         }
     </tbody>

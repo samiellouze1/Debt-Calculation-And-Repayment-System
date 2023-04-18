@@ -70,11 +70,17 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasPrecision(10, 2)
                         .HasColumnType("decimal(10,2)");
 
+                    b.Property<int>("NumOfMonths")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("PaidInstallment")
                         .HasPrecision(10, 2)
                         .HasColumnType("decimal(10,2)");
 
                     b.Property<DateTime>("RegDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ReqDate")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("ToBePaid")

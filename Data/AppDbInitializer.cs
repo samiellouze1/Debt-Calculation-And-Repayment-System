@@ -94,6 +94,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                             InterestAmount=3262.97m,
                             Total = 4862.97m,
                             InterestRate = 0.09m,
+                            ToBePaidCash=4862.97m,
                             RegDate = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
                             Debts = new List<DEBT>()
                             {

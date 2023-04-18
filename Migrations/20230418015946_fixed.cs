@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Debt_Calculation_And_Repayment_System.Migrations
 {
-    public partial class initial : Migration
+    public partial class @fixed : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -180,7 +180,9 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     ToBePaidCash = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                     ToBePaidInstallment = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                     InterestRate = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
-                    RegDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ReqDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    NumOfMonths = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
