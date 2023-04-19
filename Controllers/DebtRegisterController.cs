@@ -35,7 +35,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         {
             var studentid = User.FindFirstValue("Id");
             var student = await _studentService.GetByIdAsync(studentid,s=>s.DebtRegister,s=>s.StaffMember);
-            var debtregister = student.DebtRegister;
+            var debtregister = await _debtregisterService.GetByIdAsync(student.DebtRegister.Id, d => d.Requests);
             await UpdateDebtRegisterDebtsChanged(debtregister.Id);
             return View("DebtRegister", debtregister);
         }

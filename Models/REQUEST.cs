@@ -20,7 +20,7 @@ namespace Debt_Calculation_And_Repayment_System.Models
         [Required]
         public DateTime RegDate { get; set; }
         [Required]
-        public string Status { get; set; }
+        public string Status { get; set; } = "Not Defined";
         public virtual DEBTREGISTER DebtRegister { get; set; }
     }
 }

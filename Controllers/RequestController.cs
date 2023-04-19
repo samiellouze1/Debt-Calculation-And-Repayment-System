@@ -58,26 +58,37 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         [HttpPost]
         public async Task<IActionResult> PreviewRequest(CreateRequestVM vm)
         {
-            if (ModelState.IsValid)
-            {
-                var studentid = User.FindFirstValue("Id");
-                var student = await _studentService.GetByIdAsync(studentid, s => s.DebtRegister);
-                var debtregister = student.DebtRegister;
-                var sum = 0m;
-                for (int i = 1; i <= vm.NumOfMonths; i++)
+            bool authorize;
+            var studentid = User.FindFirstValue("Id");
+            var student = await _studentService.GetByIdAsync(studentid, s => s.DebtRegister);
+            var debtregister = await _debtregisterService.GetByIdAsync(student.DebtRegister.Id,d=>d.Requests);
+            authorize = debtregister.Requests.Any(r => r.Status == "Accepted");
+            authorize = debtregister.Total - vm.ToBePaidFull >= 0;
+            if (authorize)
                 {
-                    var monthafterinterest = (debtregister.Total - vm.ToBePaidFull) / vm.NumOfMonths;
-                    var nod = (new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day).AddMonths(i) - new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day)).Days;
-                    var add = monthafterinterest * (1 + nod * debtregister.InterestRate / 365);
-                    sum += add;
+                if (ModelState.IsValid)
+                {
+                    var sum = 0m;
+                    for (int i = 1; i <= vm.NumOfMonths; i++)
+                    {
+                        var monthafterinterest = (debtregister.Total - vm.ToBePaidFull) / vm.NumOfMonths;
+                        var nod = (new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).AddMonths(i) - new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day)).Days;
+                        var add = monthafterinterest * (1 + nod * debtregister.InterestRate / 365);
+                        sum += add;
+                    }
+                    var tobepaideachmonth = sum / vm.NumOfMonths;
+                    var newvm = new PreviewRequestVM() { ToBePaidFull = vm.ToBePaidFull, NumOfMonths = vm.NumOfMonths, ToBePaidInstallment = debtregister.Total - vm.ToBePaidFull, ToBePaidEachMonth = tobepaideachmonth };
+                    return View("CreateRequest", newvm); // Change the view here to "PreviewRequestConfirm"
                 }
-                var tobepaideachmonth = sum / vm.NumOfMonths;
-                var newvm = new PreviewRequestVM() { ToBePaidFull = vm.ToBePaidFull, NumOfMonths = vm.NumOfMonths, ToBePaidInstallment = debtregister.Total - vm.ToBePaidFull, ToBePaidEachMonth = tobepaideachmonth };
-                return View("CreateRequest", newvm ); // Change the view here to "PreviewRequestConfirm"
+                else
+                {
+                    return View(vm);
+                }
             }
             else
             {
-                return View(vm);
+                ViewData["Error"] = "You either tried to make a request when theres one already accepted or tried to give wrong data";
+                return RedirectToAction("Error", "Home");
             }
         }
         [Authorize(Roles ="Student")]
