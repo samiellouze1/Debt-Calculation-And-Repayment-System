@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using Debt_Calculation_And_Repayment_System.Data.Static;
 using System.Linq.Expressions;
 using System.Security.Principal;
+using Debt_Calculation_And_Repayment_System.Data.ViewModels;
 
 namespace Debt_Calculation_And_Repayment_System.Controllers
 {
@@ -62,8 +63,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             else
             {
-                ViewData["Error"] = "You tried to enter a page to which you are not allowed";
-                return RedirectToAction("Error", "Home");
+                var vm = new ErrorViewModel() { ErrorMessage = "You tried to enter a page to which you are not allowed" };
+                return RedirectToAction("Error", "Home", vm);
             }
         }
         [Authorize(Roles ="Admin, StaffMember")]
@@ -91,8 +92,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             else
             {
-                ViewData["Error"] = "You tried to enter a page to which you are not allowed";
-                return RedirectToAction("Error", "Home");
+                var vm = new ErrorViewModel() { ErrorMessage = "You tried to enter a page to which you are not allowed" };
+                return RedirectToAction("Error", "Home", vm);
             }
         }
 
@@ -175,17 +176,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 var resttopayinstallment = debtregister.ToBePaidInstallment - ia * i; 
                 var nod = (today.AddMonths(i) - debtregister.RegDate).Days;
                 var amountafterinterest = ia  + nod * resttopayinstallment * debtregister.InterestRate / 365;
-                Console.WriteLine("Hello World");
-                Console.WriteLine("Hello World");
-                Console.WriteLine("Hello World");
-                Console.WriteLine("Hello World");
-                Console.WriteLine("Hello World");
-                Console.WriteLine("Hello World");
-                Console.WriteLine(resttopayinstallment);
-                Console.WriteLine(nod);
-                Console.WriteLine(amountafterinterest);
-                Console.WriteLine(debtregister.InterestRate);
-
                 var installment = new INSTALLMENT()
                 {
                     InitialAmount = ia,

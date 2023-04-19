@@ -44,8 +44,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             else
             {
-                ViewData["Error"] = "You tried to enter a page to which you are not allowed";
-                return RedirectToAction("Error", "Home");
+                var vm = new ErrorViewModel() { ErrorMessage = "You tried to enter a page to which you are not allowed" };
+                return RedirectToAction("Error", "Home", vm);
             }
         }
         [Authorize(Roles ="Student")]
@@ -87,36 +87,46 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             else
             {
-                ViewData["Error"] = "You either tried to make a request when theres one already accepted or tried to give wrong data";
-                return RedirectToAction("Error", "Home");
+                var vmm = new ErrorViewModel() { ErrorMessage = "You tried to enter a page to which you are not allowed" };
+                return RedirectToAction("Error", "Home", vmm);
             }
         }
         [Authorize(Roles ="Student")]
         [HttpPost]
         public async Task<IActionResult> CreateRequest(PreviewRequestVM vm)
         {
-            if (ModelState.IsValid)
+            bool authorize;
+            var studentid = User.FindFirstValue("Id");
+            var student = await _studentService.GetByIdAsync(studentid, s => s.DebtRegister);
+            var debtregister = await _debtregisterService.GetByIdAsync(student.DebtRegister.Id, d => d.Requests);
+            authorize = debtregister.Requests.Any(r => r.Status == "Accepted");
+            authorize = debtregister.Total - vm.ToBePaidFull >= 0;
+            if (authorize)
             {
-                if (vm.Accept)
+                if (ModelState.IsValid)
                 {
-                    var studentid = User.FindFirstValue("Id");
-                    var student = await _studentService.GetByIdAsync(studentid, s => s.DebtRegister);
-                    var debtregister = student.DebtRegister;
-                    var newrequest = new REQUEST()
+                    if (vm.Accept)
                     {
-                        ToBePaidFull = vm.ToBePaidFull,
-                        ToBePaidInstallment = vm.ToBePaidInstallment,
-                        NumOfMonths = vm.NumOfMonths,
-                        RegDate = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
-                        Status = "Not Defined",
-                        DebtRegister = debtregister,
-                    };
-                    await _requestService.AddAsync(newrequest);
-                    return RedirectToAction("Index", "Home");
-                }
-                else if (!vm.Accept)
-                {
-                    return RedirectToAction("Index", "Home");
+                        var newrequest = new REQUEST()
+                        {
+                            ToBePaidFull = vm.ToBePaidFull,
+                            ToBePaidInstallment = vm.ToBePaidInstallment,
+                            NumOfMonths = vm.NumOfMonths,
+                            RegDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
+                            Status = "Not Defined",
+                            DebtRegister = debtregister,
+                        };
+                        await _requestService.AddAsync(newrequest);
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else if (!vm.Accept)
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        return View(vm);
+                    }
                 }
                 else
                 {
@@ -125,7 +135,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             else
             {
-                return View(vm);
+                var vmm = new ErrorViewModel() { ErrorMessage = "You either tried to make a request when there's already one accepted or you typed the wrong data" };
+                return RedirectToAction("Error", "Home", vmm);
             }
         }
     }

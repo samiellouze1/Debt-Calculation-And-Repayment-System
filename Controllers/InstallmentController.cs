@@ -1,6 +1,7 @@
 ﻿using Debt_Calculation_And_Repayment_System.Data.IServices;
 using Debt_Calculation_And_Repayment_System.Data.Services;
 using Debt_Calculation_And_Repayment_System.Data.Static;
+using Debt_Calculation_And_Repayment_System.Data.ViewModels;
 using Debt_Calculation_And_Repayment_System.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -40,8 +41,16 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 var student = await _studentService.GetByIdAsync(userid);
                 authorize = student.Id == debtregister.Student.Id;
             }
-            var installments = debtregister.Installments;
-            return View("Installments", installments);
+            if (authorize)
+            {
+                var installments = debtregister.Installments;
+                return View("Installments", installments);
+            }
+            else
+            {
+                var vm = new ErrorViewModel() { ErrorMessage = "You tried to enter a page to which you are not allowed" };
+                return RedirectToAction("Error", "Home", vm);
+            }
         }
     }
 }

@@ -1,19 +1,22 @@
 ﻿@using Debt_Calculation_And_Repayment_System.Data.ViewModels
 @model ErrorViewModel
 @{
-    ViewData["Title"] = "Error";
+    ViewData["Title"] = "Index";
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
 
-@if (Model.ShowRequestId)
-{
-    <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
-    </p>
+@section Title {
+    Home
 }
 
-<div>
-    <a asp-action="Index" asp-controller="Home">Back to home</a>
+    <div class="jumbotron jumbotron-fluid position-relative overlay-bottom">
+        <div class="container text-center my-5 py-5">
+            <h1 class="text-white mt-4 mb-4">Sorry</h1>
+            <h1 class="text-white display-1 mb-5">
+            @if (ViewData.ContainsKey("Error"))
+            {
+                <p>Error: @ViewData["Error"]</p>
+            }
+            </h1>
+    </div>
 </div>

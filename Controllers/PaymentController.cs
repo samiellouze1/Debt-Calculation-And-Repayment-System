@@ -47,8 +47,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             else
             {
-                ViewData["Error"] = "You tried to enter a page to which you are not allowed";
-                return RedirectToAction("Error", "Home");
+                var vm = new ErrorViewModel() { ErrorMessage = "You tried to enter a page to which you are not allowed" };
+                return RedirectToAction("Error", "Home", vm);
             }
         }
     }
