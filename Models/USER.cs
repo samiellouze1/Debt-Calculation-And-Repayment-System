@@ -15,7 +15,5 @@ namespace Debt_Calculation_And_Repayment_System.Models
         public DateTime RegDate { get; set; }
         [Required]
         public string Address { get; set; }
-        [Required]
-        public string PhoneNumber { get; set; }
     }
 }

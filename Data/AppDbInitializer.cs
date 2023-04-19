@@ -95,21 +95,21 @@ namespace Debt_Calculation_And_Repayment_System.Data
                             Total = 4862.97m,
                             InterestRate = 0.09m,
                             ToBePaidCash=4862.97m,
-                            RegDate = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                            RegDate = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day,12,0,0),
                             Debts = new List<DEBT>()
                             {
                                 new DEBT()
                                 {
                                     Amount=1800m,
-                                    StartDate=new DateTime(2012,12,22),
-                                    EndDate=new DateTime(2023,1,16),
+                                    StartDate=new DateTime(2012,12,22,12,0,0),
+                                    EndDate=new DateTime(2023,1,16,12,0,0),
                                     RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
                                 },
                                 new DEBT()
                                 {
                                     Amount=1800m,
-                                    StartDate=new DateTime(2012,12,23),
-                                    EndDate=new DateTime(2023,1,16),
+                                    StartDate=new DateTime(2012,12,23,12,0,0),
+                                    EndDate=new DateTime(2023,1,16,12,0,0),
                                     RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
                                 }
                             },

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Debt_Calculation_And_Repayment_System.Migrations
 {
-    public partial class @fixed : Migration
+    public partial class fihahaja : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -176,7 +176,6 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     ToBePaid = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                     TotalCash = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                     TotalInstallment = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
-                    PaidInstallment = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                     ToBePaidCash = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                     ToBePaidInstallment = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                     InterestRate = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),

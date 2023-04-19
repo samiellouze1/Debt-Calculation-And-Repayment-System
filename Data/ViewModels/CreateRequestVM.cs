@@ -8,6 +8,11 @@ namespace Debt_Calculation_And_Repayment_System.Data.ViewModels
         [Required]
         public decimal ToBePaidFull { get; set; }
         [Required]
+        public decimal ToBePaidInstallment { get; set; }
+        [Required]
+        public decimal Total { get; set; }
+        [Required]
         public int NumOfMonths { get; set;}
+
     }
 }

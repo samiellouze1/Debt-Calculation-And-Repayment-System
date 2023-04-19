@@ -15,6 +15,7 @@
             <h1 class="text-white mt-4 mb-4">You will pay in full: @Model.ToBePaidFull</h1>
             <h1 class="text-white mt-4 mb-4" >You will pay in installment: @Model.ToBePaidInstallment</h1>
             <h1 class="text-white mt-4 mb-4">You will pay each month in installment: @Model.ToBePaidEachMonth</h1>
+            <h1 class="text-white mt-4 mb-4">Over @Model.NumOfMonths Months</h1>
             <h1 class="text-white mt-4 mb-4">↓↓↓ Finalise you request ↓↓↓ </h1>
         </div>
     </div>
@@ -26,23 +27,16 @@
                     <div class="form-row">
                         <div class="col-sm-6">
                             <div class="form-group">
+                                <label>Total</label>
+                                <input asp-for="Total" type="number" step="any" value=@Model.Total readonly class="form-control bg-light border-0">
+                                <span asp-validation-for="Total" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
                                 <label>to be paid fully</label>
-                                <input asp-for="ToBePaidFull" type="number" value=@Model.ToBePaidFull readonly class="form-control bg-light border-0"  >
+                                <input asp-for="ToBePaidFull" type="number" step="any" value=@Model.ToBePaidFull readonly class="form-control bg-light border-0"  >
                                 <span asp-validation-for="ToBePaidFull" style="color:red"></span>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>To be paid in installments</label>
-                                <input asp-for="ToBePaidInstallment" type="number" value=@Model.ToBePaidInstallment readonly class="form-control bg-light border-0"  >
-                                <span asp-validation-for="ToBePaidInstallment" style="color:red"></span>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>To be paid each month</label>
-                                <input asp-for="ToBePaidEachMonth" type="number" value=@Model.ToBePaidEachMonth readonly class="form-control bg-light border-0" >
-                                <span asp-validation-for="ToBePaidEachMonth" style="color:red"></span>
                             </div>
                         </div>
                         <div class="col-sm-6">
@@ -53,7 +47,7 @@
                             </div>
                         </div>
                         <div class="col-sm-6">
-                            <div class="form-group" style="display:flex;">
+                            <div class="form-group">
                                 <label>I accept the terms above</label>
                                 <input asp-for="Accept" type="checkbox" class="form-control bg-light border-0">
                             </div>

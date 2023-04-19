@@ -39,8 +39,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             if (authorize)
             {
-                var request = debtregister.Requests;
-                return View("Requests", request);
+                var requests = debtregister.Requests;
+                return View("Requests", requests.OrderBy(r=>r.RegDate));
             }
             else
             {
@@ -49,10 +49,13 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
         }
         [Authorize(Roles ="Student")]
-        public IActionResult PreviewRequest ()
+        public async Task<IActionResult> PreviewRequest ()
         {
-            var vm = new CreateRequestVM();
-            return View(vm);
+            var userid = User.FindFirstValue("Id");
+            var student = await _studentService.GetByIdAsync(userid,s=>s.DebtRegister);
+
+            var vm = new CreateRequestVM() { Total=student.DebtRegister.Total, ToBePaidFull=student.DebtRegister.Total};
+            return View("PreviewRequest",vm);
         }
         [Authorize(Roles ="Student")]
         [HttpPost]
@@ -62,23 +65,29 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var studentid = User.FindFirstValue("Id");
             var student = await _studentService.GetByIdAsync(studentid, s => s.DebtRegister);
             var debtregister = await _debtregisterService.GetByIdAsync(student.DebtRegister.Id,d=>d.Requests);
-            authorize = debtregister.Requests.Any(r => r.Status == "Accepted");
-            authorize = debtregister.Total - vm.ToBePaidFull >= 0;
+            authorize = !debtregister.Requests.Any(r => r.Status == "Accepted");
+            authorize = debtregister.Total == vm.Total;
+            authorize = vm.ToBePaidFull >= 0 && vm.ToBePaidInstallment >= 0;
+            authorize = vm.ToBePaidFull+vm.ToBePaidInstallment==debtregister.Total;
+            authorize = !(vm.ToBePaidInstallment != 0 && vm.NumOfMonths == 0);
             if (authorize)
                 {
                 if (ModelState.IsValid)
                 {
                     var sum = 0m;
-                    for (int i = 1; i <= vm.NumOfMonths; i++)
+                    var tbpi = debtregister.Total - vm.ToBePaidFull;
+                    var ia = tbpi/vm.NumOfMonths;
+                    var today = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,12,0,0);
+                    for (int i = 0; i < vm.NumOfMonths; i++)
                     {
-                        var monthafterinterest = (debtregister.Total - vm.ToBePaidFull) / vm.NumOfMonths;
-                        var nod = (new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).AddMonths(i) - new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day)).Days;
-                        var add = monthafterinterest * (1 + nod * debtregister.InterestRate / 365);
-                        sum += add;
+                        var rpi = tbpi - ia * i;
+                        var nod = (today.AddMonths(i) - debtregister.RegDate).Days;
+                        var amountafterinterest = ia + nod * rpi * debtregister.InterestRate / 365;
+                        sum += amountafterinterest;
                     }
-                    var tobepaideachmonth = sum / vm.NumOfMonths;
-                    var newvm = new PreviewRequestVM() { ToBePaidFull = vm.ToBePaidFull, NumOfMonths = vm.NumOfMonths, ToBePaidInstallment = debtregister.Total - vm.ToBePaidFull, ToBePaidEachMonth = tobepaideachmonth };
-                    return View("CreateRequest", newvm); // Change the view here to "PreviewRequestConfirm"
+                    var tobepaideachmonth = decimal.Truncate((sum /vm.NumOfMonths)*100)/100 ;
+                    var newvm = new PreviewRequestVM() { Total=debtregister.Total,ToBePaidFull = decimal.Truncate(vm.ToBePaidFull*100)/100, NumOfMonths = vm.NumOfMonths, ToBePaidInstallment = decimal.Truncate((debtregister.Total - vm.ToBePaidFull)*100)/100, ToBePaidEachMonth = tobepaideachmonth };
+                    return View("CreateRequest", newvm); 
                 }
                 else
                 {
@@ -110,7 +119,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                         var newrequest = new REQUEST()
                         {
                             ToBePaidFull = vm.ToBePaidFull,
-                            ToBePaidInstallment = vm.ToBePaidInstallment,
+                            ToBePaidInstallment = debtregister.Total-vm.ToBePaidFull,
                             NumOfMonths = vm.NumOfMonths,
                             RegDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
                             Status = "Not Defined",

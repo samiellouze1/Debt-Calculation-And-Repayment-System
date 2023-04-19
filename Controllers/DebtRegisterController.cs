@@ -11,6 +11,8 @@ using Debt_Calculation_And_Repayment_System.Data.Static;
 using System.Linq.Expressions;
 using System.Security.Principal;
 using Debt_Calculation_And_Repayment_System.Data.ViewModels;
+using Debt_Calculation_And_Repayment_System.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Debt_Calculation_And_Repayment_System.Controllers
 {
@@ -22,7 +24,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         private readonly IINSTALLMENTService _installmentService;
         private readonly IPAYMENTService _paymentService;
         private readonly ISTAFFMEMBERService _staffmemberService;
-        public DebtRegisterController(IDEBTREGISTERService debtregisterService, ISTUDENTService studentService, IREQUESTService requestService,IINSTALLMENTService installmentService,IPAYMENTService paymentService, ISTAFFMEMBERService staffmemberService)
+        private readonly AppDbContext _context;
+        public DebtRegisterController(IDEBTREGISTERService debtregisterService, ISTUDENTService studentService, IREQUESTService requestService,IINSTALLMENTService installmentService,IPAYMENTService paymentService, ISTAFFMEMBERService staffmemberService,AppDbContext context)
         {
             _debtregisterService = debtregisterService;
             _studentService = studentService;
@@ -30,6 +33,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             _installmentService = installmentService;
             _paymentService = paymentService;
             _staffmemberService = staffmemberService;
+            _context = context;
         }
         [Authorize(Roles ="Student")]
         public async Task<IActionResult> MyDebtRegister()
@@ -83,11 +87,11 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             {
                 await UpdateDebtRegisterDebtsChanged(request.DebtRegister.Id);
                 await UpdateDebtRegisterRequestActivated(id);
-                var installments = await GenerateInstallments(id);
+                await GenerateInstallments(id);
                 await UpdateRequestAfterRequestAccepted(id);
-                await UpdateDebtRegisterAfterRequest(id, installments);
-                var payments = await GeneratePayments(id);
-                await UpdateDebtRegisterAfterGenrationofPayments(id, payments);
+                await UpdateDebtRegisterAfterRequest(id);
+                await GeneratePayments(id);
+                await UpdateDebtRegisterAfterGenrationofPayments(id);
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -98,77 +102,48 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         }
 
         #region business
+        [HttpPost]
         public async Task UpdateDebtRegisterDebtsChanged(string id)
         {
-            var debtregister = await _debtregisterService.GetByIdAsync(id,dr=>dr.Debts);
+            var dr = await _debtregisterService.GetByIdAsync(id,dr=>dr.Debts);
             var amount = 0m;
             var interestamount = 0m;
-            foreach (var d in debtregister.Debts)
+            foreach (var d in dr.Debts)
             {
                 var ed = d.EndDate;
                 var sd = d.StartDate;
                 var adda = d.Amount;
-                var addia = (d.Amount * (ed-sd).Days * debtregister.InterestRate) / 365;
+                var addia = (d.Amount * (ed-sd).Days * dr.InterestRate) / 365;
                 amount += adda ;
                 interestamount += addia;
             }
-            var newdebtregister = new DEBTREGISTER()
-            {
-                Id = id,
-                Amount= amount,
-                InterestAmount=interestamount,
-                Total = interestamount+amount,
-                ToBePaid=debtregister.ToBePaid,
-                TotalCash=interestamount+amount,
-                TotalInstallment=debtregister.TotalInstallment,
-                PaidInstallment=0,
-                ToBePaidCash=interestamount+amount,
-                ToBePaidInstallment=0,
-                InterestRate=debtregister.InterestRate,
-                RegDate=debtregister.RegDate,
-                ReqDate=debtregister.ReqDate,
-                Requests=debtregister.Requests,
-                Debts=debtregister.Debts,
-                Installments=debtregister.Installments,
-                Student=debtregister.Student,
-                Payments=debtregister.Payments
-            };
-            await _debtregisterService.UpdateAsync(id, newdebtregister);
+            dr.Amount = decimal.Truncate(amount*100)/100;
+            dr.InterestAmount = decimal.Truncate(interestamount*100)/100;
+            dr.TotalCash = decimal.Truncate((interestamount + amount)*100)/100;
+            dr.ToBePaidCash = decimal.Truncate((interestamount + amount) * 100) / 100;
+            dr.ToBePaidInstallment = 0;
+            dr.Total = decimal.Truncate((interestamount + amount) * 100) / 100;
+            await _context.SaveChangesAsync();
         }
+        [HttpPost]
         public async Task UpdateDebtRegisterRequestActivated(string id)
         {
             var request = await _requestService.GetByIdAsync(id,r=>r.DebtRegister);
-            var debtregister = request.DebtRegister;
+            var dr = request.DebtRegister;
             var tf = request.ToBePaidFull;
-            var ti = debtregister.Total - request.ToBePaidFull;
-
-            var newdebtregister = new DEBTREGISTER()
-            {
-                Id=debtregister.Id,
-                InterestAmount=debtregister.InterestAmount,
-                Total= debtregister.Total,
-                ToBePaid=debtregister.ToBePaid,
-                TotalCash=tf,
-                TotalInstallment=ti,
-                PaidInstallment=debtregister.PaidInstallment,
-                ToBePaidCash=tf,
-                ToBePaidInstallment=ti,
-                InterestRate=debtregister.InterestRate,
-                RegDate=debtregister.RegDate,
-                ReqDate= new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
-                Requests = debtregister.Requests,
-                Debts = debtregister.Debts,
-                Installments = debtregister.Installments,
-                Student = debtregister.Student,
-                Payments = debtregister.Payments
-            };
-            await _debtregisterService.UpdateAsync(request.DebtRegister.Id, newdebtregister);
+            var ti = dr.Total - request.ToBePaidFull;
+            dr.TotalCash = tf;
+            dr.TotalInstallment = ti;
+            dr.ToBePaidCash = tf;
+            dr.ToBePaidInstallment = ti;
+            dr.ReqDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+            await _context.SaveChangesAsync();
         }
-        public async Task<List<INSTALLMENT>> GenerateInstallments(string id)
+        [HttpPost]
+        public async Task GenerateInstallments(string id)
         {
             var request = await _requestService.GetByIdAsync(id,r=>r.DebtRegister);
             var debtregister = request.DebtRegister;
-            var installments = new List<INSTALLMENT>();
             var today = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day);
             var ia = debtregister.ToBePaidInstallment / request.NumOfMonths;
             for (int i = 0; i < request.NumOfMonths; i++)
@@ -184,119 +159,72 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                     NumberOfDays = nod,
                     DebtRegister=debtregister
                 };
-                installments.Add(installment);
+                await _installmentService.AddAsync(installment);
             }
-            return installments;
         }
         [HttpPost]
         public async Task UpdateRequestAfterRequestAccepted(string requestid)
         {
             var request = await _requestService.GetByIdAsync(requestid, dr => dr.DebtRegister);
-            var newrequest = new REQUEST()
-            {
-                Id=request.Id,
-                ToBePaidFull = request.ToBePaidFull,
-                ToBePaidInstallment = request.ToBePaidInstallment,
-                NumOfMonths = request.NumOfMonths,
-                RegDate = request.RegDate,
-                Status = "Accepted",
-                DebtRegister=request.DebtRegister,
-            };
-            await _requestService.UpdateAsync(requestid, newrequest);
+            request.Status = "Accepted";
+            await _context.SaveChangesAsync();
         }
         [HttpPost]
-        public async Task UpdateDebtRegisterAfterRequest(string id, List<INSTALLMENT> installments)
+        public async Task UpdateDebtRegisterAfterRequest(string id)
         {
             var request = await _requestService.GetByIdAsync(id,r=>r.DebtRegister);
             var dr = await _debtregisterService.GetByIdAsync(request.DebtRegister.Id, dr => dr.Requests, dr => dr.Payments, dr => dr.Installments, dr => dr.Student, dr => dr.Debts);
-            var ti= installments.Select(i => i.AmountAfterInterest).ToList().Sum();
+            var ti= dr.Installments.Select(i => i.AmountAfterInterest).ToList().Sum();
             var tf = request.ToBePaidFull;
             var total = tf + ti;
-
-            var newdebtregister = new DEBTREGISTER()
-            {
-                Id=dr.Id,
-                Amount=dr.Amount,
-                InterestAmount = dr.InterestAmount,
-                Total=total,
-                ToBePaid=total,
-                TotalCash=tf,
-                TotalInstallment=ti,
-                PaidInstallment=dr.PaidInstallment,
-                ToBePaidCash=tf,
-                ToBePaidInstallment=ti,
-                InterestRate = dr.InterestRate,
-                RegDate = dr.RegDate,
-                ReqDate=dr.ReqDate,
-                Payments = dr.Payments,
-                Requests = dr.Requests,
-                Student = dr.Student,
-                Debts = dr.Debts
-            };
-            await _debtregisterService.UpdateAsync(dr.Id, newdebtregister);
-            foreach (var installment in installments)
+            dr.Total = total;
+            dr.ToBePaid = total;
+            dr.TotalCash = tf;
+            dr.TotalInstallment = ti;
+            dr.ToBePaidCash = tf;
+            dr.ToBePaidInstallment = ti;
+            await _context.SaveChangesAsync();
+            foreach (var installment in dr.Installments)
             {
                 await _installmentService.AddAsync(installment);
             }
         }
-        public async Task<List<PAYMENT>> GeneratePayments(string id)
+        [HttpPost]
+        public async Task GeneratePayments(string id)
         {
             var request = await _requestService.GetByIdAsync(id, r => r.DebtRegister);
             var debtregister = await _debtregisterService.GetByIdAsync(request.DebtRegister.Id, dr => dr.Requests, dr => dr.Payments, dr => dr.Installments, dr => dr.Student, dr => dr.Debts);
             var tbpi = debtregister.ToBePaidInstallment;
             var parts = DivideDecimalIntoEqualParts(tbpi, request.NumOfMonths);
-            var payments = new List<PAYMENT>();
             var i = 0;
             foreach ( var p in parts)
             {
                 var payment = new PAYMENT() { Type="Installment",DebtRegister = debtregister, Sum = p, Paid = false, PaymentDate = new DateTime(DateTime.Now.AddMonths(i).Year, DateTime.Now.AddMonths(i).Month, DateTime.Now.AddMonths(i).Day), RegDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day) };
                 i += 1;
-                payments.Add(payment);
-            }
-            var paymentfull = new PAYMENT() { Type="Full" ,DebtRegister = debtregister, Sum = request.ToBePaidFull, Paid = false, PaymentDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day), RegDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day) };
-            payments.Add(paymentfull);
-            return payments;
-        }
-        [HttpPost]
-        public async Task UpdateDebtRegisterAfterGenrationofPayments(string id,List<PAYMENT> payments)
-        {
-            var request = await _requestService.GetByIdAsync(id,r=>r.DebtRegister);
-            var dr = await _debtregisterService.GetByIdAsync(request.DebtRegister.Id, dr => dr.Requests, dr => dr.Payments, dr => dr.Installments, dr => dr.Student, dr => dr.Debts);
-            var newdebtregister = new DEBTREGISTER()
-            {
-                Id = dr.Id,
-                InterestAmount = dr.InterestAmount,
-                Total = dr.Total,
-                ToBePaid = dr.ToBePaidCash,
-                TotalCash = dr.TotalCash,
-                TotalInstallment = dr.TotalInstallment,
-                PaidInstallment = dr.PaidInstallment,
-                ToBePaidCash = dr.ToBePaidCash,
-                ToBePaidInstallment = dr.ToBePaidInstallment,
-                InterestRate = dr.InterestRate,
-                RegDate = dr.RegDate,
-                ReqDate = dr.ReqDate,
-                Installments = dr.Installments,
-                Requests = dr.Requests,
-                Student = dr.Student,
-                Debts = dr.Debts
-            };
-            await _debtregisterService.UpdateAsync(dr.Id, newdebtregister);
-            foreach (var payment in payments)
-            {
                 await _paymentService.AddAsync(payment);
             }
+            var paymentfull = new PAYMENT() { Type="Full" ,DebtRegister = debtregister, Sum = request.ToBePaidFull, Paid = false, PaymentDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day), RegDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day) };
+            await _paymentService.AddAsync(paymentfull);
+        }
+        [HttpPost]
+        public async Task UpdateDebtRegisterAfterGenrationofPayments(string id)
+        {
+            var request = await _requestService.GetByIdAsync(id,r=>r.DebtRegister);
+            var dr = await _debtregisterService.GetByIdAsync(request.DebtRegister.Id,  dr => dr.Payments);
+            dr.ToBePaidInstallment = dr.Payments.Select(p => p.Sum).ToList().Sum();
+            dr.ToBePaid= dr.Payments.Select(p => p.Sum).ToList().Sum()+dr.TotalCash;
+            await _context.SaveChangesAsync();
         }
         public static List<decimal> DivideDecimalIntoEqualParts(decimal x, int n)
         {
             List<decimal> parts = new List<decimal>();
-            decimal commonPart = Math.Floor(x / n * 100) / 100; // Calculate the common part with 2 decimal precision
-            decimal remaining = x - commonPart * (n - 1); // Calculate the remaining part
+            decimal commonPart = Math.Floor(x / n * 100) / 100; 
+            decimal remaining = x - commonPart * (n - 1); 
             for (int i = 0; i < n - 1; i++)
             {
-                parts.Add(commonPart); // Add the common part to the list
+                parts.Add(commonPart); 
             }
-            parts.Add(remaining); // Add the remaining part to the list
+            parts.Add(remaining); 
             return parts;
         }
 

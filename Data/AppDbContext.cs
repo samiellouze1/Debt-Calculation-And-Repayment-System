@@ -39,7 +39,6 @@ namespace Debt_Calculation_And_Repayment_System.Data
             builder.Entity<DEBTREGISTER>().Property(dr => dr.ToBePaid).HasPrecision(10, 2);
             builder.Entity<DEBTREGISTER>().Property(dr => dr.TotalCash).HasPrecision(10, 2);
             builder.Entity<DEBTREGISTER>().Property(dr => dr.TotalInstallment).HasPrecision(10, 2);
-            builder.Entity<DEBTREGISTER>().Property(dr => dr.PaidInstallment).HasPrecision(10, 2);
             builder.Entity<DEBTREGISTER>().Property(dr => dr.ToBePaidCash).HasPrecision(10, 2);
             builder.Entity<DEBTREGISTER>().Property(dr => dr.ToBePaidInstallment).HasPrecision(10, 2);
             builder.Entity<DEBTREGISTER>().Property(dr => dr.InterestRate).HasPrecision(10, 2);

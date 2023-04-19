@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Debt_Calculation_And_Repayment_System.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230418015946_fixed")]
-    partial class @fixed
+    [Migration("20230419142949_fihahaja")]
+    partial class fihahaja
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -74,10 +74,6 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
 
                     b.Property<int>("NumOfMonths")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("PaidInstallment")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
 
                     b.Property<DateTime>("RegDate")
                         .HasColumnType("datetime2");

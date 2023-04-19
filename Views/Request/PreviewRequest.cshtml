@@ -4,14 +4,14 @@
     ViewData["Title"] = "Create Request";
 }
 @section Title {
-    Login
+    Create Request
 }
 
     <div class="container-fluid px-0 py-5">
         <div class="row mx-0 justify-content-center pt-5">
             <div class="col-lg-6">
                 <div class="section-title text-center position-relative mb-4">
-                    <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">This specific view is only viewed by admins</h6>
+                    <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">STUDENT</h6>
                     <h1 class="display-4">Create Request</h1>
                 </div>
             </div>
@@ -24,11 +24,25 @@
                         <div class="form-row">
                             <div class="col-sm-6">
                                 <div class="form-group">
+                                    <label>Total</label>
+                                    <input asp-for="Total" type="number" readonly value="@Model.Total" class="form-control bg-light border-0" placeholder="Total">
+                                    <span asp-validation-for="Total" style="color:red"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>To be paid in Installment</label>
+                                    <input asp-for="ToBePaidInstallment" type="number" step="any" id="toBePaidInstallment" class="form-control bg-light border-0" placeholder="To Be Paid Installment">
+                                    <span asp-validation-for="ToBePaidInstallment" style="color:red"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
                                     <label>To be paid in Full</label>
-                                    <input asp-for="ToBePaidFull" type="number" class="form-control bg-light border-0" placeholder="To Be Paid Full">
+                                    <input asp-for="ToBePaidFull" type="number" step="any" id="toBePaidFull" value="@Model.ToBePaidFull" class="form-control bg-light border-0" placeholder="To Be Paid Full">
                                     <span asp-validation-for="ToBePaidFull" style="color:red"></span>
                                 </div>
-                            </div> 
+                            </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label>Number Of Months</label>
@@ -45,3 +59,49 @@
             </div>
         </div>
     </div>
+
+    @section scripts {
+    <script>
+        // Get the input elements
+        var toBePaidInstallmentInput = document.getElementById("toBePaidInstallment");
+        var toBePaidFullInput = document.getElementById("toBePaidFull");
+        var totalInput = document.getElementById("Total");
+        var numOfMonthsInput = document.getElementById("NumOfMonths");
+
+        // Add event listener to toBePaidInstallmentInput
+        toBePaidInstallmentInput.addEventListener("input", updateToBePaidFull);
+
+        // Add event listener to toBePaidFullInput
+        toBePaidFullInput.addEventListener("input", updateToBePaidInstallment);
+
+        // Add event listener to numOfMonthsInput
+        numOfMonthsInput.addEventListener("input", updateToBePaidInstallment);
+
+        // Function to update ToBePaidFull field
+        function updateToBePaidFull() {
+            var toBePaidInstallmentValue = parseFloat(toBePaidInstallmentInput.value) || 0;
+            var totalValue = parseFloat(totalInput.value) || 0;
+            var toBePaidFullValue = totalValue - toBePaidInstallmentValue;
+            toBePaidFullInput.value = toBePaidFullValue.toFixed(2); // Round to 2 decimal places
+        }
+
+        // Function to update ToBePaidInstallment field
+        function updateToBePaidInstallment() {
+            var toBePaidFullValue = parseFloat(toBePaidFullInput.value) || 0;
+            var totalValue = parseFloat(totalInput.value) || 0;
+            var numOfMonthsValue = parseFloat(numOfMonthsInput.value) || 0;
+            if (toBePaidInstallmentInput.value === "0" && numOfMonthsValue === 0) {
+                toBePaidFullInput.value = totalValue.toFixed(2); // Round to 2 decimal places
+            } else {
+                var toBePaidInstallmentValue = totalValue - toBePaidFullValue;
+                toBePaidInstallmentInput.value = toBePaidInstallmentValue.toFixed(2); // Round to 2 decimal places
+            }
+        }
+    </script>
+}
+
+
+
+
+
+

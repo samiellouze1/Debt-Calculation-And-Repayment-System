@@ -20,7 +20,6 @@ namespace Debt_Calculation_And_Repayment_System.Models
         public decimal ToBePaid { get; set; }
         public decimal TotalCash { get; set; }
         public decimal TotalInstallment { get; set; }
-        public decimal PaidInstallment { get; set; }
         public decimal ToBePaidCash { get; set; }
         public decimal ToBePaidInstallment { get; set; }
         [Required]

@@ -10,6 +10,9 @@ namespace Debt_Calculation_And_Repayment_System.Data.ViewModels
         [Required]
         public int NumOfMonths { get; set;}
         public bool Accept { get; set; }
+        [Required]
+        public decimal Total { get; set; }
+        [Required]
         public decimal ToBePaidInstallment { get; set; }
         public decimal ToBePaidEachMonth { get; set; }
     }
