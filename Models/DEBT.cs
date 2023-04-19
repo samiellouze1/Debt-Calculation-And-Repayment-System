@@ -17,6 +17,7 @@ namespace Debt_Calculation_And_Repayment_System.Models
         [Required]
         public DateTime StartDate { get; set; }
         [Required]
+        [Compare("StartDate", ErrorMessage = "End Date must be greater than Start Date.")]
         public DateTime EndDate { get; set; }
         [Required]
         public DateTime RegDate { get; set; }

@@ -40,7 +40,7 @@
                 <td>@item.SurName</td>
                 <td>@item.Address</td>
                 <td>@item.PhoneNumber</td>
-                <td>@item.RegDate</td>
+                <td>@item.RegDate.ToString("yyyy-MM-dd")</td>
                 @if (User.IsInRole(UserRoles.Admin))
                 {
                     <td><a asp-controller="StaffMember" asp-action="StaffMemberById" asp-route-id=@item.StaffMember.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block">@item.StaffMember.Email</a></td>

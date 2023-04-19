@@ -6,7 +6,7 @@
 @section Title {
     Create Debt
 }
-<div class="container-fluid px-0 py-5" style="width:1200px;">
+<div class="container-fluid px-0 py-5" >
     <div class="row mx-0 justify-content-center pt-5">
         <div class="col-lg-6">
             <div class="section-title text-center position-relative mb-4">
@@ -21,33 +21,10 @@
                 <h1 class="text-center mb-4">Fill in information about the new debt</h1>
                 <form asp-action="CreateDebt">
                     <div class="form-row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Intial Amount</label>
-                                <input asp-for="Amount" type="number" class="form-control bg-light border-0" placeholder="Amount" style="padding: 30px 20px;">
-                                <span asp-validation-for="Amount" style="color:red"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Start Date</label>
-                                <input asp-for="StartDate" type="datetime" class="form-control bg-light border-0" placeholder="Enter Start Date" style="padding: 30px 20px;">
-                                <span asp-validation-for="StartDate" style="color:red"></span>
-                            </div>
-                        </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label>Start Date</label>
-                                    <input asp-for="EndDate" type="datetime" class="form-control bg-light border-0" placeholder="Enter End Date" style="padding: 30px 20px;">
-                                    <span asp-validation-for="EndDate" style="color:red"></span>
-                                </div>
-                            </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label asp-for="StudentId">Select a Student</label>
-                                <select asp-for="StudentId" class="form-control bg-light border-0" >
+                                    <label asp-for="StudentId">Select a Student</label>
+                                    <select asp-for="StudentId" class="form-control bg-light border-0">
                                     @foreach (var item in Model.Students)
                                     {
                                         <option asp-for="StudentId" value=@item.Id>@item.UserName</option>
@@ -56,9 +33,31 @@
                                 <span asp-validation-for="StudentId" style="color:red"></span>
                             </div>
                         </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Intial Amount</label>
+                                <input asp-for="Amount" type="number" class="form-control bg-light border-0" placeholder="Amount" >
+                                <span asp-validation-for="Amount" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Start Date</label>
+                                <input asp-for="StartDate" type="date" class="form-control bg-light border-0" placeholder="Enter Start Date"  value="2010-01-01">
+                                <span asp-validation-for="StartDate" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>End Date</label>
+                                <input asp-for="EndDate" type="date" class="form-control bg-light border-0" placeholder="Enter End Date"  value="2010-01-01">
+                                <span asp-validation-for="EndDate" style="color:red"></span>
+                            </div>
+                        </div>
+
                     </div>
                     <div class="col-sm-6" style="width:50%;margin: 0 auto;">
-                        <button class="btn btn-primary btn-block" type="submit" value="CreateRequest" style="height: 60px;">Create Debt</button>
+                        <button class="btn btn-primary btn-block" type="submit" value="CreateRequest" >Create Debt</button>
                     </div>
                 </form>
 
