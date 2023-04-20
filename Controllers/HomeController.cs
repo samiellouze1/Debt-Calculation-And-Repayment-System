@@ -1,5 +1,4 @@
-﻿
-using Debt_Calculation_And_Repayment_System.Data.ViewModels;
+﻿using Debt_Calculation_And_Repayment_System.Data.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -19,9 +18,10 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             return View();
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Error(string errorMessage)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var vm = new ErrorViewModel() { ErrorMessage = errorMessage };
+            return View(vm);
         }
     }
 }

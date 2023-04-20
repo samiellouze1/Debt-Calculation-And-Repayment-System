@@ -30,6 +30,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             _context = context;
         }
         #region affectation
+        [Authorize(Roles="Admin")]
         public async Task<IActionResult> AffectStudentToStaffMember()
         {
             var students = await _studentService.GetAllAsync();
@@ -37,6 +38,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var vm = new AffectVM() { Students=students.ToList(),StaffMembers=staffmembers.ToList()};
             return View(vm);
         }
+        [Authorize(Roles ="Admin")]
         [HttpPost]
         public async Task<IActionResult> AffectStudentToStaffMember(AffectVM vm)
         {

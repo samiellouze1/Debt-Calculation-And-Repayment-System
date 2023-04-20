@@ -1,4 +1,5 @@
 ﻿using Debt_Calculation_And_Repayment_System.Data.IServices;
+using Debt_Calculation_And_Repayment_System.Data.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol;
@@ -50,8 +51,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             else
             {
-                ViewData["Error"] = "You tried to enter a page to which you are not allowed";
-                return RedirectToAction("Error", "Home");
+                return RedirectToAction("Error", "Home", new { errorMessage = "You tried to enter a page to which you are not allowed" });
             }
         }
         [Authorize(Roles ="StaffMember")]
@@ -78,8 +78,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             else
             {
-                ViewData["Error"] = "You tried to enter a page to which you are not allowed";
-                return RedirectToAction("Error", "Home");
+                return RedirectToAction("Error", "Home", new { errorMessage = "You tried to enter a page to which you are not allowed" });
             }
         }
 
