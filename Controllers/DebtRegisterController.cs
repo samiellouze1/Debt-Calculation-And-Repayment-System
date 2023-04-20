@@ -48,6 +48,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         {
             bool authorize = true;
             var debtregister = await _debtregisterService.GetByIdAsync(id,drg=>drg.Student,drg=>drg.Requests,s=>s.Payments,s=>s.Installments,s=>s.Debts);
+            await UpdateDebtRegisterDebtsChanged(debtregister.Id);
             if (User.IsInRole(UserRoles.StaffMember))
             {
                 var staffid = User.FindFirstValue("Id");
@@ -160,13 +161,20 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var request = await _requestService.GetByIdAsync(id,r=>r.DebtRegister);
             var debtregister = request.DebtRegister;
             var today = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day);
-            var iatable = DivideDecimalIntoEqualParts(debtregister.ToBePaidInstallment, request.NumOfMonths);
-            var resttopayinstallment = debtregister.ToBePaidInstallment;
+            var iatable = DivideDecimalIntoEqualParts(debtregister.ToBePaidInstallment-debtregister.InterestAmount, request.NumOfMonths);
+            var resttopayinstallment = debtregister.ToBePaidInstallment-debtregister.InterestAmount;
             for (int i = 0; i < request.NumOfMonths; i++)
             {
-                var nod = (today.AddMonths(i) - debtregister.RegDate).Days;
+                int nod;
+                if (i >= 1)
+                {
+                    nod = (today.AddMonths(i) - today.AddMonths(i - 1)).Days;
+                }
+                else
+                {
+                    nod = (today - debtregister.RegDate).Days;
+                }
                 var amountafterinterest = iatable[i]  + nod * resttopayinstallment * debtregister.InterestRate / 365;
-                resttopayinstallment -= iatable[i];
                 Console.WriteLine(resttopayinstallment);
                 var installment = new INSTALLMENT()
                 {
@@ -174,8 +182,10 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                     AmountAfterInterest = amountafterinterest,
                     PaymentDate= today.AddMonths(i),
                     NumberOfDays = nod,
-                    DebtRegister=debtregister
+                    DebtRegister=debtregister,
+                    Rest=resttopayinstallment
                 };
+                resttopayinstallment -= iatable[i];
                 await _installmentService.AddAsync(installment);
             }
         }
@@ -201,7 +211,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             Console.WriteLine("Hello update");
             var request = await _requestService.GetByIdAsync(id,r=>r.DebtRegister);
             var dr = await _debtregisterService.GetByIdAsync(request.DebtRegister.Id, dr => dr.Requests, dr => dr.Payments, dr => dr.Installments, dr => dr.Student, dr => dr.Debts);
-            var ti= dr.Installments.Select(i => i.AmountAfterInterest).ToList().Sum();
+            var ti= dr.Installments.Select(i => i.AmountAfterInterest).ToList().Sum()+dr.InterestAmount;
             var tf = request.ToBePaidFull;
             var total = tf + ti;
             dr.Total = total;

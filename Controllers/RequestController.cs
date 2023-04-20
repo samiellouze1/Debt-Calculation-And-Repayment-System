@@ -75,7 +75,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 if (ModelState.IsValid)
                 {
                     var sum = 0m;
-                    var tbpi = debtregister.Total - vm.ToBePaidFull;
+                    var tbpi = debtregister.Total - vm.ToBePaidFull -debtregister.InterestAmount;
                     var ia = tbpi/vm.NumOfMonths;
                     var today = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,12,0,0);
                     for (int i = 0; i < vm.NumOfMonths; i++)

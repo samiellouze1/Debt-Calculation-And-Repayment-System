@@ -19,6 +19,8 @@ namespace Debt_Calculation_And_Repayment_System.Models
         public DateTime PaymentDate { get; set; }
         [Required]
         public int NumberOfDays { get; set; }
+        [Required]
+        public decimal Rest { get; set; }
         public virtual DEBTREGISTER DebtRegister { get; set; }
     }
 }

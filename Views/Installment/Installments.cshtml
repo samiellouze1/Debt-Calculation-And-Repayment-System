@@ -23,6 +23,8 @@
         <tr>
             <th scope="col">IntialAmount</th>
             <th scope="col">Amount After Interest</th>
+            <th scope="col">Rest</th>
+            <th scope="col">Payment Date</th>
             <th scope="col">Number Of Days</th>
             <th scope="col">Payment Date</th>
         </tr>
@@ -33,6 +35,8 @@
             <tr class="table">
                 <td>@item.InitialAmount</td>
                 <td>@item.AmountAfterInterest</td>
+                <td>@item.Rest</td>
+                <td>@item.PaymentDate.ToString("yyyy-MM-dd")</td>
                 <td>@item.NumberOfDays</td>
                 <td>@item.PaymentDate</td>
             </tr>
