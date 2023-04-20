@@ -49,6 +49,8 @@ namespace Debt_Calculation_And_Repayment_System.Data
 
             builder.Entity<PAYMENT>().Property(p => p.Sum).HasPrecision(10, 2);
             builder.Entity<PAYMENT>().Property(p => p.Paid).HasPrecision(10, 2);
+            builder.Entity<PAYMENT>().Property(p => p.PrincipalAmount).HasPrecision(10, 2);
+            builder.Entity<PAYMENT>().Property(p => p.InterestAmount).HasPrecision(10, 2);
 
             builder.Entity<REQUEST>().Property(r => r.ToBePaidFull).HasPrecision(10, 2);
             builder.Entity<REQUEST>().Property(r => r.ToBePaidInstallment).HasPrecision(10, 2);

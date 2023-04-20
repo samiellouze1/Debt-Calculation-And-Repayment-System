@@ -19,11 +19,12 @@
         <thead>
             <tr>
                 <th scope="col">Sum</th>
+                <th scope="col">Principal Amount</th>
+                <th scope="col">Interest Amount</th>
                 <th scope="col">Paid</th>
                 <th scope="col">Type</th>
                 <th scope="col">Payment Date</th>
                 <th scope="col">Registration Date</th>
-                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
@@ -31,11 +32,12 @@
         {
             <tr class="table">
                 <td>@item.Sum</td>
+                <td>@item.PrincipalAmount</td>
+                <td>@item.InterestAmount</td>
                 <td>@item.Paid</td>
                 <td>@item.Type</td>
-                <td>@item.PaymentDate</td>
+                <td>@item.PaymentDate.ToString("yyyy-MM-dd")</td>
                 <td>@item.RegDate.ToString("yyyy-MM-dd")</td>
-                <td><a asp-controller="DebtRegister" asp-action="DebtRegisterById" asp-route-id=@item.DebtRegister.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block" style="width:150px;height:45px;">Debt Register</a></td>
             </tr>
         }
     </tbody>

@@ -31,6 +31,13 @@
                                 <input asp-for="Total" type="number" step="any" value=@Model.Total readonly class="form-control bg-light border-0">
                                 <span asp-validation-for="Total" style="color:red"></span>
                             </div>
+                        </div>         
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Total In installments</label>
+                                <input type="number" step="any" value=@Model.ToBePaidInstallment readonly class="form-control bg-light border-0">
+                                <span asp-validation-for="Total" style="color:red"></span>
+                            </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
@@ -47,14 +54,14 @@
                             </div>
                         </div>
                         <div class="col-sm-6">
-                            <div class="form-group">
+                            <div class="form-group" style="display:flex;">
                                 <label>I accept the terms above</label>
                                 <input asp-for="Accept" type="checkbox" class="form-control bg-light border-0">
                             </div>
                         </div>
-                        <div class="col-sm-6" >
+                        <div class="col-sm-6">
                             <div class="form-group">
-                                <button class="btn btn-primary btn-block" type="submit" value="CreateReques" >Create Request</button>
+                                <button class="btn btn-primary btn-block" type="submit" value="CreateReques" disabled>Create Request</button>
                             </div>
                         </div>
                 </div>
@@ -62,3 +69,23 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    <script>
+        // Disable/enable button based on checkbox status
+        $(document).ready(function () {
+            $('input[type="checkbox"]').on('change', function () {
+                if ($(this).is(':checked')) {
+                    $('button[type="submit"]').prop('disabled', false);
+                } else {
+                    $('button[type="submit"]').prop('disabled', true);
+                }
+            });
+        });
+    </script>
+}
+
+
+
+
+
+

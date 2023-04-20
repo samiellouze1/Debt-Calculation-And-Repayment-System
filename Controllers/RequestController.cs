@@ -74,20 +74,45 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 {
                 if (ModelState.IsValid)
                 {
-                    var sum = 0m;
-                    var tbpi = debtregister.Total - vm.ToBePaidFull -debtregister.InterestAmount;
-                    var ia = tbpi/vm.NumOfMonths;
-                    var today = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,12,0,0);
-                    for (int i = 0; i < vm.NumOfMonths; i++)
+                    var today = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+                    var amounttopay = debtregister.Amount;
+                    var resttopayinstallment = vm.ToBePaidInstallment-debtregister.InterestAmount;
+                    var iatable = DivideDecimalIntoEqualParts(resttopayinstallment, vm.NumOfMonths);
+                    decimal interestamount = 0m;
+                    var whatstays = debtregister.Total-vm.ToBePaidFull;
+                    decimal tobepaideachmonth;
+                    if (vm.ToBePaidFull < debtregister.Amount)
                     {
-                        var rpi = tbpi - ia * i;
-                        var nod = (today.AddMonths(i) - debtregister.RegDate).Days;
-                        var amountafterinterest = ia + nod * rpi * debtregister.InterestRate / 365;
-                        sum += amountafterinterest;
+                        whatstays = 0;
+                        for (int i = 0; i < vm.NumOfMonths; i++)
+                        {
+                            int nod;
+                            if (i >= 1)
+                            {
+                                nod = (today.AddMonths(i) - today.AddMonths(i - 1)).Days;
+                            }
+                            else
+                            {
+                                nod = (today - debtregister.RegDate).Days;
+                            }
+                            interestamount +=  nod * resttopayinstallment * debtregister.InterestRate / 365;
+                            resttopayinstallment -= iatable[i];
+                        }
+                        tobepaideachmonth = decimal.Truncate((amounttopay/vm.NumOfMonths)*100)/100 + decimal.Truncate((interestamount+debtregister.InterestAmount) / vm.NumOfMonths);
                     }
-                    var tobepaideachmonth = decimal.Truncate((sum /vm.NumOfMonths)*100)/100 ;
-                    var newvm = new PreviewRequestVM() { Total=debtregister.Total,ToBePaidFull = decimal.Truncate(vm.ToBePaidFull*100)/100, NumOfMonths = vm.NumOfMonths, ToBePaidInstallment = decimal.Truncate((debtregister.Total - vm.ToBePaidFull)*100)/100, ToBePaidEachMonth = tobepaideachmonth };
-                    return View("CreateRequest", newvm); 
+                    else
+                    {
+                        tobepaideachmonth = decimal.Truncate(whatstays / vm.NumOfMonths);
+                    }
+                    var newvm = new PreviewRequestVM() 
+                    {
+                        Total = debtregister.Total,
+                        ToBePaidFull = vm.ToBePaidFull,
+                        NumOfMonths = vm.NumOfMonths,
+                        ToBePaidInstallment = tobepaideachmonth*vm.NumOfMonths,
+                        ToBePaidEachMonth = tobepaideachmonth
+                    };
+                    return View("CreateRequest", newvm);
                 }
                 else
                 {
@@ -147,6 +172,18 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 var vmm = new ErrorViewModel() { ErrorMessage = "You either tried to make a request when there's already one accepted or you typed the wrong data" };
                 return RedirectToAction("Error", "Home", vmm);
             }
+        }
+        public static decimal[] DivideDecimalIntoEqualParts(decimal x, int n)
+        {
+            decimal[] parts = new decimal[n];
+            decimal commonPart = Math.Floor(x / n * 100) / 100;
+            decimal remaining = x - commonPart * (n - 1);
+            for (int i = 0; i < n - 1; i++)
+            {
+                parts[i] = commonPart;
+            }
+            parts[n - 1] = remaining;
+            return parts;
         }
     }
 }

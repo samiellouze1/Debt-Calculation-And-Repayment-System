@@ -21,6 +21,10 @@ namespace Debt_Calculation_And_Repayment_System.Models
         public DateTime RegDate { get; set; }
         [Required]
         public DateTime PaymentDate { get; set; }
+        [Required]
+        public decimal PrincipalAmount { get; set; }
+        [Required]
+        public decimal InterestAmount { get; set; }
         public virtual DEBTREGISTER DebtRegister { get; set; }
     }
 }
