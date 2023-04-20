@@ -4,6 +4,7 @@ using Debt_Calculation_And_Repayment_System.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Debt_Calculation_And_Repayment_System.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230420175917_programid")]
+    partial class programid
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -184,21 +186,6 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     b.HasIndex("DebtRegisterId");
 
                     b.ToTable("PAYMENTs");
-                });
-
-            modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.PROGRAMTYPE", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PROGRAMTYPESs");
                 });
 
             modelBuilder.Entity("Debt_Calculation_And_Repayment_System.Models.REQUEST", b =>

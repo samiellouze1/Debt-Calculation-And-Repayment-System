@@ -73,6 +73,7 @@
                     {
                         @if (User.IsInRole("Admin"))
                         {
+                            <a asp-controller="ProgramType" asp-action="AllProgramTypes" class="nav-item nav-link active">ProgramTypes</a>
                             <a asp-controller="Student" asp-action="AllStudents" class="nav-item nav-link active">Students</a>
                             <a asp-controller="StaffMember" asp-action="AllStaffMembers" class="nav-item nav-link active">Staff Members</a>
                         }
@@ -92,6 +93,7 @@
                 {
                     @if(User.IsInRole("Admin"))
                     {
+                        <a asp-controller="ProgramType" asp-action="AddProgramType" class="btn btn-primary py-2 px-4 d-none d-lg-block" style="margin-right:10px;">Add Program Type</a>
                         <a asp-controller="Account" asp-action="AffectStudentToStaffMember" class="btn btn-primary py-2 px-4 d-none d-lg-block" style="margin-right:10px;">Affect Student To Staff Member</a>
                         <a asp-controller="Account" asp-action="RegisterAStaffMember" class="btn btn-primary py-2 px-4 d-none d-lg-block" style="margin-right:10px;">Register A Staff Member</a>
                     } 

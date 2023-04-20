@@ -6,7 +6,7 @@
 @section Title {
     Register a Student
 }
-<div class="container-fluid px-0 py-5" style="width:1200px;margin-left:10%;margin-right:10%;">
+<div class="container-fluid px-0 py-5" >
     <div class="row mx-0 justify-content-center pt-5">
         <div class="col-lg-6">
             <div class="section-title text-center position-relative mb-4">
@@ -21,45 +21,69 @@
                 <h1 class="text-center mb-4">TYPE IN THE CREDENTIALS FOR THE NEW STUDENT!</h1>
                 <form asp-action="RegisterAStudent">
                     <div class="form-row">
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <input asp-for="FirstName" type="text" class="form-control bg-light border-0" placeholder="First Name" style="padding: 30px 20px;">
-                                <span asp-validation-for="FirstName" style="color:red"></span>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <input asp-for="SurName" type="text" class="form-control bg-light border-0" placeholder="Last Name" style="padding: 30px 20px;">
-                                <span asp-validation-for="SurName" style="color:red"></span>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <input asp-for="Email" type="email" class="form-control bg-light border-0" placeholder="Email" style="padding: 30px 20px;">
-                                <span asp-validation-for="Email" style="color:red"></span>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <input asp-for="PhoneNumber" type="number" class="form-control bg-light border-0" placeholder="Phone Number" style="padding: 30px 20px;">
-                                <span asp-validation-for="PhoneNumber" style="color:red"></span>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <input asp-for="Address" type="text" class="form-control bg-light border-0" placeholder="Address" style="padding: 30px 20px;">
-                                <span asp-validation-for="Address" style="color:red"></span>
-                            </div>
-                        </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <input asp-for="InterestRate" type="text" class="form-control bg-light border-0" placeholder="Interest Rate" style="padding: 30px 20px;">
+                                    <label>Type in First Name</label>
+                                    <input asp-for="FirstName" type="text" class="form-control bg-light border-0" placeholder="First Name" >
+                                    <span asp-validation-for="FirstName" style="color:red"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Type in Last Name</label>
+                                    <input asp-for="SurName" type="text" class="form-control bg-light border-0" placeholder="Last Name" >
+                                    <span asp-validation-for="SurName" style="color:red"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Type in Email</label>
+                                    <input asp-for="Email" type="email" class="form-control bg-light border-0" placeholder="Email" >
+                                    <span asp-validation-for="Email" style="color:red"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label >Select a Program ID</label>
+                                    <select asp-for="ProgramID" class="form-control bg-light border-0">
+                                        @foreach (var item in Model.ProgramTypes)
+                                        {
+                                            <option value=@item.Type>@item.Type</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="ProgramID" style="color:red"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Type in Phone Number</label>
+                                    <input asp-for="PhoneNumber" type="number" class="form-control bg-light border-0" placeholder="Phone Number" >
+                                    <span asp-validation-for="PhoneNumber" style="color:red"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Type in Address</label>
+                                    <input asp-for="Address" type="text" class="form-control bg-light border-0" placeholder="Address" >
+                                    <span asp-validation-for="Address" style="color:red"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Type in Interest Rate</label>
+                                    <input asp-for="InterestRate" type="text" class="form-control bg-light border-0" placeholder="Interest Rate" >
                                     <span asp-validation-for="InterestRate" style="color:red"></span>
                                 </div>
                             </div>
-                    </div>
-                    <div class="col-sm-6" style="width:50%;margin: 0 auto;">
-                        <button class="btn btn-primary btn-block" type="submit" style="height: 60px;" value="RegisterAStudent">Register The Student </button>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Error Message</label>
+                                <div>@ViewData["Error"]</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6" style="width:50%;margin: 0 auto;">
+                            <button class="btn btn-primary btn-block" type="submit" value="RegisterAStudent">Register The Student </button>
+                        </div>
                     </div>
                 </form>
             </div>

@@ -1,0 +1,32 @@
+﻿@model List<PROGRAMTYPE>
+@{
+    Layout = "~/Views/Shared/_LayoutSecondary.cshtml";
+}
+@section Title {
+    Program Types
+}
+    @section Name1{
+        This is only visible for admins
+}
+    @section Name2{
+    Program Types
+}
+    <table class="table ">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Program Type Name</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="table">
+                <td>@item.Id</td>
+                <td>@item.Type</td>
+                <td><a asp-controller="ProgramType" asp-action="DeleteProgramType" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block" style="width:150px;height:45px;">Delete</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

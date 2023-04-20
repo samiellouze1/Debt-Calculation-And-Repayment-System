@@ -20,7 +20,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         private readonly ISTAFFMEMBERService _staffmemberService;
         private readonly ISTUDENTService _studentService;
         private readonly AppDbContext _context;
-        public AccountController(UserManager<USER> usermanager, SignInManager<USER> signinmanager, ISTAFFMEMBERService staffmemberService, ISTUDENTService studentService, IUSERService userService, AppDbContext context)
+        private readonly IPROGRAMTYPEService _programTypeService;
+        public AccountController(UserManager<USER> usermanager, SignInManager<USER> signinmanager, ISTAFFMEMBERService staffmemberService, ISTUDENTService studentService, IUSERService userService, AppDbContext context, IPROGRAMTYPEService programtypeService)
         {
             _userManager = usermanager;
             _signInManager = signinmanager;
@@ -28,6 +29,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             _studentService = studentService;
             _userService = userService;
             _context = context;
+            _programTypeService = programtypeService;
         }
         #region affectation
         [Authorize(Roles="Admin")]
@@ -97,19 +99,31 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         #endregion
 
         #region specialregistration
-        public IActionResult RegisterAStudent()
+        public async Task<IActionResult> RegisterAStudent()
         {
-            var response = new RegisterAStudentVM();
-            return View(response);
+            var programtypes =await  _programTypeService.GetAllAsync();
+            var vm = new RegisterAStudentVM() { ProgramTypes=programtypes.ToList()};
+            return View(vm);
         }
         [HttpPost]
         public async Task<IActionResult> RegisterAStudent(RegisterAStudentVM registerVM)
         {
+
+            var authorize = registerVM.InterestRate >= 0 && registerVM.InterestRate <= 1;
             if (!ModelState.IsValid)
             {
+                var programtypes = await _programTypeService.GetAllAsync();
+                registerVM.ProgramTypes = programtypes.ToList();
+                ViewData["Error"] = "Wrong Data";
                 return View(registerVM);
             }
-
+            if (!authorize)
+            {
+                var programtypes = await _programTypeService.GetAllAsync();
+                registerVM.ProgramTypes = programtypes.ToList();
+                ViewData["Error"] = "Wrong data, interest must be between 0 and 1";
+                return View(registerVM);
+            }
             var user = await _userManager.FindByEmailAsync(registerVM.Email);
             if (user != null)
             {
@@ -135,7 +149,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 PhoneNumber = registerVM.PhoneNumber,
                 StaffMember = staffmember,
                 DebtRegister = new DEBTREGISTER() { InterestRate = registerVM.InterestRate },
-                StaffMemberAssigned = staffmemberstatus
+                StaffMemberAssigned = staffmemberstatus,
+                ProgramID=registerVM.ProgramID
             };
             string password = GenerateRandomPassword(8);
             var newUserResponse = await _userManager.CreateAsync(newStudent, password);
@@ -226,7 +241,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 client.Send(message);
             }
 
-            var successMessage = "a reset password link has been sent to you ";
+            var successMessage = "a reset password link has been sent ";
             return RedirectToAction("IndexParam", "Home", new { successMessage });
         }
         [HttpGet]
@@ -358,6 +373,46 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
 
             return true;
+        }
+        #endregion
+
+        #region SendNormalMail
+        public async Task<IActionResult> SendMail()
+        {
+            var Users = await _userService.GetAllAsync();
+            var vm = new SendEmailViewModel() { Users=Users.ToList()};
+            return View("SendEmail", vm);
+        }
+        [HttpPost]
+        public async Task<IActionResult> SendMail(SendEmailViewModel vm)
+        {
+            if (ModelState.IsValid)
+            {
+                // Send the password reset email to the user
+                var message = new MailMessage();
+                message.From = new MailAddress("debtcalculation1@gmail.com", "Debt Calculation and repayment system");
+                message.To.Add(new MailAddress(vm.Email));
+                message.Subject = vm.Subject;
+                message.Body = vm.Body;
+                message.IsBodyHtml = true;
+
+                using (var client = new SmtpClient())
+                {
+                    client.Host = "smtp.gmail.com";
+                    client.Port = 587;
+                    client.EnableSsl = true;
+                    client.Credentials = new NetworkCredential("debtcalculation1@gmail.com", "zdsjnyteligoddnd");
+                    client.Send(message);
+                }
+
+                var successMessage = "You have sent the e-mail";
+                return RedirectToAction("IndexParam", "Home", new { successMessage });
+            }
+            else
+            {
+                var errorMessage = "There has been an error";
+                return RedirectToAction("Error", "Home", new { errorMessage });
+            }
         }
         #endregion
     }

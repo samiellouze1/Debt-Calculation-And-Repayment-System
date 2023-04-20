@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Debt_Calculation_And_Repayment_System.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Debt_Calculation_And_Repayment_System.Data.ViewModels
 {
@@ -16,5 +17,8 @@ namespace Debt_Calculation_And_Repayment_System.Data.ViewModels
         public string PhoneNumber { get; set; }
         [Required(ErrorMessage ="Interest Rate is required")]
         public decimal InterestRate { get; set; }
+        [Required(ErrorMessage ="program id is required")]
+        public string ProgramID { get; set; }
+        public List<PROGRAMTYPE> ProgramTypes { get; set; }= new List<PROGRAMTYPE> ();
     }
 }

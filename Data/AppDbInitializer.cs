@@ -1,6 +1,7 @@
 ﻿using Debt_Calculation_And_Repayment_System.Data.Static;
 using Debt_Calculation_And_Repayment_System.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Build.Execution;
 
 namespace Debt_Calculation_And_Repayment_System.Data
 {
@@ -11,6 +12,16 @@ namespace Debt_Calculation_And_Repayment_System.Data
             using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetService<AppDbContext>();
+                if (!context.PROGRAMTYPESs.Any())
+                {
+                    context.PROGRAMTYPESs.AddRange(new List<PROGRAMTYPE>()
+                    {
+                        new PROGRAMTYPE(){Type="Type1"},
+                        new PROGRAMTYPE(){Type="Type2"}
+
+                    });
+                    context.SaveChanges();
+                }
                 context.Database.EnsureCreated();
             }
         }
@@ -115,7 +126,8 @@ namespace Debt_Calculation_And_Repayment_System.Data
                             },
                         },
                         StaffMember=newUserStaff,
-                        StaffMemberAssigned = true
+                        StaffMemberAssigned = true,
+                        ProgramID="Unspecified"
                     };
                     await userManager.CreateAsync(newUserStudent, "Student123@");
                     await userManager.AddToRoleAsync(newUserStudent, UserRoles.Student);
