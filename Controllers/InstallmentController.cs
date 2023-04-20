@@ -43,7 +43,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             if (authorize)
             {
-                var installments = debtregister.Installments.OrderBy(i=>i.NumberOfDays);
+                var installments = debtregister.Installments.OrderBy(i=>i.NumberOfDays).ToList();
                 return View("Installments", installments);
             }
             else

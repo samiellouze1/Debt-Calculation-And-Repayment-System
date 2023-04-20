@@ -19,7 +19,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         public async Task<IActionResult> AllStudents()
         {
             var students = await _studentService.GetAllAsync(s => s.StaffMember, s => s.DebtRegister);
-            return View("Students", students.OrderByDescending(s=>s.RegDate));
+            return View("Students", students.OrderByDescending(s=>s.RegDate).ToList());
         }
         [Authorize(Roles="Student")]
         public async Task<IActionResult> MyProfile ()
@@ -60,7 +60,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var id = User.FindFirstValue("Id");
             var staffmember = await _staffmemberService.GetByIdAsync(id, sm => sm.Students);
             var students = staffmember.Students;
-            return View("Students",students.OrderByDescending(s=>s.RegDate));
+            return View("Students",students.OrderByDescending(s=>s.RegDate).ToList());
         }
         [Authorize(Roles ="Admin, StaffMember")]
         public async Task<IActionResult> StudentsByStaffMember(string id)
@@ -74,7 +74,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             {
                 var staffmember = await _staffmemberService.GetByIdAsync(id, sm => sm.Students);
                 var students = staffmember.Students;
-                return View("Students", students.OrderByDescending(s => s.RegDate));
+                return View("Students", students.OrderByDescending(s => s.RegDate).ToList());
             }
             else
             {

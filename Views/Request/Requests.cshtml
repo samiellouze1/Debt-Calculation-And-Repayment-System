@@ -38,9 +38,8 @@
             <td><a asp-controller="DebtRegister" asp-action="DebtRegisterById" asp-route-id=@item.DebtRegister.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block" style="width:150px;height:45px;">Debt Register</a></td>
                 @if (User.IsInRole("Admin")|| User.IsInRole("StaffMember") && item.Status=="Not Defined")
                 {
-                    <td><a asp-controller="DebtRegister" asp-action="AcceptRequest" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block" style="width:160px;height:45px;">Accept Request</a></td>
-                    <td><a asp-controller="DebtRegister" asp-action="DeclineRequest" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block" style="width:160px;height:45px;">Accept Request</a></td>
-
+                    <td><a asp-controller="DebtRegister" asp-action="AcceptRequest" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block" style="width:160px;height:45px;">Accept</a></td>
+                    <td><a asp-controller="DebtRegister" asp-action="DeclineRequest" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block" style="width:160px;height:45px;">Decline</a></td>
                 }
         </tr>
     }

@@ -42,7 +42,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             if (authorize)
             {
-                var payments = debtregister.Payments.OrderBy(p=>p.Type=="Full").ThenBy(p=>p.PaymentDate);
+                var payments = debtregister.Payments.OrderBy(p=>p.Type=="Full").ThenBy(p=>p.PaymentDate).ToList();
                 return View("Payments", payments);
             }
             else

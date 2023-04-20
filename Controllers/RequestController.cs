@@ -40,7 +40,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             if (authorize)
             {
                 var requests = debtregister.Requests;
-                return View("Requests", requests.OrderBy(r=>r.RegDate));
+                return View("Requests", requests.OrderBy(r=>r.RegDate).ToList());
             }
             else
             {
