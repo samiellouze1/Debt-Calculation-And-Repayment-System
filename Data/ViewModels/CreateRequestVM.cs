@@ -5,13 +5,13 @@ namespace Debt_Calculation_And_Repayment_System.Data.ViewModels
 {
     public class CreateRequestVM
     {
-        [Required]
+        [Required(ErrorMessage ="ToBePaidFull is required")]
         public decimal ToBePaidFull { get; set; }
-        [Required]
+        [Required(ErrorMessage ="ToBePaidInstallment is requried")]
         public decimal ToBePaidInstallment { get; set; }
-        [Required]
+        [Required(ErrorMessage ="Total")]
         public decimal Total { get; set; }
-        [Required]
+        [Required(ErrorMessage ="Number of months")]
         public int NumOfMonths { get; set;}
 
     }

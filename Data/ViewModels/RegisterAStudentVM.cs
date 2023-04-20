@@ -4,17 +4,17 @@ namespace Debt_Calculation_And_Repayment_System.Data.ViewModels
 {
     public class RegisterAStudentVM
     {
-        [Required]
+        [Required(ErrorMessage = "First Name is required")]
         public string FirstName { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Last Name is required")]
         public string SurName { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Email is required")]
         public string Email { get; set; }
-        [Required]
-        public string PhoneNumber { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Address")]
         public string Address { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Phone Number is required")]
+        public string PhoneNumber { get; set; }
+        [Required(ErrorMessage ="Interest Rate is required")]
         public decimal InterestRate { get; set; }
     }
 }
