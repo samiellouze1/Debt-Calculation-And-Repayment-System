@@ -23,5 +23,10 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var vm = new ErrorViewModel() { ErrorMessage = errorMessage };
             return View(vm);
         }
+        public IActionResult IndexParam(string successMessage)
+        {
+            var vm = new SuccessVM() { successMessage = successMessage };
+            return View(vm);
+        }
     }
 }

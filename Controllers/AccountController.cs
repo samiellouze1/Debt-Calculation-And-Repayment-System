@@ -33,7 +33,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         [Authorize(Roles="Admin")]
         public async Task<IActionResult> AffectStudentToStaffMember()
         {
-            var students = await _studentService.GetAllAsync();
+            var allstudents = await _studentService.GetAllAsync(s=>s.StaffMember);
+            var students = allstudents.Where(s => s.StaffMember == new STAFFMEMBER());
             var staffmembers = await _staffmemberService.GetAllAsync();
             var vm = new AffectVM() { Students=students.ToList(),StaffMembers=staffmembers.ToList()};
             return View(vm);
@@ -48,12 +49,12 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 var student = await _studentService.GetByIdAsync(vm.StudentId, s => s.StaffMember, s => s.DebtRegister);
                 oldstaffmember.Students.Add(student);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index", "Home");
+                var successMessage = "You successfully affected the student"+student.Email+"to the staff member"+oldstaffmember.Email;
+                return RedirectToAction("IndexParam", "Home", new { successMessage });
             }
             catch (Exception ex)
             {
-                TempData["Error"] = ex.Message;
-                return View(vm);
+                return RedirectToAction("Error", "Home", new { errorMessage = "You tried to enter a page to which you are not allowed or typed in wrong data" });
             }
         }
         #endregion
@@ -96,7 +97,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         #endregion
 
         #region specialregistration
-
         public IActionResult RegisterAStudent()
         {
             var response = new RegisterAStudentVM();
@@ -117,10 +117,12 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 return View(registerVM);
             }
             var staffmember = new STAFFMEMBER();
+            var staffmemberstatus = false;
             if (User.IsInRole("StaffMember"))
             {
                 var staffmemberId = User.FindFirstValue("Id");
                 staffmember = await _staffmemberService.GetByIdAsync(staffmemberId);
+                staffmemberstatus = true;
             }
             var newStudent = new STUDENT()
             {
@@ -128,11 +130,12 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 Email = registerVM.Email,
                 FirstName = registerVM.FirstName,
                 SurName = registerVM.SurName,
-                RegDate = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                RegDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
                 Address = registerVM.Address,
                 PhoneNumber = registerVM.PhoneNumber,
-                StaffMember=staffmember,
-                DebtRegister=new DEBTREGISTER() { InterestRate = registerVM.InterestRate }
+                StaffMember = staffmember,
+                DebtRegister = new DEBTREGISTER() { InterestRate = registerVM.InterestRate },
+                StaffMemberAssigned = staffmemberstatus
             };
             string password = GenerateRandomPassword(8);
             var newUserResponse = await _userManager.CreateAsync(newStudent, password);
@@ -141,7 +144,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 var result = await _userManager.AddToRoleAsync(newStudent, UserRoles.Student);
                 if (result.Succeeded)
                 {
-                    RedirectToAction("Index", "Home");
+                    var successMessage = "You successfully added a student ";
+                    return RedirectToAction("IndexParam", "Home", new { successMessage });
                 }
             }
             return RedirectToAction("Index", "Home");
@@ -184,7 +188,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 var result = await _userManager.AddToRoleAsync(newStaffMember, UserRoles.StaffMember);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "Home");
+                    var successMessage = "You successfully added a new staff member";
+                    return RedirectToAction("IndexParam", "Home", new { successMessage });
                 }
             }
             return RedirectToAction("Index", "Home");
@@ -221,9 +226,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 client.Send(message);
             }
 
-            // Show a success message to the user
-            TempData["SuccessMessage"] = "A password reset email has been sent to your email address";
-            return RedirectToAction("Index", "Home");
+            var successMessage = "a reset password link has been sent to you ";
+            return RedirectToAction("IndexParam", "Home", new { successMessage });
         }
         [HttpGet]
         public IActionResult ResetPassword(string email, string code)
@@ -231,8 +235,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             // Verify that the email and code are valid
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(code))
             {
-                TempData["SuccessMessage"] = "Your Token Expired";
-                return RedirectToAction("Index", "Home");
+                var errorMessage = "Your token expired ";
+                return RedirectToAction("Eroor", "Home", new { errorMessage });
             }
 
             // Create a view model for the password reset form
@@ -264,7 +268,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
             if (result.Succeeded)
             {
-                return RedirectToAction("Index", "Home");
+                var successMessage = "Your password has been reset ";
+                return RedirectToAction("IndexParam", "Home", new { successMessage });
             }
 
             foreach (var error in result.Errors)
@@ -293,13 +298,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             // Generate the password reset link
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
             var callbackUrl = Url.Action("ResetPassword", "Account", new { email = user.Email, code = code }, protocol: Request.Scheme);
-
-            // Send the password reset email to the user
-            // (code for sending email omitted)
-
-            // Show a success message to the user
-            TempData["SuccessMessage"] = "A password reset email has been sent to your email address";
-            return RedirectToAction("Index", "Home");
+            var successMessage = "a password reset has been sent to your mail ";
+            return RedirectToAction("IndexParam", "Home", new { successMessage });
         }
         public static string GenerateRandomPassword(int length)
         {

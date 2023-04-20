@@ -114,7 +114,8 @@ namespace Debt_Calculation_And_Repayment_System.Data
                                 }
                             },
                         },
-                        StaffMember=newUserStaff
+                        StaffMember=newUserStaff,
+                        StaffMemberAssigned = true
                     };
                     await userManager.CreateAsync(newUserStudent, "Student123@");
                     await userManager.AddToRoleAsync(newUserStudent, UserRoles.Student);

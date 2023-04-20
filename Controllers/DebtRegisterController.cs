@@ -92,7 +92,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 await UpdateDebtRegisterAfterInstallment(id);
                 await GeneratePayments(id);
                 await UpdateDebtRegisterAfterGenrationofPayments(id);
-                return RedirectToAction("Index", "Home");
+                var successMessage = "You successfully accepted a request ";
+                return RedirectToAction("IndexParam", "Home", new { successMessage });
             }
             else
             {

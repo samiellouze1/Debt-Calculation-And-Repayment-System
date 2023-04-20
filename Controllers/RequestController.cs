@@ -150,7 +150,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                             DebtRegister = debtregister,
                         };
                         await _requestService.AddAsync(newrequest);
-                        return RedirectToAction("Index", "Home");
+                        var successMessage = "You successfully added a new request ";
+                        return RedirectToAction("IndexParam", "Home", new { successMessage });
                     }
                     else if (!vm.Accept)
                     {

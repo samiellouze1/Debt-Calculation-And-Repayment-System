@@ -80,7 +80,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 EndDate=debtVM.EndDate,
             };
             await _debtService.AddAsync(newdebt);
-            return RedirectToAction("Index", "Home");
+            var successMessage = "You successfully created new debt" ;
+            return RedirectToAction("IndexParam", "Home", new { successMessage });
         }
         #endregion
 
