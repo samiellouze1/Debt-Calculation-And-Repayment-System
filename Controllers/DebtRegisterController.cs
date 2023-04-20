@@ -156,6 +156,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var request = await _requestService.GetByIdAsync(id,r=>r.DebtRegister);
             var debtregister = request.DebtRegister;
             var today = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day);
+            //var today = new DateTime(2023, 1, 16, 12, 0, 0);
             var resttopayinstallment = debtregister.TotalInstallment-debtregister.InterestAmount;
             if (resttopayinstallment > 0)
             {
@@ -211,27 +212,25 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var request = await _requestService.GetByIdAsync(id, r => r.DebtRegister);
             var debtregister = await _debtregisterService.GetByIdAsync(request.DebtRegister.Id, dr => dr.Requests, dr => dr.Payments, dr => dr.Installments, dr => dr.Student, dr => dr.Debts);
             var resttopayinstallment = debtregister.TotalInstallment - debtregister.InterestAmount;
-            var tbpi = debtregister.ToBePaidInstallment - debtregister.InterestAmount;
+            var tbpi = debtregister.ToBePaidInstallment - debtregister.Amount;
             var i = 0;
             if (resttopayinstallment>0)
             {
-                var parts = DivideDecimalIntoEqualParts(tbpi, request.NumOfMonths);
-                var addons = decimal.Truncate(debtregister.InterestAmount / request.NumOfMonths);
-                var iatable = DivideDecimalIntoEqualParts(debtregister.Amount, request.NumOfMonths); // for principal and interestamount
-                foreach (var p in parts)
+                var interest = decimal.Truncate(tbpi/ request.NumOfMonths);
+                var principal = decimal.Truncate ((debtregister.Amount / request.NumOfMonths)*100)/100;
+                for (int j=0;j<debtregister.NumOfMonths;j++)
                 {
                     var payment = new PAYMENT() 
                     { 
                         Type = "Installment",
                         DebtRegister = debtregister,
-                        Sum = iatable[i] + decimal.Truncate(p + addons - iatable[i]),
+                        Sum = principal+interest,
                         Paid = false,
                         PaymentDate = new DateTime(DateTime.Now.AddMonths(i).Year, DateTime.Now.AddMonths(i).Month, DateTime.Now.AddMonths(i).Day),
                         RegDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
-                        PrincipalAmount = iatable[i],
-                        InterestAmount = decimal.Truncate(p + addons - iatable[i])
+                        PrincipalAmount = principal,
+                        InterestAmount = interest,
                     };
-                    i += 1;
                     await _paymentService.AddAsync(payment);
                 }
             }
