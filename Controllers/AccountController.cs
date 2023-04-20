@@ -75,11 +75,9 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 var passwordCheck = await _userManager.CheckPasswordAsync(user, loginvm.Password);
                 if (passwordCheck)
                 {
-                    Console.WriteLine("c bon");
                     var result = await _signInManager.PasswordSignInAsync(user, loginvm.Password, false, false);
                     if (result.Succeeded)
                     {
-                        Console.WriteLine("c bon");
                         return RedirectToAction("Index", "Home");
                     }
                 }
@@ -197,7 +195,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             {
                 // Show an error message to the user
                 TempData["ErrorMessage"] = "Invalid email address";
-                Console.WriteLine("We couldn't find your account");
                 return RedirectToAction("ForgotPassword", "Account");
             }
 
@@ -211,7 +208,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             message.To.Add(new MailAddress(user.Email, user.UserName));
             message.Subject = "Reset Your Password";
             message.Body = $"Please reset your password by clicking <a href=\"{callbackUrl}\">here</a>.";
-            Console.WriteLine(message.Body);
             message.IsBodyHtml = true;
 
             using (var client = new SmtpClient())
@@ -225,7 +221,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
 
             // Show a success message to the user
             TempData["SuccessMessage"] = "A password reset email has been sent to your email address";
-            Console.WriteLine("A password reset email has been sent to your email address");
             return RedirectToAction("Index", "Home");
         }
         [HttpGet]

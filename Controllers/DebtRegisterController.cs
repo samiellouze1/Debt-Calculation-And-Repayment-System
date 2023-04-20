@@ -106,11 +106,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         [HttpPost]
         public async Task UpdateDebtRegisterDebtsChanged(string id)
         {
-            Console.WriteLine("Hello update");
-            Console.WriteLine("Hello update");
-            Console.WriteLine("Hello update");
-            Console.WriteLine("Hello update");
-            Console.WriteLine("Hello update");
             var dr = await _debtregisterService.GetByIdAsync(id,dr=>dr.Debts);
             var amount = 0m;
             var interestamount = 0m;
@@ -134,11 +129,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         [HttpPost]
         public async Task UpdateDebtRegisterRequestActivated(string id)
         {
-            Console.WriteLine("Hello update");
-            Console.WriteLine("Hello update");
-            Console.WriteLine("Hello update");
-            Console.WriteLine("Hello update");
-            Console.WriteLine("Hello update");
             var request = await _requestService.GetByIdAsync(id,r=>r.DebtRegister);
             var dr = request.DebtRegister;
             var tf = request.ToBePaidFull;
@@ -161,28 +151,29 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             if (resttopayinstallment > 0)
             {
                 var iatable = DivideDecimalIntoEqualParts(resttopayinstallment, request.NumOfMonths);
-                for (int i = 0; i < request.NumOfMonths; i++)
+                for (int i = 1; i <= request.NumOfMonths; i++)
                 {
                     int nod;
-                    if (i >= 1)
+                    if (i >= 2)
                     {
                         nod = (today.AddMonths(i) - today.AddMonths(i - 1)).Days;
                     }
                     else
                     {
-                        nod = (today - debtregister.RegDate).Days;
+                        nod = (today.AddMonths(i) - debtregister.RegDate).Days;
+                        //nod = 0;
                     }
-                    var amountafterinterest = iatable[i] + nod * resttopayinstallment * debtregister.InterestRate / 365;
+                    var amountafterinterest = iatable[i-1] + nod * resttopayinstallment * debtregister.InterestRate / 365;
                     var installment = new INSTALLMENT()
                     {
-                        InitialAmount = iatable[i],
+                        InitialAmount = iatable[i-1],
                         AmountAfterInterest = amountafterinterest,
                         PaymentDate = today.AddMonths(i),
                         NumberOfDays = nod,
                         DebtRegister = debtregister,
                         Rest = resttopayinstallment
                     };
-                    resttopayinstallment -= iatable[i];
+                    resttopayinstallment -= iatable[i - 1];
                     await _installmentService.AddAsync(installment);
                 }
             }
@@ -210,7 +201,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         public async Task GeneratePayments(string id)
         {
             var request = await _requestService.GetByIdAsync(id, r => r.DebtRegister);
-            var debtregister = await _debtregisterService.GetByIdAsync(request.DebtRegister.Id, dr => dr.Requests, dr => dr.Payments, dr => dr.Installments, dr => dr.Student, dr => dr.Debts);
+            var debtregister = await _debtregisterService.GetByIdAsync(request.DebtRegister.Id);
             var resttopayinstallment = debtregister.TotalInstallment - debtregister.InterestAmount;
             var tbpi = debtregister.ToBePaidInstallment - debtregister.Amount;
             var i = 0;
@@ -218,7 +209,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             {
                 var interest = decimal.Truncate(tbpi/ request.NumOfMonths);
                 var principal = decimal.Truncate ((debtregister.Amount / request.NumOfMonths)*100)/100;
-                for (int j=0;j<debtregister.NumOfMonths;j++)
+                for (int j=1;j<=debtregister.NumOfMonths;j++)
                 {
                     var payment = new PAYMENT() 
                     { 
@@ -236,7 +227,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             else
             {
-                for (int j=0;j<debtregister.NumOfMonths;j++)
+                for (int j=1;j<=debtregister.NumOfMonths;j++)
                 {
                     var addons = decimal.Truncate((debtregister.Total-debtregister.TotalCash) / request.NumOfMonths);
                     var payment = new PAYMENT() {

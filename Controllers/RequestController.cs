@@ -84,19 +84,19 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                     if (vm.ToBePaidFull < debtregister.Amount)
                     {
                         whatstays = 0;
-                        for (int i = 0; i < vm.NumOfMonths; i++)
+                        for (int i = 1; i <= vm.NumOfMonths; i++)
                         {
                             int nod;
-                            if (i >= 1)
+                            if (i >= 2)
                             {
                                 nod = (today.AddMonths(i) - today.AddMonths(i - 1)).Days;
                             }
                             else
                             {
-                                nod = (today - debtregister.RegDate).Days;
+                                nod = (today.AddMonths(i) - debtregister.RegDate).Days;
                             }
                             interestamount +=  nod * resttopayinstallment * debtregister.InterestRate / 365;
-                            resttopayinstallment -= iatable[i];
+                            resttopayinstallment -= iatable[i - 1];
                         }
                         tobepaideachmonth = decimal.Truncate((amounttopay/vm.NumOfMonths)*100)/100 + decimal.Truncate((interestamount+debtregister.InterestAmount) / vm.NumOfMonths);
                     }
