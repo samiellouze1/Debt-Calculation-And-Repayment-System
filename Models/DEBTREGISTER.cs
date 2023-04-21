@@ -29,6 +29,7 @@ namespace Debt_Calculation_And_Repayment_System.Models
         public DateTime RegDate { get; set; }
         public DateTime ReqDate { get; set; }
         public int NumOfMonths { get; set; }
+        public string StudentId { get; set; }
         public virtual STUDENT Student { get; set; }
         public virtual List<DEBT> Debts { get; set; } = new List<DEBT>();
         public virtual List<PAYMENT> Payments { get; set; } = new List<PAYMENT>();

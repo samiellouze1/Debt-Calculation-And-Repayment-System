@@ -30,6 +30,10 @@
             {
                 <th scope="col">Password Reset</th>
             }
+            @if (User.IsInRole(UserRoles.Admin))
+            {
+                <th scope="col"></th>
+            }
             </tr>
         </thead>
         <tbody>
@@ -50,6 +54,10 @@
                 @if (User.IsInRole(UserRoles.Admin) || User.IsInRole(UserRoles.StaffMember))
                 {
                     <td><a asp-controller="Account" asp-action="SendPasswordResetEmail" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block">Send Reset Password Email</a></td>
+                }
+                @if (User.IsInRole(UserRoles.Admin))
+                {
+                    <td><a asp-controller="Student" asp-action="DeleteStudent" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block">Delete Student</a></td>
                 }
             </tr>
         }

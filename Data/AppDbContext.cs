@@ -25,8 +25,11 @@ namespace Debt_Calculation_And_Repayment_System.Data
         {
             #region onetoone
             builder.Entity<STUDENT>().HasOne(s => s.StaffMember).WithMany(s => s.Students).OnDelete(DeleteBehavior.ClientSetNull);
-            builder.Entity<STUDENT>().HasOne(s=>s.DebtRegister).WithOne(dr=>dr.Student).HasForeignKey<DEBTREGISTER>(dr => dr.Id).OnDelete(DeleteBehavior.ClientSetNull);
-            builder.Entity<REQUEST>().HasOne(r => r.DebtRegister).WithMany(r => r.Requests).OnDelete(DeleteBehavior.ClientSetNull);
+            builder.Entity<DEBTREGISTER>().HasOne(dr => dr.Student).WithOne(s => s.DebtRegister).HasForeignKey<DEBTREGISTER>(dr => dr.StudentId).OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<REQUEST>().HasOne(r => r.DebtRegister).WithMany(r => r.Requests).OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<DEBT>().HasOne(r => r.DebtRegister).WithMany(r => r.Debts).OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<INSTALLMENT>().HasOne(r => r.DebtRegister).WithMany(r => r.Installments).OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<PAYMENT>().HasOne(r => r.DebtRegister).WithMany(r => r.Payments).OnDelete(DeleteBehavior.Cascade);
             #endregion
 
 
@@ -57,9 +60,6 @@ namespace Debt_Calculation_And_Repayment_System.Data
             builder.Entity<REQUEST>().Property(r => r.ToBePaidInstallment).HasPrecision(10, 2);
 
             #endregion
-
-
-
             base.OnModelCreating(builder);
         }
 

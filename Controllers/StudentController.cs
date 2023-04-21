@@ -81,6 +81,42 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 return RedirectToAction("Error", "Home", new { errorMessage = "You tried to enter a page to which you are not allowed" });
             }
         }
-
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> DeleteStudent(string id)
+        {
+            var student = await _studentService.GetByIdAsync(id);
+            if (student != null)
+            {
+                var vm = new DeleteStudentVM() { Id = id };
+                return View(vm);
+            }
+            else
+            {
+                var errorMessage = "You tried to delete a student that doesn't exist";
+                return RedirectToAction("Error", "Home", new { errorMessage });
+            }
+        }
+        [Authorize(Roles ="Admin")]
+        [HttpPost]
+        public async Task<IActionResult> DeleteStudent (DeleteStudentVM vm)
+        {
+            if (ModelState.IsValid)
+            {
+                if (vm.Delete)
+                {
+                    await _studentService.DeleteAsync(vm.Id);
+                    var successMessage = "you successfully deleted a student";
+                    return RedirectToAction("IndexParam", "Home", new { successMessage });
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            else
+            {
+                return View(vm);
+            }
+        }
     }
 }

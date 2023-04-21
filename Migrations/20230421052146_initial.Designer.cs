@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Debt_Calculation_And_Repayment_System.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230420191701_programtype")]
-    partial class programtype
+    [Migration("20230421052146_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -81,6 +81,10 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     b.Property<DateTime>("ReqDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("StudentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<decimal>("ToBePaid")
                         .HasPrecision(10, 2)
                         .HasColumnType("decimal(10,2)");
@@ -106,6 +110,9 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         .HasColumnType("decimal(10,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("StudentId")
+                        .IsUnique();
 
                     b.ToTable("DEBTREGISTERs");
                 });
@@ -499,7 +506,8 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                 {
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.STUDENT", "Student")
                         .WithOne("DebtRegister")
-                        .HasForeignKey("Debt_Calculation_And_Repayment_System.Models.DEBTREGISTER", "Id")
+                        .HasForeignKey("Debt_Calculation_And_Repayment_System.Models.DEBTREGISTER", "StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Student");
@@ -532,6 +540,7 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     b.HasOne("Debt_Calculation_And_Repayment_System.Models.DEBTREGISTER", "DebtRegister")
                         .WithMany("Requests")
                         .HasForeignKey("DebtRegisterId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("DebtRegister");

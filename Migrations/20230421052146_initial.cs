@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Debt_Calculation_And_Repayment_System.Migrations
 {
-    public partial class fihahaja : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -32,9 +32,10 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     SurName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StaffMemberId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    StaffMemberAssigned = table.Column<bool>(type: "bit", nullable: true),
+                    ProgramID = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -43,6 +44,7 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
@@ -57,6 +59,18 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         column: x => x.StaffMemberId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PROGRAMTYPESs",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PROGRAMTYPESs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -181,16 +195,18 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     InterestRate = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                     RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ReqDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    NumOfMonths = table.Column<int>(type: "int", nullable: false)
+                    NumOfMonths = table.Column<int>(type: "int", nullable: false),
+                    StudentId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DEBTREGISTERs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DEBTREGISTERs_AspNetUsers_Id",
-                        column: x => x.Id,
+                        name: "FK_DEBTREGISTERs_AspNetUsers_StudentId",
+                        column: x => x.StudentId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -224,6 +240,7 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     AmountAfterInterest = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                     PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     NumberOfDays = table.Column<int>(type: "int", nullable: false),
+                    Rest = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                     DebtRegisterId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
@@ -247,6 +264,8 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PrincipalAmount = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
+                    InterestAmount = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                     DebtRegisterId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
@@ -279,7 +298,8 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                         name: "FK_REQUESTs_DEBTREGISTERs_DebtRegisterId",
                         column: x => x.DebtRegisterId,
                         principalTable: "DEBTREGISTERs",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -327,6 +347,12 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DEBTREGISTERs_StudentId",
+                table: "DEBTREGISTERs",
+                column: "StudentId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DEBTs_DebtRegisterId",
                 table: "DEBTs",
                 column: "DebtRegisterId");
@@ -372,6 +398,9 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
 
             migrationBuilder.DropTable(
                 name: "PAYMENTs");
+
+            migrationBuilder.DropTable(
+                name: "PROGRAMTYPESs");
 
             migrationBuilder.DropTable(
                 name: "REQUESTs");

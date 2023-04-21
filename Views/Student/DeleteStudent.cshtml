@@ -1,10 +1,10 @@
 ﻿@using Debt_Calculation_And_Repayment_System.Data.ViewModels
-@model DeleteDebtVM
+@model DeleteStudentVM
 @{
     ViewData["Title"] = "Create Debt";
 }
 @section Title {
-    Create Debt
+    Delete Student
 }
     <div class="container-fluid px-0 py-5">
         <div class="row mx-0 justify-content-center pt-5">
@@ -19,7 +19,7 @@
             <div class="col-lg-12 py-5">
                 <div class="bg-white p-5 my-5">
                     <h1 class="text-center mb-4">Confirm the delete</h1>
-                    <form asp-action="DeleteDebt">
+                    <form asp-action="DeleteStudent">
                         <div style="display:flex;">
                             <div class="col-sm-6">
                                 <div class="form-group">
@@ -31,13 +31,13 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label>Check this box</label>
-                                    <input id="deleteCheckbox" asp-for="Delete" type="checkbox" class="form-control bg-light border-0" placeholder="Confirm">
+                                    <input asp-for="Delete" id="chkDelete" type="checkbox" class="form-control bg-light border-0" placeholder="Confirm">
                                     <span asp-validation-for="Delete" style="color:red"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="col-sm-6" style="width:50%;margin: 0 auto;">
-                            <button id="deleteBtn" class="btn btn-primary btn-block" type="submit" value="DeleteDebt">Delete Debt</button>
+                            <button class="btn btn-primary btn-block" type="submit" value="DeleteStudent" id="btnDelete">Delete Debt</button>
                         </div>
                     </form>
                 </div>
@@ -47,18 +47,12 @@
 
     @section Scripts {
     <script>
-        // Get checkbox and button elements
-        var deleteCheckbox = document.getElementById('deleteCheckbox');
-        var deleteBtn = document.getElementById('deleteBtn');
+        // Disable the button initially
+        document.getElementById('btnDelete').disabled = true;
 
-        // Add event listener to checkbox
-        deleteCheckbox.addEventListener('change', function () {
-            // Enable/disable button based on checkbox state
-            if (deleteCheckbox.checked) {
-                deleteBtn.removeAttribute('disabled');
-            } else {
-                deleteBtn.setAttribute('disabled', 'disabled');
-            }
+        // Enable/disable the button based on checkbox state
+        document.getElementById('chkDelete').addEventListener('change', function () {
+            document.getElementById('btnDelete').disabled = !this.checked;
         });
     </script>
 }
