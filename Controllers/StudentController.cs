@@ -1,4 +1,5 @@
-﻿using Debt_Calculation_And_Repayment_System.Data.IServices;
+﻿using Debt_Calculation_And_Repayment_System.Data;
+using Debt_Calculation_And_Repayment_System.Data.IServices;
 using Debt_Calculation_And_Repayment_System.Data.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +12,15 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
     {
         private readonly ISTAFFMEMBERService _staffmemberService;
         private readonly ISTUDENTService _studentService;
-        public StudentController(ISTUDENTService studentService,ISTAFFMEMBERService staffmemberService,IUSERService userService)
+        private readonly ISTUDENTSTATUSTYPEService _statusService;
+        private readonly AppDbContext _context;
+
+        public StudentController(ISTUDENTService studentService,ISTAFFMEMBERService staffmemberService,IUSERService userService,ISTUDENTSTATUSTYPEService statusService, AppDbContext context)
         {
             _studentService = studentService;
             _staffmemberService = staffmemberService;
+            _statusService = statusService;
+            _context = context;
         }
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> AllStudents()
@@ -104,9 +110,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             {
                 if (vm.Delete)
                 {
-                    await _studentService.DeleteAsync(vm.Id);
-                    var successMessage = "you successfully deleted a student";
-                    return RedirectToAction("IndexParam", "Home", new { successMessage });
+                    return RedirectToAction("Delete", "Account", new { vm.Id });
                 }
                 else
                 {
@@ -116,6 +120,38 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             else
             {
                 return View(vm);
+            }
+        }
+        [Authorize(Roles ="Admin, StaffMember")]
+        public async Task<IActionResult> ChangeStatus(string id)
+        {
+            var student = await _studentService.GetByIdAsync(id);
+            if (student==null)
+            {
+                var errorMessage = "theres no student like this";
+                return RedirectToAction("Error", "Home", new { errorMessage });
+            }
+            var statuses = await _statusService.GetAllAsync();
+            var vm = new ChangeStatusVM() { Id = id , statuses=statuses.ToList()};
+            return View(vm);
+        }
+        [Authorize(Roles = "Admin, StaffMember")]
+        [HttpPost]
+        public async Task<IActionResult> ChangeStatus (ChangeStatusVM vm)
+        {
+            if (ModelState.IsValid)
+            {
+                var student = await _studentService.GetByIdAsync(vm.Id);
+                student.Status = vm.Type;
+                await _context.SaveChangesAsync();
+                var successMessage = "you successfully changed the status of student " + vm.Id;
+                return RedirectToAction("IndexParam", "Home", new { successMessage });
+            }
+            else
+            {
+                Console.WriteLine(vm.Id);
+                Console.WriteLine(vm.Type);
+                return RedirectToAction("ChangeStatus",new {vm.Id});
             }
         }
     }

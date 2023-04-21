@@ -17,6 +17,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
         public DbSet<PROGRAMTYPE> PROGRAMTYPESs { get; set; }
         public DbSet<REQUEST> REQUESTs { get; set; }
         public DbSet<DEBTREGISTER> DEBTREGISTERs { get; set; }
+        public DbSet<STUDENTSTATUSTYPE> STUDENTSTATUSTYPEs { get; set; }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
 

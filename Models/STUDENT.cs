@@ -9,5 +9,6 @@ namespace Debt_Calculation_And_Repayment_System.Models
         public virtual DEBTREGISTER DebtRegister { get; set; } = new DEBTREGISTER();
         public bool StaffMemberAssigned { get; set; } = false;
         public string ProgramID { get; set; }
+        public string Status { get; set; }
     }
 }

@@ -22,6 +22,21 @@ namespace Debt_Calculation_And_Repayment_System.Data
                     });
                     context.SaveChanges();
                 }
+                if (!context.STUDENTSTATUSTYPEs.Any())
+                {
+                    context.STUDENTSTATUSTYPEs.AddRange(new List<STUDENTSTATUSTYPE>()
+                    {
+                        new STUDENTSTATUSTYPE(){Type="Logged in"},
+                        new STUDENTSTATUSTYPE(){Type="Waiting"},
+                        new STUDENTSTATUSTYPE(){Type="Notified"},
+                        new STUDENTSTATUSTYPE(){Type="New Recored"},
+                        new STUDENTSTATUSTYPE(){Type="In Accounting"},
+                        new STUDENTSTATUSTYPE(){Type="Refund Decision Canceled"},
+                        new STUDENTSTATUSTYPE(){Type="Refund Process Suspended"},
+                        new STUDENTSTATUSTYPE(){Type="Referred to Law"}
+                    }) ;
+                    context.SaveChanges();
+                }
                 context.Database.EnsureCreated();
             }
         }
@@ -99,6 +114,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                         RegDate = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
                         PhoneNumber = "12345678",
                         Address = "Turkey",
+                        Status="Logged In",
                         DebtRegister = new DEBTREGISTER()
                         {
                             Amount = 3600m,

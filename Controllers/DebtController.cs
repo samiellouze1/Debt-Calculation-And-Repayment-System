@@ -71,19 +71,28 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         [Authorize(Roles = "Admin, StaffMember")]
         public async Task<IActionResult> CreateDebt(CreateDebtVM debtVM)
         {
-            var student = await _studentService.GetByIdAsync(debtVM.StudentId,s=>s.DebtRegister);
-            var debtregister = student.DebtRegister;
-            var newdebt = new DEBT()
+            if (ModelState.IsValid)
             {
-                Amount = debtVM.Amount,
-                StartDate = debtVM.StartDate,
-                RegDate = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
-                DebtRegister=debtregister,
-                EndDate=debtVM.EndDate,
-            };
-            await _debtService.AddAsync(newdebt);
-            var successMessage = "You successfully created new debt" ;
-            return RedirectToAction("IndexParam", "Home", new { successMessage });
+                var student = await _studentService.GetByIdAsync(debtVM.StudentId, s => s.DebtRegister);
+                var debtregister = student.DebtRegister;
+                var newdebt = new DEBT()
+                {
+                    Amount = debtVM.Amount,
+                    StartDate = debtVM.StartDate,
+                    RegDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
+                    DebtRegister = debtregister,
+                    EndDate = debtVM.EndDate,
+                };
+                await _debtService.AddAsync(newdebt);
+                var successMessage = "You successfully created new debt";
+                return RedirectToAction("IndexParam", "Home", new { successMessage });
+            }
+            else
+            {
+                var students = await _studentService.GetAllAsync();
+                debtVM.Students = students.ToList();
+                return View(debtVM);
+            }
         }
         #endregion
         [Authorize(Roles ="StaffMember, Admin")]

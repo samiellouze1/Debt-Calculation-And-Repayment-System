@@ -34,6 +34,8 @@
             {
                 <th scope="col"></th>
             }
+                <th scope="col">Status</th>
+                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
@@ -58,6 +60,11 @@
                 @if (User.IsInRole(UserRoles.Admin))
                 {
                     <td><a asp-controller="Student" asp-action="DeleteStudent" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block">Delete Student</a></td>
+                }
+                    <td>@item.Status</td>
+                @if (User.IsInRole(UserRoles.Admin) || User.IsInRole(UserRoles.StaffMember))
+                {
+                    <td><a asp-controller="Student" asp-action="ChangeStatus" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block">ChangeStatus</a></td>
                 }
             </tr>
         }

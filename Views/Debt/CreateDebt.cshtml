@@ -23,11 +23,11 @@
                     <div class="form-row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label asp-for="StudentId">Select a Student</label>
+                                    <label >Select a Student</label>
                                     <select asp-for="StudentId" class="form-control bg-light border-0">
                                     @foreach (var item in Model.Students)
                                     {
-                                        <option asp-for="StudentId" value=@item.Id>@item.UserName</option>
+                                        <option value=@item.Id>@item.UserName</option>
                                     }
                                 </select>
                                 <span asp-validation-for="StudentId" style="color:red"></span>

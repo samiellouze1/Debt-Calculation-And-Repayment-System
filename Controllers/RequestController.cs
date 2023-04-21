@@ -1,4 +1,5 @@
-﻿using Debt_Calculation_And_Repayment_System.Data.IServices;
+﻿using Debt_Calculation_And_Repayment_System.Data;
+using Debt_Calculation_And_Repayment_System.Data.IServices;
 using Debt_Calculation_And_Repayment_System.Data.ViewModels;
 using Debt_Calculation_And_Repayment_System.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -14,13 +15,15 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         private readonly IDEBTREGISTERService _debtregisterService;
         private readonly ISTUDENTService _studentService;
         private readonly ISTAFFMEMBERService _staffmemberService;
+        private readonly AppDbContext _context;
 
-        public RequestController(IREQUESTService requestService, IDEBTREGISTERService debtregisterService,ISTUDENTService studentService, ISTAFFMEMBERService staffmemberService)
+        public RequestController(IREQUESTService requestService, IDEBTREGISTERService debtregisterService,ISTUDENTService studentService, ISTAFFMEMBERService staffmemberService,AppDbContext context)
         {
             _requestService = requestService;
             _debtregisterService = debtregisterService;
             _studentService = studentService;
             _staffmemberService = staffmemberService;
+            _context = context;
         }
         [Authorize(Roles ="Admin, StaffMember")]
         public async Task<IActionResult> RequestsByStaffMember(string id)
@@ -193,6 +196,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                             DebtRegister = debtregister,
                         };
                         await _requestService.AddAsync(newrequest);
+                        student.Status = "Waiting";
+                        await _context.SaveChangesAsync();
                         var successMessage = "You successfully added a new request ";
                         return RedirectToAction("IndexParam", "Home", new { successMessage });
                     }

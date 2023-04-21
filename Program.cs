@@ -24,6 +24,7 @@ builder.Services.AddScoped<IDEBTREGISTERService, DEBTREGISTERService>();
 builder.Services.AddScoped<IDEBTService, DEBTService>();
 builder.Services.AddScoped<IINSTALLMENTService, INSTALLMENTService>();
 builder.Services.AddScoped<IPROGRAMTYPEService, PROGRAMTYPEService>();
+builder.Services.AddScoped<ISTUDENTSTATUSTYPEService, STUDENTSTATUSTYPEService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddControllersWithViews();
 

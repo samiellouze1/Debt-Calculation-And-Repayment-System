@@ -61,7 +61,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         }
         #endregion
 
-        #region normal registration
+        #region normal
         public IActionResult Login()
         {
             var response = new LoginVM();
@@ -83,6 +83,13 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                     var result = await _signInManager.PasswordSignInAsync(user, loginvm.Password, false, false);
                     if (result.Succeeded)
                     {
+                        if (User.IsInRole("Student"))
+                        {
+                            var userid = User.FindFirstValue("Id");
+                            var student = await _studentService.GetByIdAsync(userid);
+                            student.Status = "Logged In";
+                            await _context.SaveChangesAsync();
+                        }
                         return RedirectToAction("Index", "Home");
                     }
                 }
@@ -96,9 +103,16 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
+        public async Task<IActionResult> DeleteAccount(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            await _userManager.DeleteAsync(user);
+            var successMessage = "you successfully deleted a user";
+            return RedirectToAction("IndexParam", "Home", new {successMessage});
+        }
         #endregion
 
-        #region specialregistration
+        #region special
         public async Task<IActionResult> RegisterAStudent()
         {
             var programtypes =await  _programTypeService.GetAllAsync();
@@ -150,7 +164,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 StaffMember = staffmember,
                 DebtRegister = new DEBTREGISTER() { InterestRate = registerVM.InterestRate },
                 StaffMemberAssigned = staffmemberstatus,
-                ProgramID=registerVM.ProgramID
+                ProgramID=registerVM.ProgramID,
+                Status="New Recored"
             };
             string password = GenerateRandomPassword(8);
             var newUserResponse = await _userManager.CreateAsync(newStudent, password);
@@ -240,7 +255,12 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 client.Credentials = new NetworkCredential("debtcalculation1@gmail.com", "zdsjnyteligoddnd");
                 client.Send(message);
             }
-
+            var student = await _studentService.GetByIdAsync(id);
+            if (student!=null)
+            {
+                student.Status = "Notified";
+                await _context.SaveChangesAsync();
+            }
             var successMessage = "a reset password link has been sent ";
             return RedirectToAction("IndexParam", "Home", new { successMessage });
         }

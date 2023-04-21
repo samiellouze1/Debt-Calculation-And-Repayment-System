@@ -124,6 +124,10 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             await UpdateDebtRegisterAfterInstallment(id);
             await GeneratePayments(id);
             await UpdateDebtRegisterAfterGenrationofPayments(id);
+            var debtregister = await _debtregisterService.GetByIdAsync(request.DebtRegister.Id, d => d.Student);
+            var student = await _studentService.GetByIdAsync(debtregister.Student.Id);
+            student.Status = "In Accounting";
+            await _context.SaveChangesAsync();
             var successMessage = "You successfully accepted a request ";
             return RedirectToAction("IndexParam", "Home", new { successMessage });
         }
