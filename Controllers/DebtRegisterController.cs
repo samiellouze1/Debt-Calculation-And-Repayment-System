@@ -85,7 +85,45 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             if (authorize)
             {
-                var vm = new AcceptRequestVM() { Id = id};
+                var debtregister = await _debtregisterService.GetByIdAsync(request.DebtRegister.Id, dr => dr.Student);
+                var today = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+                var amounttopay = debtregister.Amount;
+                var resttopayinstallment = request.ToBePaidInstallment - debtregister.InterestAmount;
+                var iatable = DivideDecimalIntoEqualParts(resttopayinstallment, request.NumOfMonths);
+                decimal interestamount = 0m;
+                var whatstays = debtregister.Total - request.ToBePaidFull;
+                decimal tobepaideachmonth;
+                if (request.ToBePaidFull < debtregister.Amount)
+                {
+                    whatstays = 0;
+                    for (int i = 1; i <= request.NumOfMonths; i++)
+                    {
+                        int nod;
+                        if (i >= 2)
+                        {
+                            nod = (today.AddMonths(i) - today.AddMonths(i - 1)).Days;
+                        }
+                        else
+                        {
+                            nod = (today.AddMonths(i) - debtregister.RegDate).Days;
+                        }
+                        interestamount += nod * resttopayinstallment * debtregister.InterestRate / 365;
+                        resttopayinstallment -= iatable[i - 1];
+                    }
+                    tobepaideachmonth = decimal.Truncate((amounttopay / request.NumOfMonths) * 100) / 100 + decimal.Truncate((interestamount + debtregister.InterestAmount) / request.NumOfMonths);
+                }
+                else
+                {
+                    tobepaideachmonth = decimal.Truncate(whatstays / request.NumOfMonths);
+                }
+                var vm = new AcceptRequestVM() {
+                    Id = id,
+                    ToBePaidFull = request.ToBePaidFull,
+                    ToBePaidInstallment = tobepaideachmonth * request.NumOfMonths,
+                    ToBePaidEachMonth = tobepaideachmonth,
+                    Total= debtregister.Total,
+                    NumOfMonths = request.NumOfMonths,
+            };
                 return View(vm);
             }
             else
@@ -101,16 +139,19 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             {
                 if (vm.Accept)
                 {
-                    return RedirectToAction("AcceptRequestConfirm", "DebtRegister", new { vm.Id });
+                    var id = vm.Id;
+                    return RedirectToAction("AcceptRequestConfirm", "DebtRegister", new { id });
                 }
                 else
                 {
-                    return RedirectToAction("Home", "Index");
+                    var id = vm.Id;
+                    return RedirectToAction("AcceptRequest", "DebtRegister", new { id });
                 }
             }
             else
             {
-                return View(vm);
+                var id = vm.Id;
+                return RedirectToAction("AcceptRequest", "DebtRegister", new { id });
             }
         }
         [Authorize(Roles ="StaffMember")]
