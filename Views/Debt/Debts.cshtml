@@ -20,7 +20,6 @@
             <th scope="col">End Date</th>
             <th scope="col">Number Of Days</th>
             <th scope="col">Registration Date</th>
-            <th scope="col"></th>
         </tr>
     </thead>
     <tbody>
@@ -32,7 +31,7 @@
                 <td>@item.EndDate.ToString("yyyy-MM-dd")</td>
                 <td>@((int)(item.EndDate - item.StartDate).TotalDays)</td>
                 <td>@item.RegDate.ToString("yyyy-MM-dd")</td>
-                <td><a asp-controller="DebtRegister" asp-action="DebtRegisterById" asp-route-id=@item.DebtRegister.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block" style="width:150px;height:45px;">Debt Register</a></td>
+                <td><a asp-controller="Debt" asp-action="DeleteDebt" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block">Delete Debt</a></td>
             </tr>
         }
     </tbody>

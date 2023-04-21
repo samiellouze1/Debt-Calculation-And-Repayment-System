@@ -22,6 +22,49 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             _studentService = studentService;
             _staffmemberService = staffmemberService;
         }
+        [Authorize(Roles ="Admin, StaffMember")]
+        public async Task<IActionResult> RequestsByStaffMember(string id)
+        {
+            bool authorize = true;
+            if (User.IsInRole("StaffMember"))
+            {
+                authorize = id == User.FindFirstValue("Id");
+            }
+            if (authorize)
+            {
+                var staff = await _staffmemberService.GetByIdAsync(id, s => s.Students);
+                var students = staff.Students;
+                var requests = new List<REQUEST>();
+                foreach (var std in students)
+                {
+                    var actstd = await _studentService.GetByIdAsync(std.Id, s => s.DebtRegister);
+                    var debtregister = await _debtregisterService.GetByIdAsync(actstd.DebtRegister.Id, d => d.Requests);
+                    requests.AddRange(debtregister.Requests.ToList());
+                }
+                return View("Requests", requests);
+            }
+            else
+            {
+                var errorMessage = "You tried to access a page to which you're not allowed";
+                return RedirectToAction("Error", "Home", new { errorMessage });
+            }
+        }
+        [Authorize(Roles ="StaffMember")]
+        public async Task<IActionResult> MyRequests()
+        {
+            var id = User.FindFirstValue("Id");
+            var staff = await _staffmemberService.GetByIdAsync(id, s => s.Students);
+            var students = staff.Students;
+            var requests = new List<REQUEST>();
+            foreach (var std in students)
+            {
+                var actstd = await _studentService.GetByIdAsync(std.Id, s => s.DebtRegister);
+                var debtregister = await _debtregisterService.GetByIdAsync(actstd.DebtRegister.Id, d => d.Requests);
+                requests.AddRange(debtregister.Requests.ToList());
+            }
+            return View("Requests", requests);
+        }
+
         public async Task<IActionResult> RequestsByDebtRegister(string id)
         {
             bool authorize = true;

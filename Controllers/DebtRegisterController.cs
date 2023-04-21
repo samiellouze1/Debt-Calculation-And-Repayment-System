@@ -71,8 +71,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 return RedirectToAction("Error", "Home", new { errorMessage = "You tried to enter a page to which you are not allowed" });
             }
         }
-        [Authorize(Roles ="Admin, StaffMember")]
-        public async Task<IActionResult> AcceptRequest(string id)
+        [Authorize(Roles ="StaffMember")]
+        public async Task<IActionResult> Acceptrequest(string id)
         {
             var request = await _requestService.GetByIdAsync(id, r => r.DebtRegister);
             bool authorize = true;
@@ -80,26 +80,52 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             {
                 var userid = User.FindFirstValue("Id");
                 var debtregister = await _debtregisterService.GetByIdAsync(request.DebtRegister.Id, dr => dr.Student);
-                var student = await _studentService.GetByIdAsync(debtregister.Student.Id,s=>s.StaffMember);
+                var student = await _studentService.GetByIdAsync(debtregister.Student.Id, s => s.StaffMember);
                 authorize = student.StaffMember.Id == userid;
             }
             if (authorize)
             {
-                await UpdateDebtRegisterDebtsChanged(request.DebtRegister.Id);
-                await UpdateDebtRegisterRequestActivated(id);
-                await GenerateInstallments(id);
-                await UpdateRequestAfterRequestAccepted(id);
-                await UpdateDebtRegisterAfterInstallment(id);
-                await GeneratePayments(id);
-                await UpdateDebtRegisterAfterGenrationofPayments(id);
-                var successMessage = "You successfully accepted a request ";
-                return RedirectToAction("IndexParam", "Home", new { successMessage });
+                var vm = new AcceptRequestVM() { Id = id};
+                return View(vm);
             }
             else
             {
-                var vm = new ErrorViewModel() { ErrorMessage = "You tried to enter a page to which you are not allowed" };
-                return RedirectToAction("Error", "Home", vm);
+                var errorMessage = "you attempted to accept a request while there's one already accepted";
+                return RedirectToAction("Error", "Home", new { errorMessage });
             }
+        }
+        [HttpPost]
+        public async Task<IActionResult> Acceptrequest(AcceptRequestVM vm)
+        {
+            if (ModelState.IsValid)
+            {
+                if (vm.Accept)
+                {
+                    return RedirectToAction("AcceptRequestConfirm", "DebtRegister", new { vm.Id });
+                }
+                else
+                {
+                    return RedirectToAction("Home", "Index");
+                }
+            }
+            else
+            {
+                return View(vm);
+            }
+        }
+        [Authorize(Roles ="StaffMember")]
+        public async Task<IActionResult> AcceptRequestConfirm(string id)
+        {
+            var request = await _requestService.GetByIdAsync(id, r => r.DebtRegister);
+            await UpdateDebtRegisterDebtsChanged(request.DebtRegister.Id);
+            await UpdateDebtRegisterRequestActivated(id);
+            await GenerateInstallments(id);
+            await UpdateRequestAfterRequestAccepted(id);
+            await UpdateDebtRegisterAfterInstallment(id);
+            await GeneratePayments(id);
+            await UpdateDebtRegisterAfterGenrationofPayments(id);
+            var successMessage = "You successfully accepted a request ";
+            return RedirectToAction("IndexParam", "Home", new { successMessage });
         }
         #region business
         [HttpPost]

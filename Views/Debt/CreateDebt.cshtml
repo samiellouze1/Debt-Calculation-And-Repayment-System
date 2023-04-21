@@ -43,21 +43,21 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Start Date</label>
-                                <input asp-for="StartDate" type="date" class="form-control bg-light border-0" placeholder="Enter Start Date"  value="2010-01-01">
+                                <input asp-for="StartDate" type="text" class="form-control bg-light border-0" placeholder="Enter Start Date" value="01-01-2010">
                                 <span asp-validation-for="StartDate" style="color:red"></span>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>End Date</label>
-                                <input asp-for="EndDate" type="date" class="form-control bg-light border-0" placeholder="Enter End Date"  value="2010-01-01">
+                                <input asp-for="EndDate" type="text" class="form-control bg-light border-0" placeholder="Enter End Date" value="01-01-2010">
                                 <span asp-validation-for="EndDate" style="color:red"></span>
                             </div>
                         </div>
 
                     </div>
                     <div class="col-sm-6" style="width:50%;margin: 0 auto;">
-                        <button class="btn btn-primary btn-block" type="submit" value="CreateRequest" >Create Debt</button>
+                        <button class="btn btn-primary btn-block" type="submit" value="CreateDebt" >Create Debt</button>
                     </div>
                 </form>
 
@@ -65,3 +65,28 @@
         </div>
     </div>
 </div>
+@section Scripts{
+<script>
+    // Function to enforce dd-mm-yyyy format
+    function enforceDateFormat(input) {
+        var dateString = input.value;
+        var regex = /^(\d{2})-(\d{2})-(\d{4})$/;
+        if (!dateString.match(regex)) {
+            input.setCustomValidity('Please enter a date in the dd-mm-yyyy format');
+        } else {
+            input.setCustomValidity('');
+        }
+    }
+
+    // Attach event listeners to the input elements
+    var startDateInput = document.querySelector('input[name="StartDate"]');
+    startDateInput.addEventListener('input', function () {
+        enforceDateFormat(this);
+    });
+
+    var endDateInput = document.querySelector('input[name="EndDate"]');
+    endDateInput.addEventListener('input', function () {
+        enforceDateFormat(this);
+    });
+</script>
+}

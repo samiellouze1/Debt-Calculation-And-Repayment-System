@@ -16,6 +16,7 @@
             @if (User.IsInRole(UserRoles.Admin)||User.IsInRole(UserRoles.StaffMember))
             {
                 <a asp-controller="Student" asp-action="StudentsByStaffMember" asp-route-id=@Model.Id class="btn btn-secondary px-3 px-lg-5">Students</a>
+                <a asp-controller="Request" asp-action="RequestsByStaffMember" asp-route-id=@Model.Id class="btn btn-secondary px-3 px-lg-5">Requests</a>
             }
         </div>
     </div>

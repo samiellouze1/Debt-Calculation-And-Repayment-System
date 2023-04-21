@@ -17,12 +17,14 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         private readonly IDEBTREGISTERService _debtregisterService;
         private readonly ISTAFFMEMBERService _staffmemberService;
         private readonly ISTUDENTService _studentService;
-        public DebtController(IDEBTService debtService, ISTAFFMEMBERService staffmemberService,IDEBTREGISTERService debtregisterService,ISTUDENTService studentService)
+        private readonly IREQUESTService _requestService;
+        public DebtController(IDEBTService debtService, ISTAFFMEMBERService staffmemberService,IDEBTREGISTERService debtregisterService,ISTUDENTService studentService,IREQUESTService requestService)
         {
             _debtService = debtService;
             _staffmemberService = staffmemberService;
             _debtregisterService = debtregisterService;
             _studentService = studentService;
+            _requestService = requestService;
         }
         #region getters
         public async Task<IActionResult> DebtsByDebtRegister(string id)
@@ -84,6 +86,51 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             return RedirectToAction("IndexParam", "Home", new { successMessage });
         }
         #endregion
-
+        [Authorize(Roles ="StaffMember, Admin")]
+        public async Task<IActionResult> DeleteDebt(string id)
+        {
+            bool authorize;
+            var debt = await _debtService.GetByIdAsync(id, d => d.DebtRegister);
+            var debtregister = await _debtregisterService.GetByIdAsync(debt.DebtRegister.Id,d=>d.Requests);
+            authorize = !debtregister.Requests.Any(r => r.Status == "Accepted");
+            if (authorize)
+            {
+                var vm = new DeleteDebtVM() { Id = id };
+                return View(vm);
+            }
+            else
+            {
+                var errorMessage = "You cannot delete debt when there's already a request accepted";
+                return RedirectToAction("Error", "Home", new { errorMessage });
+            }
+        }
+        [HttpPost]
+        [Authorize(Roles ="StaffMember, Admin")]
+        public async Task<IActionResult> DeleteDebt(DeleteDebtVM vm)
+        {
+            if (ModelState.IsValid)
+            {
+                if (vm.Delete)
+                {
+                    await _debtService.DeleteAsync(vm.Id);
+                    var debt = await _debtService.GetByIdAsync(vm.Id, d => d.DebtRegister);
+                    var debtregister = await _debtregisterService.GetByIdAsync(debt.DebtRegister.Id, d => d.Requests);
+                    foreach (var r in debtregister.Requests.ToList())
+                    {
+                        await _requestService.DeleteAsync(r.Id);
+                    }
+                    var successMessage = "You successfully deleted debt" + vm.Id;
+                    return RedirectToAction("IndexParam", "Home", new { successMessage });
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            else
+            {
+                return View(vm);
+            }
+        }
     }
 }
