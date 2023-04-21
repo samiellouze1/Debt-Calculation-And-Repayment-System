@@ -203,7 +203,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var debtregister = await _debtregisterService.GetByIdAsync(request.DebtRegister.Id);
             var resttopayinstallment = debtregister.TotalInstallment - debtregister.InterestAmount;
             var tbpi = debtregister.ToBePaidInstallment - debtregister.Amount;
-            var i = 0;
             if (resttopayinstallment>0)
             {
                 var interest = decimal.Truncate(tbpi/ request.NumOfMonths);
@@ -216,7 +215,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                         DebtRegister = debtregister,
                         Sum = principal+interest,
                         Paid = false,
-                        PaymentDate = new DateTime(DateTime.Now.AddMonths(i).Year, DateTime.Now.AddMonths(i).Month, DateTime.Now.AddMonths(i).Day),
+                        PaymentDate = new DateTime(DateTime.Now.AddMonths(j).Year, DateTime.Now.AddMonths(j).Month, DateTime.Now.AddMonths(j).Day),
                         RegDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
                         PrincipalAmount = principal,
                         InterestAmount = interest,
@@ -234,8 +233,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                         DebtRegister = debtregister,
                         Sum = decimal.Truncate(addons),
                         Paid = false,
-                        PaymentDate = new DateTime(DateTime.Now.AddMonths(i).Year, DateTime.Now.AddMonths(i).Month,
-                        DateTime.Now.AddMonths(i).Day),
+                        PaymentDate = new DateTime(DateTime.Now.AddMonths(j).Year, DateTime.Now.AddMonths(j).Month,
+                        DateTime.Now.AddMonths(j).Day),
                         RegDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
                         PrincipalAmount=0,
                         InterestAmount=decimal.Truncate(addons)
