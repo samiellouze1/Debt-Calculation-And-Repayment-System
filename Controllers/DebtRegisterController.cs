@@ -110,11 +110,25 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                         interestamount += nod * resttopayinstallment * debtregister.InterestRate / 365;
                         resttopayinstallment -= iatable[i - 1];
                     }
-                    tobepaideachmonth = decimal.Truncate((amounttopay / request.NumOfMonths) * 100) / 100 + decimal.Truncate((interestamount + debtregister.InterestAmount) / request.NumOfMonths);
+                    try
+                    {
+                        tobepaideachmonth = decimal.Truncate((amounttopay / request.NumOfMonths) * 100) / 100 + decimal.Truncate((interestamount + debtregister.InterestAmount) / request.NumOfMonths);
+                    }
+                    catch
+                    {
+                        tobepaideachmonth = 0m;
+                    }
                 }
                 else
                 {
-                    tobepaideachmonth = decimal.Truncate(whatstays / request.NumOfMonths);
+                    try
+                    {
+                        tobepaideachmonth = decimal.Truncate(whatstays / request.NumOfMonths);
+                    }
+                    catch
+                    {
+                        tobepaideachmonth = 0m;
+                    }
                 }
                 var vm = new AcceptRequestVM() {
                     Id = id,
@@ -330,15 +344,22 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         }
         public static decimal[] DivideDecimalIntoEqualParts(decimal x, int n)
         {
-            decimal[] parts = new decimal[n];
-            decimal commonPart = Math.Floor(x / n * 100) / 100;
-            decimal remaining = x - commonPart * (n - 1);
-            for (int i = 0; i < n - 1; i++)
+            try
             {
-                parts[i] = commonPart;
+                decimal[] parts = new decimal[n];
+                decimal commonPart = Math.Floor(x / n * 100) / 100;
+                decimal remaining = x - commonPart * (n - 1);
+                for (int i = 0; i < n - 1; i++)
+                {
+                    parts[i] = commonPart;
+                }
+                parts[n - 1] = remaining;
+                return parts;
             }
-            parts[n - 1] = remaining;
-            return parts;
+            catch
+            {
+                return Enumerable.Repeat(0m, n).ToArray();
+            }
         }
 
         #endregion

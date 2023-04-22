@@ -29,7 +29,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                         new STUDENTSTATUSTYPE(){Type="Logged in"},
                         new STUDENTSTATUSTYPE(){Type="Waiting"},
                         new STUDENTSTATUSTYPE(){Type="Notified"},
-                        new STUDENTSTATUSTYPE(){Type="New Recored"},
+                        new STUDENTSTATUSTYPE(){Type="New Recorded"},
                         new STUDENTSTATUSTYPE(){Type="In Accounting"},
                         new STUDENTSTATUSTYPE(){Type="Refund Decision Canceled"},
                         new STUDENTSTATUSTYPE(){Type="Refund Process Suspended"},

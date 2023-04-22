@@ -76,12 +76,14 @@
                             <a asp-controller="ProgramType" asp-action="AllProgramTypes" class="nav-item nav-link active">ProgramTypes</a>
                             <a asp-controller="Student" asp-action="AllStudents" class="nav-item nav-link active">Students</a>
                             <a asp-controller="StaffMember" asp-action="AllStaffMembers" class="nav-item nav-link active">Staff Members</a>
+                            <a asp-controller="Status" asp-action="AllStatuses" class="nav-item nav-link active">All Statuses</a>
                         }
                         @if (User.IsInRole("StaffMember"))
                         {
                             <a asp-controller="StaffMember" asp-action="MyProfile" class="nav-item nav-link active">My Profile</a>
                             <a asp-controller="Student" asp-action="MyStudents" class="nav-item nav-link active">My Students</a>
                             <a asp-controller="Request" asp-action="MyRequests" class="nav-item nav-link active">My Requests</a>
+                            <a asp-controller="Status" asp-action="AllStatuses" class="nav-item nav-link active">All Statuses</a>
                         }
                         @if (User.IsInRole("Student"))
                         {
@@ -100,6 +102,8 @@
                     } 
                     @if (User.IsInRole("StaffMember"))
                     {
+
+                        <a asp-controller="Status" asp-action="CreateStatus" class="btn btn-primary py-2 px-4 d-none d-lg-block" style="margin-right:10px;">Create Status</a>
                         <a asp-controller="Debt" asp-action="CreateDebt" class="btn btn-primary py-2 px-4 d-none d-lg-block" style="margin-right:10px;">Create Debt</a>
                         <a asp-controller="Account" asp-action="RegisterAStudent" class="btn btn-primary py-2 px-4 d-none d-lg-block" style="margin-right:10px;">Register A Student</a>
 

@@ -168,7 +168,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 DebtRegister = new DEBTREGISTER() { InterestRate = registerVM.InterestRate },
                 StaffMemberAssigned = staffmemberstatus,
                 ProgramID=registerVM.ProgramID,
-                Status="New Recored"
+                Status="New Recorded"
             };
             string password = GenerateRandomPassword(8);
             var newUserResponse = await _userManager.CreateAsync(newStudent, password);
