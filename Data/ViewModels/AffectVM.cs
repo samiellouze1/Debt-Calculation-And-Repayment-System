@@ -9,7 +9,7 @@ namespace Debt_Calculation_And_Repayment_System.Data.ViewModels
         public string StaffMemberId { get; set; }
         [Required(ErrorMessage ="Student is required")]
         public string StudentId { get; set; }
-        public List<STUDENT> Students { get;set; }
-        public List<STAFFMEMBER> StaffMembers { get; set; }
+        public List<STUDENT>? Students { get;set; }
+        public List<STAFFMEMBER>? StaffMembers { get; set; }
     }
 }

@@ -45,7 +45,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         [HttpPost]
         public async Task<IActionResult> AffectStudentToStaffMember(AffectVM vm)
         {
-            try
+            if ( ModelState.IsValid)
             {
                 var oldstaffmember = await _staffmemberService.GetByIdAsync(vm.StaffMemberId, sm => sm.Students);
                 var student = await _studentService.GetByIdAsync(vm.StudentId, s => s.StaffMember, s => s.DebtRegister);
@@ -54,9 +54,12 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 var successMessage = "You successfully affected the student"+student.Email+"to the staff member"+oldstaffmember.Email;
                 return RedirectToAction("IndexParam", "Home", new { successMessage });
             }
-            catch (Exception ex)
+            else
             {
-                return RedirectToAction("Error", "Home", new { errorMessage = "You tried to enter a page to which you are not allowed or typed in wrong data" });
+                var staffmembers = await _staffmemberService.GetAllAsync();
+                var students = await _studentService.GetAllAsync();
+                var newvm = new AffectVM() {Students=students.ToList(), StaffMembers=staffmembers.ToList() };
+                return View(newvm);
             }
         }
         #endregion
