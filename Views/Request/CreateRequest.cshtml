@@ -9,62 +9,71 @@
     Preview Request
 }
 
-    <div class="jumbotron jumbotron-fluid position-relative overlay-bottom">
-        <div class="container text-center my-5 py-5">
-            <h1 class="text-white mt-4 mb-4">Details about your request</h1>
-            <h1 class="text-white mt-4 mb-4">You will pay in full: @Model.ToBePaidFull</h1>
-            <h1 class="text-white mt-4 mb-4" >You will pay in installment: @Model.ToBePaidInstallment</h1>
-            <h1 class="text-white mt-4 mb-4">You will pay each month in installment: @Model.ToBePaidEachMonth</h1>
-            <h1 class="text-white mt-4 mb-4">Over @Model.NumOfMonths Months</h1>
-            <h1 class="text-white mt-4 mb-4">↓↓↓ Finalise you request ↓↓↓ </h1>
-        </div>
+<div class="jumbotron jumbotron-fluid position-relative overlay-bottom">
+    <div class="container text-center my-5 py-5">
+        <h1 class="text-white mt-4 mb-4">Details about your request</h1>
+        <h1 class="text-white mt-4 mb-4">You will pay in full: @Model.ToBePaidFull</h1>
+    @if (Model.ToBePaidInstallment > 0)
+    {
+        <h1 class="text-white mt-4 mb-4" >You will pay in installment: @Model.ToBePaidInstallment</h1>
+        <h1 class="text-white mt-4 mb-4">You will pay each month in installment: @Model.ToBePaidEachMonth</h1>
+        <h1 class="text-white mt-4 mb-4">Over @Model.NumOfMonths Months</h1>
+    }
+        <h1 class="text-white mt-4 mb-4">↓↓↓ Finalise you request ↓↓↓ </h1>
     </div>
-    <div class="row justify-content-center bg-image mx-0 mb-5">
-        <div class="col-lg-6 py-5">
-            <div class="bg-white p-5 my-5">
-                <h1 class="text-center mb-4">Final details of request</h1>
-                <form asp-action="CreateRequest">
-                    <div class="form-row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Total</label>
-                                <input asp-for="Total" type="number" step="any" value=@Model.Total readonly class="form-control bg-light border-0">
-                                <span asp-validation-for="Total" style="color:red"></span>
-                            </div>
-                        </div>         
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Total In installments</label>
-                                <input type="number" step="any" value=@Model.ToBePaidInstallment readonly class="form-control bg-light border-0">
-                                <span asp-validation-for="Total" style="color:red"></span>
-                            </div>
+</div>
+<div class="row justify-content-center bg-image mx-0 mb-5">
+    <div class="col-lg-6 py-5">
+        <div class="bg-white p-5 my-5">
+            <h1 class="text-center mb-4">Final details of request</h1>
+            <form asp-action="CreateRequest">
+                <div class="form-row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Total</label>
+                            <input asp-for="Total" type="number" step="any" value=@Model.Total readonly class="form-control bg-light border-0">
+                            <span asp-validation-for="Total" style="color:red"></span>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>to be paid fully</label>
-                                <input asp-for="ToBePaidFull" type="number" step="any" value=@Model.ToBePaidFull readonly class="form-control bg-light border-0"  >
-                                <span asp-validation-for="ToBePaidFull" style="color:red"></span>
-                            </div>
+                    </div>         
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Total In installments</label>
+                            <input type="number" step="any" value=@Model.ToBePaidInstallment readonly class="form-control bg-light border-0">
+                            <span asp-validation-for="Total" style="color:red"></span>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Number of months for installments</label>
-                                <input asp-for="NumOfMonths" type="number" value=@Model.NumOfMonths readonly class="form-control bg-light border-0" >
-                                <span asp-validation-for="NumOfMonths" style="color:red"></span>
-                            </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>to be paid fully</label>
+                            <input asp-for="ToBePaidFull" type="number" step="any" value=@Model.ToBePaidFull readonly class="form-control bg-light border-0"  >
+                            <span asp-validation-for="ToBePaidFull" style="color:red"></span>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="form-group" style="display:flex;">
-                                <label>I accept the terms above</label>
-                                <input asp-for="Accept" type="checkbox" class="form-control bg-light border-0">
-                            </div>
+                    </div>
+                @if (Model.ToBePaidInstallment > 0)
+                {
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Number of months for installments</label>
+                            <input asp-for="NumOfMonths" type="number" value=@Model.NumOfMonths readonly class="form-control bg-light border-0" >
+                            <span asp-validation-for="NumOfMonths" style="color:red"></span>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <button class="btn btn-primary btn-block" type="submit" value="CreateReques" disabled>Create Request</button>
-                            </div>
-                        </div>
+                    </div>
+                }
                 </div>
+                <div class="form-row">
+                    <div class="col-sm-6">
+                        <div class="form-group" style="display:flex;">
+                            <label>I accept the terms above</label>
+                            <input asp-for="Accept" type="checkbox" class="form-control bg-light border-0">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <button class="btn btn-primary btn-block" type="submit" value="CreateReques" disabled>Create Request</button>
+                        </div>
+                    </div>
+                </div>
+
             </form>
         </div>
     </div>

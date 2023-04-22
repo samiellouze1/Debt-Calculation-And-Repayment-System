@@ -32,14 +32,14 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label>To be paid in Installment</label>
-                                    <input asp-for="ToBePaidInstallment" type="number" step="any" id="toBePaidInstallment" class="form-control bg-light border-0" placeholder="To Be Paid Installment">
+                                    <input asp-for="ToBePaidInstallment" type="number" step="any"   id="toBePaidInstallment" min=0 class="form-control bg-light border-0" placeholder="To Be Paid Installment">
                                     <span asp-validation-for="ToBePaidInstallment" style="color:red"></span>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label>To be paid in Full</label>
-                                    <input asp-for="ToBePaidFull" type="number" step="any" id="toBePaidFull" value="@Model.ToBePaidFull" class="form-control bg-light border-0" placeholder="To Be Paid Full">
+                                    <input asp-for="ToBePaidFull" type="number" step="any" id="toBePaidFull" min=0 class="form-control bg-light border-0" placeholder="To Be Paid Full">
                                     <span asp-validation-for="ToBePaidFull" style="color:red"></span>
                                 </div>
                             </div>
