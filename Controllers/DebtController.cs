@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Debt_Calculation_And_Repayment_System.Data;
 using Debt_Calculation_And_Repayment_System.Data.ViewModels;
 using System.Linq.Expressions;
+using Debt_Calculation_And_Repayment_System.Data.Services;
+using System.Net.Mail;
+using System.Net;
 
 namespace Debt_Calculation_And_Repayment_System.Controllers
 {
@@ -84,6 +87,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                     EndDate = debtVM.EndDate,
                 };
                 await _debtService.AddAsync(newdebt);
+                await SendEmailAfterCreationOfDebt(student.Email);
                 var successMessage = "You successfully created new debt";
                 return RedirectToAction("IndexParam", "Home", new { successMessage });
             }
@@ -139,6 +143,29 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             else
             {
                 return View(vm);
+            }
+        }
+        public async Task SendEmailAfterCreationOfDebt(string Email)
+        {
+
+
+            var callbackUrl = Url.Action("MyDebtRegister", "DebtRegister", null, Request.Scheme, Request.Host.ToString());
+            var callbackUrl2 = Url.Action("Login", "Account", null, Request.Scheme, Request.Host.ToString());
+
+            var message = new MailMessage();
+            message.From = new MailAddress("debtcalculation1@gmail.com", "Debt Calculation and repayment system");
+            message.To.Add(new MailAddress(Email));
+            message.Subject = "A new Debt has been added";
+            message.Body = $"There has been a new debt added. See your debt register <a href=\"{callbackUrl}\">here</a>. PS: You need to be authenicated first at <a href=\"{callbackUrl2}\">here</a>.";
+            message.IsBodyHtml = true;
+
+            using (var client = new SmtpClient())
+            {
+                client.Host = "smtp.gmail.com";
+                client.Port = 587;
+                client.EnableSsl = true;
+                client.Credentials = new NetworkCredential("debtcalculation1@gmail.com", "zdsjnyteligoddnd");
+                client.Send(message);
             }
         }
     }

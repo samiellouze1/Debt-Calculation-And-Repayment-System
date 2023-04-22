@@ -36,6 +36,7 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                     StaffMemberId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     StaffMemberAssigned = table.Column<bool>(type: "bit", nullable: true),
                     ProgramID = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -71,6 +72,18 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PROGRAMTYPESs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "STUDENTSTATUSTYPEs",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_STUDENTSTATUSTYPEs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -404,6 +417,9 @@ namespace Debt_Calculation_And_Repayment_System.Migrations
 
             migrationBuilder.DropTable(
                 name: "REQUESTs");
+
+            migrationBuilder.DropTable(
+                name: "STUDENTSTATUSTYPEs");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

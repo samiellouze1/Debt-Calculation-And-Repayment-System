@@ -267,14 +267,22 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var successMessage = "a reset password link has been sent ";
             return RedirectToAction("IndexParam", "Home", new { successMessage });
         }
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult ResetPassword(string email, string code)
         {
+            // Check if there is an authenticated user
+            if (User.Identity.IsAuthenticated)
+            {
+                var errorMessage = "There is already a user logged in";
+                return RedirectToAction("Error", "Home", new {errorMessage});
+            }
+
             // Verify that the email and code are valid
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(code))
             {
                 var errorMessage = "Your token expired ";
-                return RedirectToAction("Eroor", "Home", new { errorMessage });
+                return RedirectToAction("Error", "Home", new { errorMessage });
             }
 
             // Create a view model for the password reset form
@@ -286,9 +294,17 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
 
             return View(model);
         }
+
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> ResetPassword(ResetPasswordVM model)
         {
+            // Check if there is an authenticated user
+            if (User.Identity.IsAuthenticated)
+            {
+                var errorMessage = "Your token expired ";
+                return RedirectToAction("Error", "Home", new { errorMessage });
+            }
             if (!ModelState.IsValid)
             {
                 return View(model);

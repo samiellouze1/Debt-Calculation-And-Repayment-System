@@ -1,7 +1,6 @@
 ﻿using Debt_Calculation_And_Repayment_System.Data;
 using Debt_Calculation_And_Repayment_System.Data.IServices;
 using Debt_Calculation_And_Repayment_System.Data.ViewModels;
-using Debt_Calculation_And_Repayment_System.Migrations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol;
