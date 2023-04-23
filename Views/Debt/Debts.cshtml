@@ -31,7 +31,12 @@
                 <td>@item.EndDate.ToString("yyyy-MM-dd")</td>
                 <td>@((int)(item.EndDate - item.StartDate).TotalDays)</td>
                 <td>@item.RegDate.ToString("yyyy-MM-dd")</td>
-                <td><a asp-controller="Debt" asp-action="DeleteDebt" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block">Delete Debt</a></td>
+                <td>
+                    @if (User.IsInRole("Admin") || User.IsInRole("StaffMember") && item.Status == "Not Defined")
+                    {
+                    <a asp-controller="Debt" asp-action="DeleteDebt" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block">Delete Debt</a>
+                    }    
+                </td>
             </tr>
         }
     </tbody>
