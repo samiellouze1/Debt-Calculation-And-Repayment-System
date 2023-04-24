@@ -25,6 +25,7 @@ builder.Services.AddScoped<IDEBTService, DEBTService>();
 builder.Services.AddScoped<IINSTALLMENTService, INSTALLMENTService>();
 builder.Services.AddScoped<IPROGRAMTYPEService, PROGRAMTYPEService>();
 builder.Services.AddScoped<ISTUDENTSTATUSTYPEService, STUDENTSTATUSTYPEService>();
+builder.Services.AddScoped<IEMAILTEMPLATEService, EMAILTEMPLATEService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddControllersWithViews();
 

@@ -37,6 +37,17 @@ namespace Debt_Calculation_And_Repayment_System.Data
                     }) ;
                     context.SaveChanges();
                 }
+                if (!context.EMAILTEMPLATEs.Any())
+                {
+                    context.EMAILTEMPLATEs.AddRange(new List<EMAILTEMPLATE>()
+                    {
+                        new EMAILTEMPLATE(){Name="Reset Password", Content="Please reset your password ",NeedToLogin=false},
+                        new EMAILTEMPLATE(){Name="Debt Registered", Content="There has been a new debt added. See your debt register ",NeedToLogin=true},
+                        new EMAILTEMPLATE(){Name="Payment in 3 days", Content="You have a payment in 3 days. See all your payments ",NeedToLogin=true},
+                        new EMAILTEMPLATE(){Name="Payment 1 day ago", Content="You haven't paid the payment due Yesterday", NeedToLogin=true}
+                    });
+                    context.SaveChanges();
+                }
                 context.Database.EnsureCreated();
             }
         }

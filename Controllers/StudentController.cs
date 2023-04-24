@@ -104,7 +104,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         }
         [Authorize(Roles ="Admin")]
         [HttpPost]
-        public async Task<IActionResult> DeleteStudent (DeleteStudentVM vm)
+        public IActionResult DeleteStudent (DeleteStudentVM vm)
         {
             if (ModelState.IsValid)
             {

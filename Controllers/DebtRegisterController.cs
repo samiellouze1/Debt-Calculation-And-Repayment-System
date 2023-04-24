@@ -147,7 +147,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> Acceptrequest(AcceptRequestVM vm)
+        public  IActionResult Acceptrequest(AcceptRequestVM vm)
         {
             if (ModelState.IsValid)
             {

@@ -21,13 +21,15 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         private readonly ISTAFFMEMBERService _staffmemberService;
         private readonly ISTUDENTService _studentService;
         private readonly IREQUESTService _requestService;
-        public DebtController(IDEBTService debtService, ISTAFFMEMBERService staffmemberService,IDEBTREGISTERService debtregisterService,ISTUDENTService studentService,IREQUESTService requestService)
+        private readonly IEMAILTEMPLATEService _emailService;
+        public DebtController(IDEBTService debtService, ISTAFFMEMBERService staffmemberService,IDEBTREGISTERService debtregisterService, ISTUDENTService studentService, IREQUESTService requestService, IEMAILTEMPLATEService emailService)
         {
             _debtService = debtService;
             _staffmemberService = staffmemberService;
             _debtregisterService = debtregisterService;
             _studentService = studentService;
             _requestService = requestService;
+            _emailService = emailService;
         }
         #region getters
         public async Task<IActionResult> DebtsByDebtRegister(string id)
@@ -148,7 +150,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         public async Task SendEmailAfterCreationOfDebt(string Email)
         {
 
-
+            var emails = await _emailService.GetAllAsync();
+            var emailcontent = emails.Where(e => e.Name == "Debt Registered").ToList()[0];
             var callbackUrl = Url.Action("MyDebtRegister", "DebtRegister", null, Request.Scheme, Request.Host.ToString());
             var callbackUrl2 = Url.Action("Login", "Account", null, Request.Scheme, Request.Host.ToString());
 
@@ -156,7 +159,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             message.From = new MailAddress("debtcalculation1@gmail.com", "Debt Calculation and repayment system");
             message.To.Add(new MailAddress(Email));
             message.Subject = "A new Debt has been added";
-            message.Body = $"There has been a new debt added. See your debt register <a href=\"{callbackUrl}\">here</a>. PS: You need to be authenicated first at <a href=\"{callbackUrl2}\">here</a>.";
+            message.Body = emailcontent+$"  <a href=\"{callbackUrl}\">here</a>. PS: You need to be authenicated first at <a href=\"{callbackUrl2}\">here</a>.";
             message.IsBodyHtml = true;
 
             using (var client = new SmtpClient())

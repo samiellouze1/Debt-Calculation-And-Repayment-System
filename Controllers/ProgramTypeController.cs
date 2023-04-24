@@ -49,7 +49,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         {
             await _programTypeService.DeleteAsync(id);
             var successMessage = "you successfully deleted a program type";
-            return RedirectToAction("AllProgramTypes");
+            return RedirectToAction("IndexParam","Home",new {successMessage});
         }
 
     }

@@ -1,0 +1,77 @@
+﻿@using Debt_Calculation_And_Repayment_System.Data.ViewModels
+@model EditTemplateVM
+@{
+    ViewData["Title"] = "Edit Template";
+}
+@section Title {
+    Edit Template
+}
+    <div class="container-fluid px-0 py-5">
+        <div class="row mx-0 justify-content-center pt-5">
+            <div class="col-lg-6">
+                <div class="section-title text-center position-relative mb-4">
+                    <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">This specific view is only viewed by admins</h6>
+                    <h1 class="display-4">EDIT TEMPLATE</h1>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center bg-image mx-5 mb-5">
+            <div class="col-lg-12 py-5">
+                <div class="bg-white p-5 my-5">
+                    <h1 class="text-center mb-4">Fill in the name of the new type</h1>
+                    <form asp-action="EditTemplate">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Id</label>
+                                <input asp-for="TemplateId" readonly value=@Model.TemplateId type="password" class="form-control bg-light border-0" placeholder="Id">
+                                <span asp-validation-for="TemplateId" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Subject</label>
+                                <input asp-for="Name" value=@Model.Name type="text" readonly class="form-control bg-light border-0" placeholder="Name">
+                                <span asp-validation-for="Name" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Content</label>
+                                <input asp-for="Content" value=@Model.Content type="text" class="form-control bg-light border-0" placeholder="Content">
+                                <span asp-validation-for="Content" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Need To Login</label>
+                                <input asp-for="NeedToLogin" value=@Model.NeedToLogin disabled type="checkbox" id="myCheckbox" class="form-control bg-light border-0" placeholder="NeedToLogin">
+                                <span asp-validation-for="NeedToLogin" style="color:red"></span>
+                                <div id="message" style="display: none; color: red; font-weight: bold;">This field can't be changed</div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6" style="width:50%;margin: 0 auto;">
+                            <button class="btn btn-primary btn-block" type="submit" value="EditTemplate">Edit Template</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        <script>
+  // Add event listener to the checkbox
+  $('#myCheckbox').on('change', function() {
+    // Check if the checkbox is checked
+    if ($(this).is(':checked')) {
+      // Show the message if it is checked
+      $('#message').show();
+    } else {
+      // Hide the message if it is unchecked
+      $('#message').hide();
+    }
+  });
+</script>
+    }

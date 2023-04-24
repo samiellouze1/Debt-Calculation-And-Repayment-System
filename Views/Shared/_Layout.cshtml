@@ -77,6 +77,7 @@
                             <a asp-controller="Student" asp-action="AllStudents" class="nav-item nav-link active">Students</a>
                             <a asp-controller="StaffMember" asp-action="AllStaffMembers" class="nav-item nav-link active">Staff Members</a>
                             <a asp-controller="Status" asp-action="AllStatuses" class="nav-item nav-link active">All Statuses</a>
+                            <a asp-controller="EmailTemplate" asp-action="AllTemplates" class="nav-item nav-link active">Email Templates</a>
                         }
                         @if (User.IsInRole("StaffMember"))
                         {

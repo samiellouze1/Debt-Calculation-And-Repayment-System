@@ -21,7 +21,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         private readonly ISTUDENTService _studentService;
         private readonly AppDbContext _context;
         private readonly IPROGRAMTYPEService _programTypeService;
-        public AccountController(UserManager<USER> usermanager, SignInManager<USER> signinmanager, ISTAFFMEMBERService staffmemberService, ISTUDENTService studentService, IUSERService userService, AppDbContext context, IPROGRAMTYPEService programtypeService)
+        private readonly IEMAILTEMPLATEService _emailService;
+        public AccountController(UserManager<USER> usermanager, SignInManager<USER> signinmanager, ISTAFFMEMBERService staffmemberService, ISTUDENTService studentService, IUSERService userService, AppDbContext context, IPROGRAMTYPEService programtypeService, IEMAILTEMPLATEService emailService)
         {
             _userManager = usermanager;
             _signInManager = signinmanager;
@@ -30,6 +31,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             _userService = userService;
             _context = context;
             _programTypeService = programtypeService;
+            _emailService = emailService;
         }
         #region affectation
         [Authorize(Roles="Admin")]
@@ -229,6 +231,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         }
         public async Task<IActionResult> SendPasswordResetEmail(string id)
         {
+            var emails = await _emailService.GetAllAsync();
+            var emailcontent = emails.Where(e => e.Name == "Reset Password").ToList()[0];
             // Look up the user by email address
             var user = await _userService.GetByIdAsync(id);
             if (user == null)
@@ -247,7 +251,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             message.From = new MailAddress("debtcalculation1@gmail.com", "Debt Calculation and repayment system");
             message.To.Add(new MailAddress(user.Email, user.UserName));
             message.Subject = "Reset Your Password";
-            message.Body = $"Please reset your password by clicking <a href=\"{callbackUrl}\">here</a>.";
+            message.Body = emailcontent + $"<a href=\"{callbackUrl}\">here</a>.";
             message.IsBodyHtml = true;
 
             using (var client = new SmtpClient())
@@ -415,45 +419,6 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         }
         #endregion
 
-        #region SendNormalMail
-        public async Task<IActionResult> SendMail()
-        {
-            var Users = await _userService.GetAllAsync();
-            var vm = new SendEmailViewModel() { Users=Users.ToList()};
-            return View("SendEmail", vm);
-        }
-        [HttpPost]
-        public async Task<IActionResult> SendMail(SendEmailViewModel vm)
-        {
-            if (ModelState.IsValid)
-            {
-                // Send the password reset email to the user
-                var message = new MailMessage();
-                message.From = new MailAddress("debtcalculation1@gmail.com", "Debt Calculation and repayment system");
-                message.To.Add(new MailAddress(vm.Email));
-                message.Subject = vm.Subject;
-                message.Body = vm.Body;
-                message.IsBodyHtml = true;
-
-                using (var client = new SmtpClient())
-                {
-                    client.Host = "smtp.gmail.com";
-                    client.Port = 587;
-                    client.EnableSsl = true;
-                    client.Credentials = new NetworkCredential("debtcalculation1@gmail.com", "zdsjnyteligoddnd");
-                    client.Send(message);
-                }
-
-                var successMessage = "You have sent the e-mail";
-                return RedirectToAction("IndexParam", "Home", new { successMessage });
-            }
-            else
-            {
-                var errorMessage = "There has been an error";
-                return RedirectToAction("Error", "Home", new { errorMessage });
-            }
-        }
-        #endregion
 
     }
 }
