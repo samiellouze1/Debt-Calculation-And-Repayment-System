@@ -13,6 +13,8 @@ using System.Security.Principal;
 using Debt_Calculation_And_Repayment_System.Data.ViewModels;
 using Debt_Calculation_And_Repayment_System.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Mail;
+using System.Net;
 
 namespace Debt_Calculation_And_Repayment_System.Controllers
 {
@@ -24,8 +26,9 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         private readonly IINSTALLMENTService _installmentService;
         private readonly IPAYMENTService _paymentService;
         private readonly ISTAFFMEMBERService _staffmemberService;
+        private readonly IEMAILTEMPLATEService _emailService;
         private readonly AppDbContext _context;
-        public DebtRegisterController(IDEBTREGISTERService debtregisterService, ISTUDENTService studentService, IREQUESTService requestService,IINSTALLMENTService installmentService,IPAYMENTService paymentService, ISTAFFMEMBERService staffmemberService,AppDbContext context)
+        public DebtRegisterController(IDEBTREGISTERService debtregisterService, ISTUDENTService studentService, IREQUESTService requestService,IINSTALLMENTService installmentService,IPAYMENTService paymentService, ISTAFFMEMBERService staffmemberService,AppDbContext context,IEMAILTEMPLATEService emailService)
         {
             _debtregisterService = debtregisterService;
             _studentService = studentService;
@@ -33,6 +36,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             _installmentService = installmentService;
             _paymentService = paymentService;
             _staffmemberService = staffmemberService;
+            _emailService = emailService;
             _context = context;
         }
         [Authorize(Roles ="Student")]
@@ -288,6 +292,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var debtregister = await _debtregisterService.GetByIdAsync(request.DebtRegister.Id);
             var resttopayinstallment = debtregister.TotalInstallment - debtregister.InterestAmount;
             var tbpi = debtregister.ToBePaidInstallment - debtregister.Amount;
+            var payments = new List<PAYMENT>();
             if (resttopayinstallment>0)
             {
                 var interest = decimal.Truncate(tbpi/ request.NumOfMonths);
@@ -306,6 +311,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                         InterestAmount = interest,
                     };
                     await _paymentService.AddAsync(payment);
+                    payments.Add(payment);
                 }
             }
             else
@@ -325,12 +331,23 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                         InterestAmount=decimal.Truncate(addons)
                     };
                     await _paymentService.AddAsync(payment);
+                    payments.Add(payment);
                 }
             }
             if (request.ToBePaidFull!=0)
             {
                 var paymentfull = new PAYMENT() { Type = "Full", DebtRegister = debtregister, Sum = request.ToBePaidFull, Paid = false, PaymentDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day), RegDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day) };
                 await _paymentService.AddAsync(paymentfull);
+                payments.Add(paymentfull);
+            }
+            foreach ( var payment in payments)
+            {
+                var idp = payment.Id;
+                DateTime targetDateTime = payment.PaymentDate;
+                TimeSpan timeToWait3 = targetDateTime - DateTime.Now.AddDays(3);
+                TimeSpan timeToWait1 = targetDateTime.AddDays(1) - DateTime.Now;
+                await SendPaymentReminderBefore(idp, timeToWait3);
+                await SendPaymentReminderAfter(idp,timeToWait1);
             }
         }
         [HttpPost]
@@ -361,7 +378,67 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 return Enumerable.Repeat(0m, n).ToArray();
             }
         }
-
         #endregion
+        public async Task SendPaymentReminderBefore(string idp,TimeSpan timetowait)
+        {
+            await Task.Delay(timetowait);
+            var payment = await _paymentService.GetByIdAsync(idp, payment => payment.DebtRegister);
+            if (!payment.Paid)
+            {
+                var debtregister = await _debtregisterService.GetByIdAsync(payment.DebtRegister.Id, d => d.Student);
+                var id = debtregister.Id;
+                var Email = debtregister.Student.Email;
+                var emails = await _emailService.GetAllAsync();
+                var emailcontent = emails.Where(e => e.Name == "Payment in 3 days").ToList()[0];
+                var callbackUrl = Url.Action("PaymentsByDebtRegister", "Payment", new { id }, Request.Scheme, Request.Host.ToString());
+                var callbackUrl2 = Url.Action("Login", "Account", null, Request.Scheme, Request.Host.ToString());
+                var message = new MailMessage();
+                message.From = new MailAddress("debtcalculation1@gmail.com", "Debt Calculation and repayment system");
+                message.To.Add(new MailAddress(Email));
+                message.Subject = "Payment in 3 days";
+                message.Body = emailcontent + $"  <a href=\"{callbackUrl}\">here</a>. PS: You need to be authenicated first at <a href=\"{callbackUrl2}\">here</a>.";
+                message.IsBodyHtml = true;
+
+                using (var client = new SmtpClient())
+                {
+                    client.Host = "smtp.gmail.com";
+                    client.Port = 587;
+                    client.EnableSsl = true;
+                    client.Credentials = new NetworkCredential("debtcalculation1@gmail.com", "zdsjnyteligoddnd");
+                    client.Send(message);
+                }
+            }
+        }
+        public async Task SendPaymentReminderAfter(string idp,TimeSpan timetowait)
+        {
+            await Task.Delay(timetowait);
+            var payment = await _paymentService.GetByIdAsync(idp, payment => payment.DebtRegister);
+            if (!payment.Paid)
+            {
+                var debtregister = await _debtregisterService.GetByIdAsync(payment.DebtRegister.Id, d => d.Student);
+                var id = debtregister.Id;
+                var Email = debtregister.Student.Email;
+                var emails = await _emailService.GetAllAsync();
+                var emailcontent = emails.Where(e => e.Name == "Payment 1 day ago").ToList()[0];
+                var callbackUrl = Url.Action("PaymentsByDebtRegister", "Payment", new { id }, Request.Scheme, Request.Host.ToString());
+                var callbackUrl2 = Url.Action("Login", "Account", null, Request.Scheme, Request.Host.ToString());
+
+                var message = new MailMessage();
+                message.From = new MailAddress("debtcalculation1@gmail.com", "Debt Calculation and repayment system");
+                message.To.Add(new MailAddress(Email));
+                message.Subject = "Payment 1 day ago";
+                message.Body = emailcontent + $"  <a href=\"{callbackUrl}\">here</a>. PS: You need to be authenicated first at <a href=\"{callbackUrl2}\">here</a>.";
+                message.IsBodyHtml = true;
+
+                using (var client = new SmtpClient())
+                {
+                    client.Host = "smtp.gmail.com";
+                    client.Port = 587;
+                    client.EnableSsl = true;
+                    client.Credentials = new NetworkCredential("debtcalculation1@gmail.com", "zdsjnyteligoddnd");
+                    client.Send(message);
+                }
+            }
+        }
     }
 }
