@@ -6,6 +6,7 @@ using Debt_Calculation_And_Repayment_System.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System.Net;
 using System.Net.Mail;
 using System.Security.Claims;
@@ -53,7 +54,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 var student = await _studentService.GetByIdAsync(vm.StudentId, s => s.StaffMember, s => s.DebtRegister);
                 oldstaffmember.Students.Add(student);
                 await _context.SaveChangesAsync();
-                var successMessage = "You successfully affected the student"+student.Email+"to the staff member"+oldstaffmember.Email;
+                var successMessage = "Atama Başarılı Bursiyer:"+student.Email+" Görevli:"+oldstaffmember.Email;
                 return RedirectToAction("IndexParam", "Home", new { successMessage });
             }
             else
@@ -88,18 +89,13 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                     var result = await _signInManager.PasswordSignInAsync(user, loginvm.Password, false, false);
                     if (result.Succeeded)
                     {
-                        if (User.IsInRole("Student"))
-                        {
-                            var userid = User.FindFirstValue("Id");
-                            var student = await _studentService.GetByIdAsync(userid);
-                            student.Status = "Logged In";
-                            await _context.SaveChangesAsync();
-                        }
+                        
+                        
                         return RedirectToAction("Index", "Home");
                     }
                 }
             }
-            TempData["Error"] = "Wrong! Try Again";
+            TempData["Error"] = "Hata! Tekrar Deneyin";
             return View(loginvm);
         }
         [HttpPost]
@@ -112,8 +108,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         {
             var user = await _userManager.FindByIdAsync(id);
             await _userManager.DeleteAsync(user);
-            var successMessage = "you successfully deleted a user";
-            return RedirectToAction("IndexParam", "Home", new {successMessage});
+            var successMessage = "Silme işlemi başarılı.";
+            return RedirectToAction("MyStudents", "Student", new {message=successMessage});
         }
         #endregion
 
@@ -128,27 +124,33 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         public async Task<IActionResult> RegisterAStudent(RegisterAStudentVM registerVM)
         {
 
-            var authorize = registerVM.InterestRate >= 0 && registerVM.InterestRate <= 1;
+            //var authorize = registerVM.InterestRate >= 0 && registerVM.InterestRate <= 1;
             if (!ModelState.IsValid)
             {
                 var programtypes = await _programTypeService.GetAllAsync();
                 registerVM.ProgramTypes = programtypes.ToList();
-                ViewData["Error"] = "Wrong Data";
+                ViewData["Error"] = "Hatalı Data";
                 return View(registerVM);
             }
-            if (!authorize)
-            {
-                var programtypes = await _programTypeService.GetAllAsync();
-                registerVM.ProgramTypes = programtypes.ToList();
-                ViewData["Error"] = "Wrong data, interest must be between 0 and 1";
-                return View(registerVM);
-            }
+            
+            
             var user = await _userManager.FindByEmailAsync(registerVM.Email);
             if (user != null)
             {
-                TempData["Error"] = "This Email Address has already been taken";
+                var programtypes = await _programTypeService.GetAllAsync();
+                registerVM.ProgramTypes = programtypes.ToList();
+                TempData["Error"] = "Bu eposta ile zaten bir kayıt var";
                 return View(registerVM);
             }
+            var program = await _programTypeService.GetByIdAsync(registerVM.ProgramID);
+            if (program == null)
+            {
+                TempData["Error"] = "Program seçmediniz.";
+                var programtypes = await _programTypeService.GetAllAsync();
+                registerVM.ProgramTypes = programtypes.ToList();
+                return View(registerVM);
+            }
+
             var staffmember = new STAFFMEMBER();
             var staffmemberstatus = false;
             if (User.IsInRole("StaffMember"))
@@ -164,13 +166,20 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 FirstName = registerVM.FirstName,
                 SurName = registerVM.SurName,
                 RegDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
+                ProgramFinishDate= registerVM.ProgramFinishDate,
                 Address = registerVM.Address,
                 PhoneNumber = registerVM.PhoneNumber,
                 StaffMember = staffmember,
-                DebtRegister = new DEBTREGISTER() { InterestRate = registerVM.InterestRate },
+                DebtRegister = new DEBTREGISTER() { InterestRate = program.InterestRate, InterestRateInstallment = program.InterestRateInstallment, InterestRateDelay = program.InterestRateDelay, ProgramFinishDate = registerVM.ProgramFinishDate, FirstInstallmentDate= registerVM.ProgramFinishDate },
                 StaffMemberAssigned = staffmemberstatus,
-                ProgramID=registerVM.ProgramID,
-                Status="New Recorded"
+                ProgramType= program,
+                IdentityNumber=registerVM.IdentityNumber,
+                GuarantorIdentityNumber=registerVM.GuarantorIdentityNumber,
+                GuarantorMobile=registerVM.GuarantorMobile,
+                GuarantorName= registerVM.GuarantorName,
+                GuarantorAddress = registerVM.GuarantorAddress,
+                Desc =registerVM.Desc,
+                Status="Yeni Kayıt"
             };
             string password = GenerateRandomPassword(8);
             var newUserResponse = await _userManager.CreateAsync(newStudent, password);
@@ -179,8 +188,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 var result = await _userManager.AddToRoleAsync(newStudent, UserRoles.Student);
                 if (result.Succeeded)
                 {
-                    var successMessage = "You successfully added a student ";
-                    return RedirectToAction("IndexParam", "Home", new { successMessage });
+                    var successMessage = "Bursiyer ekleme başarılı. ";
+                    return RedirectToAction("MyStudents", "Student", new { message= successMessage });
                 }
             }
             return RedirectToAction("Index", "Home");
@@ -203,7 +212,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var user = await _userManager.FindByEmailAsync(registerVM.Email);
             if (user != null)
             {
-                TempData["Error"] = "This Email Address has already been taken";
+                TempData["Error"] = "Bu eposta zaten kayıtlı.";
                 return View(registerVM);
             }
             var newStaffMember = new STAFFMEMBER()
@@ -223,7 +232,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 var result = await _userManager.AddToRoleAsync(newStaffMember, UserRoles.StaffMember);
                 if (result.Succeeded)
                 {
-                    var successMessage = "You successfully added a new staff member";
+                    var successMessage = "Yeni görevli başarılı bir şekidle eklendi.";
                     return RedirectToAction("IndexParam", "Home", new { successMessage });
                 }
             }
@@ -232,13 +241,13 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         public async Task<IActionResult> SendPasswordResetEmail(string id)
         {
             var emails = await _emailService.GetAllAsync();
-            var emailcontent = emails.Where(e => e.Name == "Reset Password").ToList()[0];
-            // Look up the user by email address
+            var emailcontent = emails.FirstOrDefault(e => e.Name == "Şifre Sıfırlama").Content;
+                // Look up the user by email address
             var user = await _userService.GetByIdAsync(id);
             if (user == null)
             {
                 // Show an error message to the user
-                TempData["ErrorMessage"] = "Invalid email address";
+                TempData["ErrorMessage"] = "Hatalı eposta";
                 return RedirectToAction("ForgotPassword", "Account");
             }
 
@@ -248,10 +257,10 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
 
             // Send the password reset email to the user
             var message = new MailMessage();
-            message.From = new MailAddress("debtcalculation1@gmail.com", "Debt Calculation and repayment system");
+            message.From = new MailAddress("debtcalculation1@gmail.com", "BIDEB- Burs Geri Ödeme Sistemi");
             message.To.Add(new MailAddress(user.Email, user.UserName));
-            message.Subject = "Reset Your Password";
-            message.Body = emailcontent + $"<a href=\"{callbackUrl}\">here</a>.";
+            message.Subject = "Şifre Sıfırlama";
+            message.Body = emailcontent + $"<a href=\"{callbackUrl}\">tıklayınız</a>.";
             message.IsBodyHtml = true;
 
             using (var client = new SmtpClient())
@@ -265,10 +274,10 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var student = await _studentService.GetByIdAsync(id);
             if (student!=null)
             {
-                student.Status = "Notified";
+                student.Status = "Bildirim Gönderildi";
                 await _context.SaveChangesAsync();
             }
-            var successMessage = "a reset password link has been sent ";
+            var successMessage = "şifre sıfırlama maili gönderildi. ";
             return RedirectToAction("IndexParam", "Home", new { successMessage });
         }
         [AllowAnonymous]
@@ -278,14 +287,14 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             // Check if there is an authenticated user
             if (User.Identity.IsAuthenticated)
             {
-                var errorMessage = "There is already a user logged in";
+                var errorMessage = "Bu kullanıcı daha önce giriş yapmış.";
                 return RedirectToAction("Error", "Home", new {errorMessage});
             }
 
             // Verify that the email and code are valid
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(code))
             {
-                var errorMessage = "Your token expired ";
+                var errorMessage = "Bu kodun süresi doldu ";
                 return RedirectToAction("Error", "Home", new { errorMessage });
             }
 
@@ -306,7 +315,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             // Check if there is an authenticated user
             if (User.Identity.IsAuthenticated)
             {
-                var errorMessage = "Your token expired ";
+                var errorMessage = "Bu kodun süresi doldu ";
                 return RedirectToAction("Error", "Home", new { errorMessage });
             }
             if (!ModelState.IsValid)
@@ -318,7 +327,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
-                ModelState.AddModelError(string.Empty, "Invalid email address");
+                ModelState.AddModelError(string.Empty, "Yanlış eposta");
                 return View(model);
             }
 
@@ -326,7 +335,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
             if (result.Succeeded)
             {
-                var successMessage = "Your password has been reset ";
+                var successMessage = "Şifreniz sıfırlandı ";
                 return RedirectToAction("IndexParam", "Home", new { successMessage });
             }
 
@@ -349,14 +358,14 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
             {
                 // Show an error message to the user
-                TempData["ErrorMessage"] = "Invalid email address";
+                TempData["ErrorMessage"] = "Hatalı eposta";
                 return View();
             }
 
             // Generate the password reset link
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
             var callbackUrl = Url.Action("ResetPassword", "Account", new { email = user.Email, code = code }, protocol: Request.Scheme);
-            var successMessage = "a password reset has been sent to your mail ";
+            var successMessage = "şifre sıfırlama epostası gönderildi ";
             return RedirectToAction("IndexParam", "Home", new { successMessage });
         }
         public static string GenerateRandomPassword(int length)

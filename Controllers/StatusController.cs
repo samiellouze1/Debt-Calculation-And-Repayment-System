@@ -26,7 +26,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             bool authorize;
             var status = await _statusService.GetByIdAsync(id);
             var type = status.Type;
-            var unauthorizedStatusToDelete = new List<string>() { "Loggedin", "Notified", "Waiting", "New Recorded", "In Accounting" };
+            var unauthorizedStatusToDelete = new List<string>() { "Giriş Yapıldı", "Bildirim Gönderildi", "Talep Aşamasında", "Yeni Kayıt", "Borcu Girildi", "Muhasebede","Tamamlandı" };
+            //"Logged in", "Notified", "Waiting", "New Recorded", "In Accounting"
             authorize = !unauthorizedStatusToDelete.Contains(type);
             if (authorize)
             {
@@ -35,7 +36,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             else
             {
-                var errorMessage = "you tried to delete an undeletable status";
+                var errorMessage = "Silinemez bir durumu silmeye çalıştınız";
                 return RedirectToAction("Error", "Home", new { errorMessage });
             }
         }
@@ -48,7 +49,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 if (vm.Delete)
                 {
                     await _statusService.DeleteAsync(vm.Id);
-                    var successMessage = "You successfully deleted a status";
+                    var successMessage = "Silme işlemi başarılı";
                     return RedirectToAction("IndexParam", "Home", new { successMessage });
                 }
                 else
@@ -80,12 +81,12 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 {
                     var Type = vm.Type;
                     await _statusService.AddAsync(new STUDENTSTATUSTYPE() { Type = Type });
-                    var successMessage = "you successfully added the new status " + Type;
+                    var successMessage = "Ekleme işlemi başarılı " + Type;
                     return RedirectToAction("IndexParam", "Home", new { successMessage });
                 }
                 else
                 {
-                    var errorMessage = "Status " + vm.Type + " is already in place";
+                    var errorMessage = "Durum " + vm.Type + " zaten ekli";
                     return RedirectToAction("Error", "Home", new { errorMessage });
                 }
             }

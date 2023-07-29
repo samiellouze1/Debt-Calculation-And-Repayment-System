@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>@RenderSection("Title", required: false) - Debt Calculation And Repayment System</title>
+    <title>@RenderSection("Title", required: false) - Bideb Geri Ödeme Sistemi</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Free HTML Templates" name="keywords">
     <meta content="Free HTML Templates" name="description">
@@ -13,6 +13,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="~/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
     <link href="~/css/style.css" rel="stylesheet">
+    <link href="https://unpkg.com/bootstrap-table@1.22.0/dist/bootstrap-table.min.css" rel="stylesheet">
+
+   
 </head>
 
 <body>
@@ -23,7 +26,7 @@
                 <div class="d-inline-flex align-items-center text-white">
                     <small><i class="fa fa-phone-alt mr-2"></i>+012 345 6789</small>
                     <small class="px-3">|</small>
-                    <small><i class="fa fa-envelope mr-2"></i>debtcalculation1@gmail.com</small>
+                    <small><i class="fa fa-envelope mr-2"></i>geriodeme@tubitak.gov.tr</small>
                 </div>
             </div>
             <div class="col-lg-6 text-center text-lg-right">
@@ -50,7 +53,7 @@
     <div class="container-fluid p-0">
         <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
             <a asp-controller="Home" asp-action="Index" class="navbar-brand ml-lg-3">
-                <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-book-reader mr-3"></i>NAZIM</h1>
+                <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-book-reader mr-3"></i>Bideb</h1>
             </a>
             @if (User.IsInRole("Admin"))
             {
@@ -58,11 +61,11 @@
             }
             @if (User.IsInRole("StaffMember"))
             {
-                <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2" style="margin-top:30px;">Staff Member</h6>
+                <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2" style="margin-top:30px;">Görevli</h6>
             }
             @if (User.IsInRole("Student"))
             {
-                <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2" style="margin-top:30px;">Student</h6>
+                <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2" style="margin-top:30px;">Bursiyer</h6>
             }
             <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
                 <span class="navbar-toggler-icon"></span>
@@ -73,24 +76,24 @@
                     {
                         @if (User.IsInRole("Admin"))
                         {
-                            <a asp-controller="Student" asp-action="AllStudents" class="nav-item nav-link active">Students</a>
-                            <a asp-controller="StaffMember" asp-action="AllStaffMembers" class="nav-item nav-link active">Staff Members</a>
-                            <a asp-controller="ProgramType" asp-action="AllProgramTypes" class="nav-item nav-link active">ProgramTypes</a>
-                            <a asp-controller="Status" asp-action="AllStatuses" class="nav-item nav-link active">All Statuses</a>
-                            <a asp-controller="EmailTemplate" asp-action="AllTemplates" class="nav-item nav-link active">Email Templates</a>
+                            <a asp-controller="StaffMember" asp-action="MyProfile" asp-route-type=0 class="nav-item nav-link active">Analiz</a>
+                            <a asp-controller="Student" asp-action="MyStudents" class="nav-item nav-link active">Bursiyerler</a>
+                            <a asp-controller="StaffMember" asp-action="AllStaffMembers" class="nav-item nav-link active">Görevliler</a>
+                            <a asp-controller="ProgramType" asp-action="AllProgramTypes" class="nav-item nav-link active">Program Tipleri</a>
+                            <a asp-controller="Status" asp-action="AllStatuses" class="nav-item nav-link active">Bursiyer Durumları</a>
+                            <a asp-controller="EmailTemplate" asp-action="AllTemplates" class="nav-item nav-link active">Email Şablonları</a>
 
                         }
                         @if (User.IsInRole("StaffMember"))
                         {
-                            <a asp-controller="StaffMember" asp-action="MyProfile" class="nav-item nav-link active">My Profile</a>
-                            <a asp-controller="Student" asp-action="MyStudents" class="nav-item nav-link active">My Students</a>
-                            <a asp-controller="Request" asp-action="MyRequests" class="nav-item nav-link active">My Requests</a>
-                            <a asp-controller="Status" asp-action="AllStatuses" class="nav-item nav-link active">All Statuses</a>
-                        }
+                            <a asp-controller="StaffMember" asp-action="MyProfile" asp-route-type=0 class="nav-item nav-link active">İş Yüküm</a>
+                            <a asp-controller="Student" asp-action="MyStudents" class="nav-item nav-link active">Bursiyerlerim</a>
+                            <a asp-controller="Request" asp-action="MyRequests" class="nav-item nav-link active">Bursiyer Talepleri</a>
+                         }
                         @if (User.IsInRole("Student"))
                         {
-                            <a asp-controller="Student" asp-action="MyProfile" class="nav-item nav-link active">My profile</a>
-                            <a asp-controller="DebtRegister" asp-action="MyDebtRegister" class="nav-item nav-link active">My Debt Register</a>
+                            <a asp-controller="Student" asp-action="MyProfile" class="nav-item nav-link active">Profil</a>
+                            <a asp-controller="DebtRegister" asp-action="MyDebtRegister" class="nav-item nav-link active">Burs Ödemelerim</a>
                         }
                     }
                 </div>
@@ -98,27 +101,27 @@
                 {
                     @if (User.IsInRole("Admin"))
                     {
-                        <a asp-controller="ProgramType" asp-action="AddProgramType" class="btn btn-primary py-2 px-4 d-none d-lg-block" style="margin-right:10px;">Add Program Type</a>
-                        <a asp-controller="Account" asp-action="AffectStudentToStaffMember" class="btn btn-primary py-2 px-4 d-none d-lg-block" style="margin-right:10px;">Affect Student To Staff Member</a>
-                        <a asp-controller="Account" asp-action="RegisterAStaffMember" class="btn btn-primary py-2 px-4 d-none d-lg-block" style="margin-right:10px;">Register A Staff Member</a>
+                        <a asp-controller="ProgramType" asp-action="AddProgramType" class="btn btn-primary py-2 px-4 d-none d-lg-block" style="margin-right:10px;">Program Tipi ekle</a>
+                        <a asp-controller="Account" asp-action="AffectStudentToStaffMember" class="btn btn-primary py-2 px-4 d-none d-lg-block" style="margin-right:10px;">Görevliye Bursiyer Ata</a>
+                        <a asp-controller="Account" asp-action="RegisterAStaffMember" class="btn btn-primary py-2 px-4 d-none d-lg-block" style="margin-right:10px;">Görevli Ekle</a>
                     }
                     @if (User.IsInRole("StaffMember"))
                     {
 
-                        <a asp-controller="Status" asp-action="CreateStatus" class="btn btn-primary py-2 px-4 d-none d-lg-block" style="margin-right:10px;">Create Status</a>
-                        <a asp-controller="Debt" asp-action="CreateDebt" class="btn btn-primary py-2 px-4 d-none d-lg-block" style="margin-right:10px;">Create Debt</a>
-                        <a asp-controller="Account" asp-action="RegisterAStudent" class="btn btn-primary py-2 px-4 d-none d-lg-block" style="margin-right:10px;">Register A Student</a>
+                        <a asp-controller="Status" asp-action="CreateStatus" class="btn btn-primary py-2 px-4 d-none d-lg-block" style="margin-right:10px;">Bursiyer Durumu Ekle</a>
+                        <a asp-controller="Debt" asp-action="CreateDebt" class="btn btn-primary py-2 px-4 d-none d-lg-block" style="margin-right:10px;">Burs Borcu Kayıt</a>
+                        <a asp-controller="Account" asp-action="RegisterAStudent" class="btn btn-primary py-2 px-4 d-none d-lg-block" style="margin-right:10px;">Bursiyer Kayıt</a>
 
                     }
                     <form asp-controller="Account" asp-action="Logout">
                         <button class="btn btn-secondary py-2 px-4 d-none d-lg-block">
-                            Logout
+                            Çıkış Yap
                         </button>
                     </form>
                 }
                 else
                 {
-                    <a asp-controller="Account" asp-action="Login" class="btn btn-secondary px-4 px-lg-5">Login</a>
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-secondary px-4 px-lg-5">Giriş Yap</a>
                 }
             </div>
         </nav>
@@ -149,23 +152,23 @@
             <div class="row">
                 <div class="col-md-6 mb-5">
                     <a href="index.html" class="navbar-brand">
-                        <h1 class="mt-n2 text-uppercase text-white"><i class="fa fa-book-reader mr-3"></i>NAZIM</h1>
+                        <h1 class="mt-n2 text-uppercase text-white"><i class="fa fa-book-reader mr-3"></i>BİDEB</h1>
                     </a>
-                    <p class="m-0">It is very recommended that you respect our turms of use. Thank you so much for visiting our website. Here are some useful links you can go to to learn more about us! Peace!</p>
+                    <p class="m-0"> </p>
                 </div>
 
             </div>
             <div class="row">
                 <div class="col-md-4 mb-5">
-                    <h3 class="text-white mb-4">Useful Link 1</h3>
+                    <h3 class="text-white mb-4"> </h3>
 
                 </div>
                 <div class="col-md-4 mb-5">
-                    <h3 class="text-white mb-4">Useful Link 2</h3>
+                    <h3 class="text-white mb-4"> </h3>
 
                 </div>
                 <div class="col-md-4 mb-5">
-                    <h3 class="text-white mb-4">Useful Link 3</h3>
+                    <h3 class="text-white mb-4"> </h3>
 
                 </div>
             </div>
@@ -176,12 +179,12 @@
             <div class="row">
                 <div class="col-md-6 text-center text-md-left mb-3 mb-md-0">
                     <p class="m-0">
-                        Copyright &copy; <a class="text-white" href="#">Debt Calculation and Repayment System</a>. All Rights Reserved.
+                        Copyright &copy; <a class="text-white" href="#">Bideb Geri Ödeme Sistemi</a>. All Rights Reserved.
                     </p>
                 </div>
                 <div class="col-md-6 text-center text-md-right">
                     <p class="m-0">
-                        Contact <a class="text-white" href="https://htmlcodex.com">debtcalculation1@gmail.com</a>
+                        Contact <a class="text-white" href="https://tubitak.gov.tr">geriodeme@tubitak.gov.tr</a>
                     </p>
                 </div>
             </div>
@@ -190,6 +193,12 @@
     <a href="#" class="btn btn-lg btn-primary rounded-0 btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js">
+    </script>
+    <script src="https://unpkg.com/tableexport.jquery.plugin/tableExport.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.22.0/dist/bootstrap-table.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.22.0/dist/bootstrap-table-locale-all.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.22.0/dist/extensions/export/bootstrap-table-export.min.js"></script>
     <script src="~/lib/easing/easing.min.js"></script>
     <script src="~/lib/waypoints/waypoints.min.js"></script>
     <script src="~/lib/counterup/counterup.min.js"></script>

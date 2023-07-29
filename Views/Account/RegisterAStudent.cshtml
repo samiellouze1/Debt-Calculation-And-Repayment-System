@@ -6,83 +6,133 @@
 @section Title {
     Register a Student
 }
+
 <div class="container-fluid px-0 py-5" >
     <div class="row mx-0 justify-content-center pt-5">
         <div class="col-lg-6">
             <div class="section-title text-center position-relative mb-4">
-                <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">STAFF MEMBER</h6>
-                <h1 class="display-4">FIll in the credentials of the new student</h1>
+                <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Görevli</h6>
+                
             </div>
         </div>
     </div>
     <div class="row justify-content-center bg-image mx-0 mb-5">
         <div class="col-lg-9 py-5">
             <div class="bg-white p-5 my-5">
-                <h1 class="text-center mb-4">TYPE IN THE CREDENTIALS FOR THE NEW STUDENT!</h1>
+                <h1 class="text-center mb-4">Bursiyerin kimlik bilgilerini doldurun!</h1>
                 <form asp-action="RegisterAStudent">
                     <div class="form-row">
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label>Type in First Name</label>
-                                    <input asp-for="FirstName" type="text" class="form-control bg-light border-0" placeholder="First Name" >
+                                    <label>İsim</label>
+                                    <input asp-for="FirstName" type="text" class="form-control bg-light border-0" placeholder="İsim" >
                                     <span asp-validation-for="FirstName" style="color:red"></span>
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label>Type in Last Name</label>
-                                    <input asp-for="SurName" type="text" class="form-control bg-light border-0" placeholder="Last Name" >
+                                    <label>Soyisim</label>
+                                    <input asp-for="SurName" type="text" class="form-control bg-light border-0" placeholder="Soyisim" >
                                     <span asp-validation-for="SurName" style="color:red"></span>
                                 </div>
                             </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Kimlik No</label>
+                                <input asp-for="IdentityNumber" type="text" class="form-control bg-light border-0" placeholder="Kimlik No">
+                             </div>
+                        </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label>Type in Email</label>
+                                    <label>Email</label>
                                     <input asp-for="Email" type="email" class="form-control bg-light border-0" placeholder="Email" >
                                     <span asp-validation-for="Email" style="color:red"></span>
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label >Select a Program ID</label>
+                                    <label >Program</label>
                                     <select asp-for="ProgramID" class="form-control bg-light border-0">
                                         @foreach (var item in Model.ProgramTypes)
                                         {
-                                            <option value=@item.Type>@item.Type</option>
+                                            <option value=@item.Id>@item.Type</option>
                                         }
                                     </select>
                                     <span asp-validation-for="ProgramID" style="color:red"></span>
                                 </div>
                             </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Son Ödeme Tarihi</label>
+                                <input asp-for="ProgramFinishDate" id="ProgramFinishDate" type="date" class="form-control bg-light border-0 date-input" value="01.01.2023" placeholder="Son Ödeme Tarihi">
+                               
+
+                                @*@Html.TextBoxFor(model => model.ProgramFinishDate, "{0:dd.MM.yyyy}", new { id = "ProgramFinishDate", type = "date", required = "true", @class = "numbersOnly col-sm-10" })*@
+                                <span asp-validation-for="ProgramFinishDate" style="color:red"></span>
+                                
+                            </div>
+                        </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label>Type in Phone Number</label>
-                                    <input asp-for="PhoneNumber" type="number" class="form-control bg-light border-0" placeholder="Phone Number" >
+                                    <label>Telefon</label>
+                                    <input asp-for="PhoneNumber" type="number" class="form-control bg-light border-0" placeholder="Telefon" >
                                     <span asp-validation-for="PhoneNumber" style="color:red"></span>
                                 </div>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-8">
                                 <div class="form-group">
-                                    <label>Type in Address</label>
-                                    <input asp-for="Address" type="text" class="form-control bg-light border-0" placeholder="Address" >
+                                    <label>Adres</label>
+                                    <input asp-for="Address" type="text" class="form-control bg-light border-0" placeholder="Adres" >
                                     <span asp-validation-for="Address" style="color:red"></span>
                                 </div>
                             </div>
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label>Type in Interest Rate</label>
-                                    <input asp-for="InterestRate" type="text" class="form-control bg-light border-0" placeholder="Interest Rate" >
-                                    <span asp-validation-for="InterestRate" style="color:red"></span>
-                                </div>
+
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Kefil İsim Soyisim</label>
+                                <input asp-for="GuarantorName" type="text" class="form-control bg-light border-0" placeholder="İsim Soyisim">
+                              
                             </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Kefil Kimlik Numarası</label>
+                                <input asp-for="GuarantorIdentityNumber" type="text" class="form-control bg-light border-0" placeholder="Kimlik No">
+                               
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Kefil Telefon Numarası</label>
+                                <input asp-for="GuarantorMobile" type="text" class="form-control bg-light border-0" placeholder="Telefon">
+                                
+                            </div>
+                        </div>
                         <div class="col-sm-12">
                             <div class="form-group">
-                                <label>Error Message</label>
+                                <label>Kefil Adres</label>
+                                <input asp-for="GuarantorAddress" type="text" class="form-control bg-light border-0" placeholder="Adres">
+
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Açıklama</label>
+                                <textarea asp-for="Desc" type="text" multiple="true" class="form-control bg-light border-0" placeholder="Açıklama"></textarea>
+
+                            </div>
+                        </div>
+
+
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                 
                                 <div>@ViewData["Error"]</div>
                             </div>
                         </div>
                         <div class="col-sm-6" style="width:50%;margin: 0 auto;">
-                            <button class="btn btn-primary btn-block" type="submit" value="RegisterAStudent">Register The Student </button>
+                            <button class="btn btn-primary btn-block" type="submit" value="RegisterAStudent">Bursiyeri Kaydet</button>
                         </div>
                     </div>
                 </form>

@@ -4,13 +4,13 @@
     Layout = "~/Views/Shared/_LayoutSecondary.cshtml";
 }
 @section Title {
-    Statuses
+    Durum Tanımları
 }
     @section Name1{
-    Information about
+    Hakkında
 }
     @section Name2{
-    Statuses
+    Durum Tanımları
 }
 
 
@@ -18,7 +18,7 @@
 <table class="table" >
     <thead>
         <tr>
-            <th scope="col">Status</th>
+            <th scope="col">Durum</th>
             <th scope="col"></th>
         </tr>
     </thead>
@@ -28,13 +28,13 @@
 
                 <tr>
                     <td>@item.Type</td>
-                @if (item.Type != "Logged in" && item.Type != "In Accounting" && item.Type !="New Recorded" && item.Type!="Notified" && item.Type!="Waiting" )
+                @if (item.Type != "Giriş Yapıldı" && item.Type != "Muhasebede" && item.Type != "Yeni Kayıt" && item.Type != "Bildirim Gönderildi" && item.Type != "Borcu Girildi" && item.Type != "Talep Aşamasında" && item.Type != "Tamamlandı")
                 {
-                    <td><a asp-controller="Status" asp-action="DeleteStatus" asp-route-id="@item.Id" class="btn btn-secondary py-2 px-4 d-none d-lg-block">Delete Status</a></td>
+                    <td><a asp-controller="Status" asp-action="DeleteStatus" asp-route-id="@item.Id" class="btn btn-secondary py-2 px-4 d-none d-lg-block">Sil</a></td>
                 }
                 else
                 {
-                    <td>This cannot be deleted</td>
+                    <td>Silinemez</td>
                 }
                 </tr>
             

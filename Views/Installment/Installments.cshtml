@@ -3,12 +3,17 @@
     Layout = "~/Views/Shared/_LayoutSecondary.cshtml";
 }
 @section Title {
-    Installments
+    Ödeme Planı
 }
 @section Name1{
-    Student @try
+    Bursiyer @try
     {
         @Model[0].DebtRegister.Student.Email
+        <br/>
+        @Model[0].DebtRegister.Student.FirstName
+        <br />
+        @Model[0].DebtRegister.Student.ProgramType.Type
+        
     }
     catch
     {
@@ -16,16 +21,17 @@
     }
 }
 @section Name2{
-    Installments
+    Ödeme Planı
 }
 <table class="table ">
     <thead>
         <tr>
-            <th scope="col">Rest</th>
-            <th scope="col">IntialAmount</th>
-            <th scope="col">Amount After Interest</th>
-            <th scope="col">Payment Date</th>
-            <th scope="col">Number Of Days</th>
+            <th scope="col">Ana Para</th>
+            <th scope="col">Ödeme Tarihi</th>
+            <th scope="col">Ödenecek Tutarı</th>
+            <th scope="col">Tahakkuk Eden Ek Faiz Tutarı</th>
+           
+            <th scope="col"></th>
         </tr>
     </thead>
     <tbody>
@@ -33,11 +39,17 @@
         {
             <tr class="table">
                 <td>@item.Rest</td>
-                <td>@item.InitialAmount</td>
-                <td>@item.AmountAfterInterest</td>
                 <td>@item.PaymentDate.ToString("yyyy-MM-dd")</td>
-                <td>@item.NumberOfDays</td>
+                <td>@item.InitialAmount</td>
+                <td>@(item.AmountAfterInterest-item.InitialAmount)</td>
             </tr>
         }
+        <tr>
+            <td></td>
+            <td></td>
+            <td> <strong>@Model.Sum(k=>k.InitialAmount)</strong></td>
+            <td><strong>@Model.Sum(k=>k.AmountAfterInterest-k.InitialAmount)</strong></td>
+            
+        </tr>
     </tbody>
 </table>

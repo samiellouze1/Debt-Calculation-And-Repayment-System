@@ -1,8 +1,11 @@
 ﻿using Debt_Calculation_And_Repayment_System.Data;
 using Debt_Calculation_And_Repayment_System.Data.IServices;
+using Debt_Calculation_And_Repayment_System.Data.Services;
 using Debt_Calculation_And_Repayment_System.Data.ViewModels;
+using Debt_Calculation_And_Repayment_System.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 using NuGet.Protocol;
 using System.Security.Claims;
 
@@ -13,21 +16,20 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         private readonly ISTAFFMEMBERService _staffmemberService;
         private readonly ISTUDENTService _studentService;
         private readonly ISTUDENTSTATUSTYPEService _statusService;
+        private readonly IPROGRAMTYPEService _programTypeService;
+        private readonly IDEBTREGISTERService _deptRegService;
         private readonly AppDbContext _context;
 
-        public StudentController(ISTUDENTService studentService,ISTAFFMEMBERService staffmemberService,IUSERService userService,ISTUDENTSTATUSTYPEService statusService, AppDbContext context)
+        public StudentController(ISTUDENTService studentService,ISTAFFMEMBERService staffmemberService,IUSERService userService,ISTUDENTSTATUSTYPEService statusService,IPROGRAMTYPEService programTypeService, IDEBTREGISTERService deptRegService, AppDbContext context)
         {
             _studentService = studentService;
             _staffmemberService = staffmemberService;
             _statusService = statusService;
+            _programTypeService = programTypeService;
+            _deptRegService = deptRegService;
             _context = context;
         }
-        [Authorize(Roles ="Admin")]
-        public async Task<IActionResult> AllStudents()
-        {
-            var students = await _studentService.GetAllAsync(s => s.StaffMember, s => s.DebtRegister);
-            return View("Students", students.OrderBy(student=>student.ProgramID).ToList());
-        }
+       
         [Authorize(Roles="Student")]
         public async Task<IActionResult> MyProfile ()
         {
@@ -57,17 +59,72 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             else
             {
-                return RedirectToAction("Error", "Home", new { errorMessage = "You tried to enter a page to which you are not allowed" });
+                return RedirectToAction("Error", "Home", new { errorMessage = "İzin verilmeyen bir sayfaya girmeye çalıştınız" });
             }
         }
-        [Authorize(Roles ="StaffMember")]
-        public async Task<IActionResult> MyStudents()
+        [Authorize(Roles ="StaffMember,Admin")]
+        public async Task<IActionResult> MyStudents(string? message)
+        {
+            var id = User.FindFirstValue("Id");
+
+            var lstStudents = new List<STUDENT>();
+
+
+            if (User.IsInRole("StaffMember"))
+            {
+                var staffMember = await _staffmemberService.GetByIdAsync(id, s => s.Students);
+
+                lstStudents = staffMember.Students;
+            }
+            if (User.IsInRole("Admin"))
+            {
+                var students = (await _studentService.GetAllAsync()).ToList();
+                lstStudents = students;
+            }
+
+            
+            foreach (var s in lstStudents)
+            {
+                var ent = (await _studentService.GetByIdAsync(s.Id, sm => sm.DebtRegister,sm=>sm.ProgramType));
+                s.DebtRegister = ent.DebtRegister;
+                s.ProgramType = ent.ProgramType;
+            }
+            if (!string.IsNullOrEmpty(message))
+                ViewBag.Message = message;
+            await ViewBagSet();
+            return View("Students", lstStudents.OrderByDescending(s=>s.RegDate).ToList());
+        }
+        [HttpPost]
+        [Authorize(Roles = "Admin,StaffMember")]
+        public async Task<IActionResult> MyStudents(string? filterProgramId,string? filterStatus,string? filterName,string? filterTc, string? filterEmail)
         {
             var id = User.FindFirstValue("Id");
             var staffmember = await _staffmemberService.GetByIdAsync(id, sm => sm.Students);
             var students = staffmember.Students;
-            return View("Students",students.OrderByDescending(s=>s.RegDate).ToList());
+            foreach (var s in students)
+            {
+                var ent = (await _studentService.GetByIdAsync(s.Id, sm => sm.DebtRegister, sm => sm.ProgramType));
+                s.DebtRegister = ent.DebtRegister;
+                s.ProgramType = ent.ProgramType;
+            }
+            if (!string.IsNullOrEmpty(filterProgramId))
+                students = students.Where(k => k.ProgramType.Id == filterProgramId).ToList();
+            if (!string.IsNullOrEmpty(filterStatus))
+                students = students.Where(k => k.Status == filterStatus).ToList();
+            if (!string.IsNullOrEmpty(filterName))
+            {
+                filterName = filterName.ToUpper();
+                students = students.Where(k => k.FirstName.ToUpper().Contains(filterName) || k.SurName.ToUpper().Contains(filterName)).ToList();
+            }
+            if (!string.IsNullOrEmpty(filterTc))
+                students = students.Where(k => k.IdentityNumber.Contains(filterTc) ).ToList();
+            if (!string.IsNullOrEmpty(filterEmail))
+                students = students.Where(k => k.Email.Contains(filterEmail)).ToList();
+            await ViewBagSet();
+            return View("Students", students.OrderByDescending(s => s.RegDate).ToList());
         }
+
+
         [Authorize(Roles ="Admin, StaffMember")]
         public async Task<IActionResult> StudentsByStaffMember(string id)
         {
@@ -80,11 +137,16 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             {
                 var staffmember = await _staffmemberService.GetByIdAsync(id, sm => sm.Students);
                 var students = staffmember.Students;
-                return View("Students", students.OrderBy(s=>s.ProgramID).ToList());
+                foreach(var s in students)
+                {
+                    s.DebtRegister = (await _studentService.GetByIdAsync(s.Id, sm => sm.DebtRegister)).DebtRegister;
+                }
+                await ViewBagSet();
+                return View("Students", students.OrderBy(s=>s.FirstName).ToList());
             }
             else
             {
-                return RedirectToAction("Error", "Home", new { errorMessage = "You tried to enter a page to which you are not allowed" });
+                return RedirectToAction("Error", "Home", new { errorMessage = "İzin verilmeyen bir sayfaya girmeye çalıştınız" });
             }
         }
         [Authorize(Roles ="Admin")]
@@ -98,7 +160,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             else
             {
-                var errorMessage = "You tried to delete a student that doesn't exist";
+                var errorMessage = "Var olmayan bir bursiyer silmeye çalıştınız";
                 return RedirectToAction("Error", "Home", new { errorMessage });
             }
         }
@@ -110,7 +172,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             {
                 if (vm.Delete)
                 {
-                    return RedirectToAction("Delete", "Account", new { vm.Id });
+                    return RedirectToAction("DeleteAccount", "Account", new { vm.Id });
                 }
                 else
                 {
@@ -125,34 +187,84 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         [Authorize(Roles ="Admin, StaffMember")]
         public async Task<IActionResult> ChangeStatus(string id)
         {
-            var student = await _studentService.GetByIdAsync(id);
-            if (student==null)
+            var s = await _studentService.GetByIdAsync(id,s=>s.DebtRegister);
+            if (s==null)
             {
-                var errorMessage = "theres no student like this";
+                var errorMessage = "Bursiyer bulunamadı";
                 return RedirectToAction("Error", "Home", new { errorMessage });
             }
             var statuses = await _statusService.GetAllAsync();
-            var vm = new ChangeStatusVM() { Id = id , statuses=statuses.ToList()};
+            var programs = await _programTypeService.GetAllAsync();
+            var vm = new ChangeStatusVM()
+            {
+                Id = id,
+                student = s,
+                FirstInstallmentDate = s.DebtRegister != null ? s.DebtRegister.FirstInstallmentDate : null,
+                statuses = statuses.ToList(),
+                programes = programs.ToList()
+            };
             return View(vm);
         }
         [Authorize(Roles = "Admin, StaffMember")]
         [HttpPost]
         public async Task<IActionResult> ChangeStatus (ChangeStatusVM vm)
         {
-            if (ModelState.IsValid)
+
+            var student = await _studentService.GetByIdAsync(vm.Id, sm => sm.ProgramType, sm => sm.DebtRegister);
+            var program = await _programTypeService.GetByIdAsync(vm.student.ProgramType.Id);
+            var deptreg = await _deptRegService.GetByIdAsync(student.DebtRegister.Id);
+            student.Status = vm.Type;
+            student.PhoneNumber = vm.student.PhoneNumber;
+            student.FirstName= vm.student.FirstName;
+            student.SurName = vm.student.SurName;
+            student.Email=vm.student.Email;
+            student.Address=vm.student.Address;
+            student.IdentityNumber=vm.student.IdentityNumber;
+            student.PhoneNumber = vm.student.PhoneNumber;
+            student.Address= vm.student.Address;
+            student.GuarantorName= vm.student.GuarantorName;
+            student.GuarantorMobile=vm.student.GuarantorMobile;
+            student.GuarantorIdentityNumber=vm.student.GuarantorIdentityNumber;
+            student.GuarantorAddress=vm.student.GuarantorAddress;
+
+                student.ProgramType = program;
+            if ( vm.student.ProgramFinishDate!=DateTime.MinValue)
             {
-                var student = await _studentService.GetByIdAsync(vm.Id);
-                student.Status = vm.Type;
+                student.ProgramFinishDate = vm.student.ProgramFinishDate;
+            }
+            if (deptreg != null)
+            {
+                deptreg.InterestRate = program.InterestRate;
+                deptreg.InterestRateDelay = program.InterestRateDelay;
+                deptreg.InterestRateInstallment = program.InterestRateInstallment;
+                if (vm.student.ProgramFinishDate != DateTime.MinValue)
+                {
+                    deptreg.ProgramFinishDate = vm.student.ProgramFinishDate;
+                }
+                if (vm.FirstInstallmentDate!=null && vm.FirstInstallmentDate!= DateTime.MinValue)
+                {
+                    deptreg.FirstInstallmentDate = vm.FirstInstallmentDate;
+                }
+                student.DebtRegister = deptreg;
+            }
+               
                 await _context.SaveChangesAsync();
-                var successMessage = "you successfully changed the status of student " + vm.Id;
+                var successMessage = "bursiyerin durumunu başarıyla değiştirdiniz: " + student.FirstName+" "+student.SurName;
                 return RedirectToAction("IndexParam", "Home", new { successMessage });
-            }
-            else
-            {
-                Console.WriteLine(vm.Id);
-                Console.WriteLine(vm.Type);
-                return RedirectToAction("ChangeStatus",new {vm.Id});
-            }
+             
+             
+        }
+
+        public async Task ViewBagSet()
+        {
+            var programType = (await _programTypeService.GetAllAsync()).ToList();
+            
+            var status = await _statusService.GetAllAsync();
+            //programType.FirstOrDefault().Id
+
+            //var lst = programType.Add(new Models.PROGRAMTYPE() {Type="dsa" });
+            ViewBag.ProgramTypes = programType ;
+            ViewBag.Statuses = status ;
         }
         
     }

@@ -15,10 +15,14 @@ using Debt_Calculation_And_Repayment_System.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Mail;
 using System.Net;
+using ExcelDataReader;
+using System.Data;
+using Microsoft.Extensions.Hosting;
+using System.ComponentModel.Design;
 
 namespace Debt_Calculation_And_Repayment_System.Controllers
 {
-    public class DebtRegisterController : Controller
+    public class DebtRegisterController : BaseController
     {
         private readonly ISTUDENTService _studentService;
         private readonly IREQUESTService _requestService;
@@ -27,9 +31,12 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         private readonly IPAYMENTService _paymentService;
         private readonly ISTAFFMEMBERService _staffmemberService;
         private readonly IEMAILTEMPLATEService _emailService;
+        private readonly IDOCUMENTService _docService;
         private readonly AppDbContext _context;
-        public DebtRegisterController(IDEBTREGISTERService debtregisterService, ISTUDENTService studentService, IREQUESTService requestService,IINSTALLMENTService installmentService,IPAYMENTService paymentService, ISTAFFMEMBERService staffmemberService,AppDbContext context,IEMAILTEMPLATEService emailService)
+        IWebHostEnvironment _hostEnvironment;
+        public DebtRegisterController(IWebHostEnvironment hostEnvironment, IDEBTREGISTERService debtregisterService, ISTUDENTService studentService, IREQUESTService requestService,IINSTALLMENTService installmentService,IPAYMENTService paymentService, ISTAFFMEMBERService staffmemberService,AppDbContext context,IEMAILTEMPLATEService emailService)
         {
+            _hostEnvironment = hostEnvironment;
             _debtregisterService = debtregisterService;
             _studentService = studentService;
             _requestService = requestService;
@@ -43,36 +50,43 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         public async Task<IActionResult> MyDebtRegister()
         {
             var studentid = User.FindFirstValue("Id");
-            var student = await _studentService.GetByIdAsync(studentid,s=>s.DebtRegister,s=>s.StaffMember);
-            var debtregister = await _debtregisterService.GetByIdAsync(student.DebtRegister.Id, d => d.Requests);
-            await UpdateDebtRegisterDebtsChanged(debtregister.Id);
-            return View("DebtRegister", debtregister);
+            var student = await _studentService.GetByIdAsync(studentid,s=>s.DebtRegister,s=>s.StaffMember,a=>a.ProgramType);
+            var debtregister = await _debtregisterService.GetByIdAsync(student.DebtRegister.Id, d => d.Requests,d=>d.Payments,d=>d.Installments,d=>d.Debts);
+            student.DebtRegister = debtregister;
+           // await UpdateDebtRegisterDebtsChanged(debtregister.Id);
+            return View("DebtRegister", student);
         }
         public async Task<IActionResult> DebtRegisterById(string id)
         {
             bool authorize = true;
-            var debtregister = await _debtregisterService.GetByIdAsync(id,d=>d.Student);
-            await UpdateDebtRegisterDebtsChanged(debtregister.Id);
+            var student = await _studentService.GetByIdAsync(id, s => s.DebtRegister,student=>student.ProgramType, s => s.Documents);
+            if (student.DebtRegister != null)
+            {
+                student.DebtRegister = await _debtregisterService.GetByIdAsync(student.DebtRegister.Id, d => d.Requests, d => d.Student,d=>d.Debts, d => d.Installments, d => d.Payments);
+                
+            }
+            
+            
             if (User.IsInRole(UserRoles.StaffMember))
             {
                 var staffid = User.FindFirstValue("Id");
                 var staff = await _staffmemberService.GetByIdAsync(staffid,sm=>sm.Students);
                 var students = staff.Students;
                 var studentids = staff.Students.Select(s => s.Id).ToList();
-                authorize = studentids.Contains(debtregister.Student.Id);
+                authorize = studentids.Contains(id);
             }
             else if (User.IsInRole(UserRoles.Student))
             {
                 var studentid = User.FindFirstValue("Id");
-                authorize = studentid==debtregister.Student.Id;
+                authorize = studentid==id;
             }
             if (authorize)
             {
-                return View("DebtRegister", debtregister);
+                return View("DebtRegister", student);
             }
             else
             {
-                return RedirectToAction("Error", "Home", new { errorMessage = "You tried to enter a page to which you are not allowed" });
+                return RedirectToAction("Error", "Home", new { errorMessage = "İzin verilmeyen bir sayfaya girmeye çalıştınız" });
             }
         }
         [Authorize(Roles ="StaffMember")]
@@ -80,80 +94,48 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         {
             var request = await _requestService.GetByIdAsync(id, r => r.DebtRegister);
             bool authorize = true;
+            var debtregister = await _debtregisterService.GetByIdAsync(request.DebtRegister.Id, dr => dr.Student);
+
             if (User.IsInRole("StaffMember"))
             {
                 var userid = User.FindFirstValue("Id");
-                var debtregister = await _debtregisterService.GetByIdAsync(request.DebtRegister.Id, dr => dr.Student);
                 var student = await _studentService.GetByIdAsync(debtregister.Student.Id, s => s.StaffMember);
                 authorize = student.StaffMember.Id == userid;
             }
             if (authorize)
             {
-                var debtregister = await _debtregisterService.GetByIdAsync(request.DebtRegister.Id, dr => dr.Student);
-                var today = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
-                var amounttopay = debtregister.Amount;
-                var resttopayinstallment = request.ToBePaidInstallment - debtregister.InterestAmount;
-                var iatable = DivideDecimalIntoEqualParts(resttopayinstallment, request.NumOfMonths);
-                decimal interestamount = 0m;
-                var whatstays = debtregister.Total - request.ToBePaidFull;
-                decimal tobepaideachmonth;
-                if (request.ToBePaidFull < debtregister.Amount)
+                var ent = new CreateRequestVM();
+                ent.Total = debtregister.Total;
+                ent.ToBePaidFull = request.ToBePaidFull;
+                ent.NumOfMonths = request.NumOfMonths;
+                ent.ToBePaidInstallment = request.ToBePaidInstallment;
+                ent.FirstInstallmentDate = debtregister.FirstInstallmentDate;
+                var sonuc = CalculateRequest(ent, debtregister);
+                var vm = new PreviewRequestVM()
                 {
-                    whatstays = 0;
-                    for (int i = 1; i <= request.NumOfMonths; i++)
-                    {
-                        int nod;
-                        if (i >= 2)
-                        {
-                            nod = (today.AddMonths(i) - today.AddMonths(i - 1)).Days;
-                        }
-                        else
-                        {
-                            nod = (today.AddMonths(i) - debtregister.RegDate).Days;
-                        }
-                        interestamount += nod * resttopayinstallment * debtregister.InterestRate / 365;
-                        resttopayinstallment -= iatable[i - 1];
-                    }
-                    try
-                    {
-                        tobepaideachmonth = decimal.Truncate((amounttopay / request.NumOfMonths) * 100) / 100 + decimal.Truncate((interestamount + debtregister.InterestAmount) / request.NumOfMonths);
-                    }
-                    catch
-                    {
-                        tobepaideachmonth = 0m;
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        tobepaideachmonth = decimal.Truncate(whatstays / request.NumOfMonths);
-                    }
-                    catch
-                    {
-                        tobepaideachmonth = 0m;
-                    }
-                }
-                var vm = new AcceptRequestVM() {
                     Id = id,
                     ToBePaidFull = request.ToBePaidFull,
-                    ToBePaidInstallment = tobepaideachmonth * request.NumOfMonths,
-                    ToBePaidEachMonth = tobepaideachmonth,
-                    Total= debtregister.Total,
+                    ToBePaidInstallment = sonuc.ToBePaidInstallment,
+                    ToBePaidEachMonth = sonuc.ToBePaidEachMonth,
+                    Total = debtregister.Total,
                     NumOfMonths = request.NumOfMonths,
-            };
+                    Payments=sonuc.Payments,
+                    Description=sonuc.Description
+                    
+                };
+            
                 return View(vm);
             }
             else
             {
-                var errorMessage = "you attempted to accept a request while there's one already accepted";
+                var errorMessage = "zaten kabul edilmiş bir istek varken bir isteği kabul etmeye çalıştınız";
                 return RedirectToAction("Error", "Home", new { errorMessage });
             }
         }
         [HttpPost]
-        public  IActionResult Acceptrequest(AcceptRequestVM vm)
+        public  IActionResult Acceptrequest(PreviewRequestVM vm)
         {
-            if (ModelState.IsValid)
+            if (ModelState.ErrorCount<2)
             {
                 if (vm.Accept)
                 {
@@ -176,7 +158,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         public async Task<IActionResult> AcceptRequestConfirm(string id)
         {
             var request = await _requestService.GetByIdAsync(id, r => r.DebtRegister);
-            await UpdateDebtRegisterDebtsChanged(request.DebtRegister.Id);
+            //await UpdateDebtRegisterDebtsChanged(request.DebtRegister.Id);
             await UpdateDebtRegisterRequestActivated(id);
             await GenerateInstallments(id);
             await UpdateRequestAfterRequestAccepted(id);
@@ -185,35 +167,19 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             await UpdateDebtRegisterAfterGenrationofPayments(id);
             var debtregister = await _debtregisterService.GetByIdAsync(request.DebtRegister.Id, d => d.Student);
             var student = await _studentService.GetByIdAsync(debtregister.Student.Id);
-            student.Status = "In Accounting";
+            student.Status = "Muhasebede";
             await _context.SaveChangesAsync();
-            var successMessage = "You successfully accepted a request ";
+            var successMessage = "İsteği başarıyla kabul ettiniz ";
             return RedirectToAction("IndexParam", "Home", new { successMessage });
         }
+       
         #region business
-        [HttpPost]
-        public async Task UpdateDebtRegisterDebtsChanged(string id)
-        {
-            var dr = await _debtregisterService.GetByIdAsync(id,dr=>dr.Debts);
-            var amount = 0m;
-            var interestamount = 0m;
-            foreach (var d in dr.Debts)
-            {
-                var ed = d.EndDate;
-                var sd = d.StartDate;
-                var adda = d.Amount;
-                var addia = (d.Amount * (ed-sd).Days * dr.InterestRate) / 365;
-                amount += adda ;
-                interestamount += addia;
-            }
-            dr.Amount = decimal.Truncate(amount*100)/100;
-            dr.InterestAmount = decimal.Truncate(interestamount*100)/100;
-            dr.TotalCash = decimal.Truncate((interestamount + amount)*100)/100;
-            dr.ToBePaidCash = decimal.Truncate((interestamount + amount) * 100) / 100;
-            dr.ToBePaidInstallment = 0;
-            dr.Total = decimal.Truncate((interestamount + amount) * 100) / 100;
-            await _context.SaveChangesAsync();
-        }
+        //[HttpPost]
+        //public async Task UpdateDebtRegisterDebtsChanged(string id)
+        //{
+           
+            
+        //}
         [HttpPost]
         public async Task UpdateDebtRegisterRequestActivated(string id)
         {
@@ -225,33 +191,48 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             dr.TotalInstallment = ti;
             dr.ToBePaidCash = tf;
             dr.NumOfMonths = request.NumOfMonths;
-            dr.ReqDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+            //dr.RegDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
             await _context.SaveChangesAsync();
         }
         [HttpPost]
         public async Task GenerateInstallments(string id)
         {
-            var request = await _requestService.GetByIdAsync(id,r=>r.DebtRegister);
+            var request = await _requestService.GetByIdAsync(id,r=>r.DebtRegister,r=>r.DebtRegister.Student);
             var debtregister = request.DebtRegister;
-            var today = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day);
+            var today = new DateTime(debtregister.FirstInstallmentDate.Value.Year, debtregister.FirstInstallmentDate.Value.Month, debtregister.FirstInstallmentDate.Value.Day);
+
             //var today = new DateTime(2023, 1, 16, 12, 0, 0);
             var resttopayinstallment = debtregister.TotalInstallment-debtregister.InterestAmount;
+
+            var installment2 = new INSTALLMENT()
+            {
+                InitialAmount = 0,
+                AmountAfterInterest = debtregister.InterestAmount,
+                PaymentDate = today,
+                NumberOfDays = 0,
+                DebtRegister = debtregister,
+                Rest = debtregister.Amount
+            };
+            //resttopayinstallment -= iatable[i - 1];
+            await _installmentService.AddAsync(installment2);
             if (resttopayinstallment > 0)
             {
                 var iatable = DivideDecimalIntoEqualParts(resttopayinstallment, request.NumOfMonths);
                 for (int i = 1; i <= request.NumOfMonths; i++)
                 {
                     int nod;
-                    if (i >= 2)
+                    if (i >= 1)
                     {
                         nod = (today.AddMonths(i) - today.AddMonths(i - 1)).Days;
                     }
                     else
                     {
-                        nod = (today.AddMonths(i) - debtregister.RegDate).Days;
+                        nod = (today.AddMonths(i) - debtregister.ProgramFinishDate).Days;
                         //nod = 0;
                     }
-                    var amountafterinterest = iatable[i-1] + nod * resttopayinstallment * debtregister.InterestRate / 365;
+                    resttopayinstallment -= iatable[i - 1];
+                    var xx = Math.Round(nod * resttopayinstallment * debtregister.InterestRateInstallment / 365, 2, MidpointRounding.AwayFromZero);
+                    var amountafterinterest = iatable[i-1] +xx ;
                     var installment = new INSTALLMENT()
                     {
                         InitialAmount = iatable[i-1],
@@ -261,7 +242,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                         DebtRegister = debtregister,
                         Rest = resttopayinstallment
                     };
-                    resttopayinstallment -= iatable[i - 1];
+                    //resttopayinstallment -= iatable[i - 1];
                     await _installmentService.AddAsync(installment);
                 }
             }
@@ -270,7 +251,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         public async Task UpdateRequestAfterRequestAccepted(string requestid)
         {
             var request = await _requestService.GetByIdAsync(requestid, dr => dr.DebtRegister);
-            request.Status = "Accepted";
+            request.Status = "Onaylı";
             await _context.SaveChangesAsync();
         }
         [HttpPost]
@@ -289,66 +270,77 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         public async Task GeneratePayments(string id)
         {
             var request = await _requestService.GetByIdAsync(id, r => r.DebtRegister);
-            var debtregister = await _debtregisterService.GetByIdAsync(request.DebtRegister.Id);
-            var resttopayinstallment = debtregister.TotalInstallment - debtregister.InterestAmount;
-            var tbpi = debtregister.ToBePaidInstallment - debtregister.Amount;
-            var payments = new List<PAYMENT>();
-            if (resttopayinstallment>0)
+            var debtregister = await _debtregisterService.GetByIdAsync(request.DebtRegister.Id,k=>k.Installments);
+            var ent = new CreateRequestVM();
+            ent.Total = debtregister.Total;
+            ent.ToBePaidFull = request.ToBePaidFull;
+            ent.NumOfMonths = request.NumOfMonths;
+            ent.ToBePaidInstallment = request.ToBePaidInstallment;
+            ent.FirstInstallmentDate = debtregister.FirstInstallmentDate;
+            
+                var sonuc = CalculateRequest(ent, debtregister);
+
+            foreach(var p in sonuc.Payments)
             {
-                var interest = decimal.Truncate(tbpi/ request.NumOfMonths);
-                var principal = decimal.Truncate ((debtregister.Amount / request.NumOfMonths)*100)/100;
-                for (int j=1;j<=debtregister.NumOfMonths;j++)
-                {
-                    var payment = new PAYMENT() 
-                    { 
-                        Type = "Installment",
-                        DebtRegister = debtregister,
-                        Sum = principal+interest,
-                        Paid = false,
-                        PaymentDate = new DateTime(DateTime.Now.AddMonths(j).Year, DateTime.Now.AddMonths(j).Month, DateTime.Now.AddMonths(j).Day),
-                        RegDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
-                        PrincipalAmount = principal,
-                        InterestAmount = interest,
-                    };
-                    await _paymentService.AddAsync(payment);
-                    payments.Add(payment);
-                }
+                p.Paid = false;
+                p.RegDate=DateTime.Now;
+                p.DebtRegister = debtregister;
+                await _paymentService.AddAsync(p);
+                
             }
-            else
-            {
-                for (int j=1;j<=debtregister.NumOfMonths;j++)
-                {
-                    var addons = decimal.Truncate((debtregister.Total-debtregister.TotalCash) / request.NumOfMonths);
-                    var payment = new PAYMENT() {
-                        Type = "Installment",
-                        DebtRegister = debtregister,
-                        Sum = decimal.Truncate(addons),
-                        Paid = false,
-                        PaymentDate = new DateTime(DateTime.Now.AddMonths(j).Year, DateTime.Now.AddMonths(j).Month,
-                        DateTime.Now.AddMonths(j).Day),
-                        RegDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
-                        PrincipalAmount=0,
-                        InterestAmount=decimal.Truncate(addons)
-                    };
-                    await _paymentService.AddAsync(payment);
-                    payments.Add(payment);
-                }
-            }
-            if (request.ToBePaidFull!=0)
-            {
-                var paymentfull = new PAYMENT() { Type = "Full", DebtRegister = debtregister, Sum = request.ToBePaidFull, Paid = false, PaymentDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day), RegDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day) };
-                await _paymentService.AddAsync(paymentfull);
-                payments.Add(paymentfull);
-            }
-            foreach ( var payment in payments)
-            {
-                var idp = payment.Id;
-                DateTime targetDateTime = payment.PaymentDate;
-                TimeSpan timeToWait3 = targetDateTime - DateTime.Now.AddDays(3);
-                TimeSpan timeToWait1 = targetDateTime.AddDays(1) - DateTime.Now;
-                await SendPaymentReminderBefore(idp, timeToWait3);
-                await SendPaymentReminderAfter(idp,timeToWait1);
-            }
+            //var resttopayinstallment = debtregister.TotalInstallment - debtregister.InterestAmount;
+            //var tbpi = debtregister.ToBePaidInstallment - debtregister.Amount;
+            //var payments = new List<PAYMENT>();
+            //if (resttopayinstallment>0)
+            //{
+            //    var interest = Math.Round(tbpi/ request.NumOfMonths,0,MidpointRounding.AwayFromZero);
+
+            //    var principal = Math.Round(debtregister.Amount / request.NumOfMonths,0,MidpointRounding.AwayFromZero);
+            //    for (int j=1;j<=debtregister.NumOfMonths;j++)
+            //    {
+            //        var p = debtregister.Installments.FirstOrDefault(k => k.PaymentDate == new DateTime(DateTime.Now.AddMonths(j).Year, DateTime.Now.AddMonths(j).Month, DateTime.Now.AddMonths(j).Day));
+            //        var payment = new PAYMENT() 
+            //        { 
+            //            Type = "Taksit",
+            //            DebtRegister = debtregister,
+            //            Sum = p.InitialAmount+interest,
+            //            Paid = false,
+            //            PaymentDate = new DateTime(DateTime.Now.AddMonths(j).Year, DateTime.Now.AddMonths(j).Month, DateTime.Now.AddMonths(j).Day),
+            //            RegDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
+            //            PrincipalAmount = p.InitialAmount,
+            //            InterestAmount = interest,
+            //        };
+            //        await _paymentService.AddAsync(payment);
+            //        payments.Add(payment);
+            //    }
+            //}
+            //else
+            //{
+            //    for (int j=1;j<=debtregister.NumOfMonths;j++)
+            //    {
+            //        var addons = Math.Round((debtregister.Total-debtregister.TotalCash) / request.NumOfMonths,0,MidpointRounding.AwayFromZero);
+            //        var payment = new PAYMENT() {
+            //            Type = "Taksit",
+            //            DebtRegister = debtregister,
+            //            Sum = addons,
+            //            Paid = false,
+            //            PaymentDate = new DateTime(DateTime.Now.AddMonths(j).Year, DateTime.Now.AddMonths(j).Month,
+            //            DateTime.Now.AddMonths(j).Day),
+            //            RegDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
+            //            PrincipalAmount=0,
+            //            InterestAmount=addons
+            //        };
+            //        await _paymentService.AddAsync(payment);
+            //        payments.Add(payment);
+            //    }
+            //}
+            //if (request.ToBePaidFull!=0)
+            //{
+            //    var paymentfull = new PAYMENT() { Type = "Peşin", DebtRegister = debtregister, Sum = request.ToBePaidFull, Paid = false, PaymentDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day), RegDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day) };
+            //    await _paymentService.AddAsync(paymentfull);
+            //    payments.Add(paymentfull);
+            //}
+
         }
         [HttpPost]
         public async Task UpdateDebtRegisterAfterGenrationofPayments(string id)
@@ -359,25 +351,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             dr.ToBePaid= dr.Payments.Select(p => p.Sum).ToList().Sum()+dr.TotalCash;
             await _context.SaveChangesAsync();
         }
-        public static decimal[] DivideDecimalIntoEqualParts(decimal x, int n)
-        {
-            try
-            {
-                decimal[] parts = new decimal[n];
-                decimal commonPart = Math.Floor(x / n * 100) / 100;
-                decimal remaining = x - commonPart * (n - 1);
-                for (int i = 0; i < n - 1; i++)
-                {
-                    parts[i] = commonPart;
-                }
-                parts[n - 1] = remaining;
-                return parts;
-            }
-            catch
-            {
-                return Enumerable.Repeat(0m, n).ToArray();
-            }
-        }
+        
         #endregion
         public async Task SendPaymentReminderBefore(string idp,TimeSpan timetowait)
         {
@@ -389,14 +363,14 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 var id = debtregister.Id;
                 var Email = debtregister.Student.Email;
                 var emails = await _emailService.GetAllAsync();
-                var emailcontent = emails.Where(e => e.Name == "Payment in 3 days").ToList()[0];
+                var emailcontent = emails.FirstOrDefault(e => e.Name == "Ödeme Hatırlatma.Son 3 Gün");
                 var callbackUrl = Url.Action("PaymentsByDebtRegister", "Payment", new { id }, Request.Scheme, Request.Host.ToString());
                 var callbackUrl2 = Url.Action("Login", "Account", null, Request.Scheme, Request.Host.ToString());
                 var message = new MailMessage();
                 message.From = new MailAddress("debtcalculation1@gmail.com", "Debt Calculation and repayment system");
                 message.To.Add(new MailAddress(Email));
-                message.Subject = "Payment in 3 days";
-                message.Body = emailcontent + $"  <a href=\"{callbackUrl}\">here</a>. PS: You need to be authenicated first at <a href=\"{callbackUrl2}\">here</a>.";
+                message.Subject = "Bideb Borç Hatırlatma:Son 3 gün";
+                message.Body = emailcontent + $"  <a href=\"{callbackUrl}\">here</a>. Not: Önce şu adreste kimliğinizin doğrulanması gerekir: <a href=\"{callbackUrl2}\">tıklayınız</a>.";
                 message.IsBodyHtml = true;
 
                 using (var client = new SmtpClient())
@@ -426,8 +400,8 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                 var message = new MailMessage();
                 message.From = new MailAddress("debtcalculation1@gmail.com", "Debt Calculation and repayment system");
                 message.To.Add(new MailAddress(Email));
-                message.Subject = "Payment 1 day ago";
-                message.Body = emailcontent + $"  <a href=\"{callbackUrl}\">here</a>. PS: You need to be authenicated first at <a href=\"{callbackUrl2}\">here</a>.";
+                message.Subject = "Bideb Borç Hatırlatma:Son 1 gün";
+                message.Body = emailcontent + $"  <a href=\"{callbackUrl}\">here</a>. Not: Önce şu adreste kimliğinizin doğrulanması gerekir: <a href=\"{callbackUrl2}\">tıklayınız</a>.";
                 message.IsBodyHtml = true;
 
                 using (var client = new SmtpClient())
@@ -439,6 +413,66 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                     client.Send(message);
                 }
             }
+        }
+
+        [Authorize(Roles = "StaffMember")]
+        public async Task<IActionResult> DeclineRequest(string id)
+        {
+            var request = await _requestService.GetByIdAsync(id, r => r.DebtRegister);
+            request.Status = "Rejected";
+            await _context.SaveChangesAsync();
+            var successMessage = "Talep Red Edildi.";
+            return RedirectToAction("IndexParam", "Home", new { successMessage });
+        }
+
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        [Authorize(Roles = "Admin, StaffMember")]
+        public async Task<IActionResult> ImportFile(IFormFile fromFiles, string id)
+        {
+            string path = DocumentUpload(fromFiles);
+            string extension = System.IO.Path.GetExtension(fromFiles.FileName);
+            var student =await _studentService.GetByIdAsync(id);
+
+            var doc = new DOCUMENT()
+            {
+                Desc = fromFiles.FileName,
+                Student = student,
+                RegDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
+                FileName = path
+
+
+            };
+            try
+            {
+                await _docService.AddAsync(doc);
+            }
+            catch (Exception e)
+            {
+
+            }
+            return RedirectToAction("DebtRegisterById",  new { id= id });
+                
+            
+        }
+        public static readonly string[] VALID_EXTENSIONS = new string[1] { ".pdf"};// ".xlsx", ".doc", ".docx" 
+        public const string UPLOAD_EXCEL = "/Files/Excel/";
+        private string DocumentUpload(IFormFile fromFiles)
+        {
+            string extension = System.IO.Path.GetExtension(fromFiles.FileName);
+            if (!VALID_EXTENSIONS.Contains(extension.ToLower()))
+            {
+                return "";
+            }
+            var uniqName = DateTime.Now.Ticks.ToString();
+            var fileName = uniqName + System.IO.Path.GetExtension(fromFiles.FileName);
+
+            var dest_path = System.IO.Path.Combine(_hostEnvironment.WebRootPath + UPLOAD_EXCEL, fileName);
+            using (FileStream filestream = new FileStream(dest_path, FileMode.Create))
+            {
+                fromFiles.CopyTo(filestream);
+            }
+            return dest_path;
         }
     }
 }

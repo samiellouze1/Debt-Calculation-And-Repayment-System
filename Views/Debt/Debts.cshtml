@@ -6,20 +6,23 @@
     Debts
 }
     @section Name1{
-    Student @Model[0].DebtRegister.Student.Email
+    Bursiyer: @Model[0].DebtRegister.Student.Email
 }
     @section Name2{
-    Debts
+            Burs Borçları @if ((User.IsInRole("Admin") || User.IsInRole("StaffMember")) )
+    {
+        <a asp-controller="Debt" asp-action="DeleteDebtAll" asp-route-id=@Model[0].DebtRegister.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block">Tümünü Sil</a>
+    }
 }
 
 <table class="table">
     <thead>
         <tr>
-            <th scope="col">Amount</th>
-            <th scope="col">Start Date</th>
-            <th scope="col">End Date</th>
-            <th scope="col">Number Of Days</th>
-            <th scope="col">Registration Date</th>
+            <th scope="col">Tutar</th>
+            <th scope="col">Başlangıç Tarihi</th>
+            @*<th scope="col">Bitiş Tarihi</th>*@
+            @*<th scope="col">Gün Sayısı</th>*@
+           @* <th scope="col">Kayıt Tarihi</th>*@
         </tr>
     </thead>
     <tbody>
@@ -27,17 +30,23 @@
         {
             <tr class="table">
                 <td>@item.Amount</td>
-                <td>@item.StartDate.ToString("yyyy-MM-dd")</td>
-                <td>@item.EndDate.ToString("yyyy-MM-dd")</td>
-                <td>@((int)(item.EndDate - item.StartDate).TotalDays)</td>
-                <td>@item.RegDate.ToString("yyyy-MM-dd")</td>
+                <td>@item.StartDate.ToString("dd-MM-yyyy")</td>
+               @* <td>@item.EndDate.ToString("yyyy-MM-dd")</td>*@
+               @* <td>@((int)(item.EndDate - item.StartDate).TotalDays)</td>*@
+               @* <td>@item.RegDate.ToString("dd-MM-yyyy")</td>*@
                 <td>
                     @if (User.IsInRole("Admin") || User.IsInRole("StaffMember") )
                     {
-                    <a asp-controller="Debt" asp-action="DeleteDebt" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block">Delete Debt</a>
+                    <a asp-controller="Debt" asp-action="DeleteDebt" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block">Sil</a>
                     }    
                 </td>
             </tr>
         }
+        <tr>
+            <td><strong>@Model.Sum(k=>k.Amount)</strong></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
     </tbody>
 </table>

@@ -42,12 +42,12 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             if (authorize)
             {
-                var payments = debtregister.Payments.OrderBy(p=>p.Type=="Full").ThenBy(p=>p.PaymentDate).ToList();
+                var payments = debtregister.Payments.OrderBy(p=>p.Type=="Peşin").ThenBy(p=>p.PaymentDate).ToList();
                 return View("Payments", payments);
             }
             else
             {
-                return RedirectToAction("Error", "Home", new { errorMessage = "You tried to enter a page to which you are not allowed" });
+                return RedirectToAction("Error", "Home", new { errorMessage = "İzin verilmeyen bir sayfaya girmeye çalıştınız" });
             }
         }
     }

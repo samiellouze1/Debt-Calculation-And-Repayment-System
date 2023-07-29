@@ -9,7 +9,7 @@ using System.Security.Claims;
 
 namespace Debt_Calculation_And_Repayment_System.Controllers
 {
-    public class RequestController : Controller
+    public class RequestController : BaseController
     {
         private readonly IREQUESTService _requestService;
         private readonly IDEBTREGISTERService _debtregisterService;
@@ -48,7 +48,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             else
             {
-                var errorMessage = "You tried to access a page to which you're not allowed";
+                var errorMessage = "İzin verilmeyen bir sayfaya girmeye çalıştınız";
                 return RedirectToAction("Error", "Home", new { errorMessage });
             }
         }
@@ -63,7 +63,11 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             {
                 var actstd = await _studentService.GetByIdAsync(std.Id, s => s.DebtRegister);
                 var debtregister = await _debtregisterService.GetByIdAsync(actstd.DebtRegister.Id, d => d.Requests);
-                requests.AddRange(debtregister.Requests.ToList());
+                if (debtregister!=null &&debtregister.Requests != null)
+                {
+                    requests.AddRange(debtregister.Requests.ToList());
+                }
+                
             }
             return View("Requests", requests);
         }
@@ -90,88 +94,47 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             else
             {
-                return RedirectToAction("Error", "Home", new { errorMessage = "You tried to enter a page to which you are not allowed" });
+                return RedirectToAction("Error", "Home", new { errorMessage = "İzin verilmeyen bir sayfaya girmeye çalıştınız" });
             }
         }
-        [Authorize(Roles ="Student")]
-        public async Task<IActionResult> PreviewRequest ()
+        [Authorize(Roles = "Admin,StaffMember,Student")]
+        public async Task<IActionResult> PreviewRequest (string userid=null)
         {
-            var userid = User.FindFirstValue("Id");
+            
+            if (string.IsNullOrEmpty(userid))
+            {
+                userid = User.FindFirstValue("Id");
+            }
             var student = await _studentService.GetByIdAsync(userid,s=>s.DebtRegister);
 
-            var vm = new CreateRequestVM() { Total=student.DebtRegister.Total, ToBePaidFull=student.DebtRegister.Total};
+            
+
+
+
+            var vm = new CreateRequestVM() {FirstInstallmentDate=student.DebtRegister.FirstInstallmentDate, studentId=userid, Total=student.DebtRegister.Total, ToBePaidFull=student.DebtRegister.Total};
             return View("PreviewRequest",vm);
         }
-        [Authorize(Roles ="Student")]
+        [Authorize(Roles = "Admin,StaffMember,Student")]
         [HttpPost]
         public async Task<IActionResult> PreviewRequest(CreateRequestVM vm)
         {
             bool authorize;
-            var studentid = User.FindFirstValue("Id");
-            var student = await _studentService.GetByIdAsync(studentid, s => s.DebtRegister);
-            var debtregister = await _debtregisterService.GetByIdAsync(student.DebtRegister.Id,d=>d.Requests);
-            authorize = !debtregister.Requests.Any(r => r.Status == "Accepted");
-            authorize = debtregister.Total == vm.Total;
-            authorize = vm.ToBePaidFull >= 0 && vm.ToBePaidInstallment >= 0;
-            authorize = vm.ToBePaidFull+vm.ToBePaidInstallment==debtregister.Total;
-            authorize = !(vm.ToBePaidInstallment != 0 && vm.NumOfMonths == 0);
+            //var studentid = User.FindFirstValue("Id");
+            var student = await _studentService.GetByIdAsync(vm.studentId, s => s.DebtRegister);
+            var debtregister = await _debtregisterService.GetByIdAsync(student.DebtRegister.Id,d=>d.Requests,d=>d.Student);
+            authorize = !debtregister.Requests.Any(r => r.Status == "Onaylı");
+            authorize = debtregister.Total == vm.Total && authorize;
+            authorize = vm.ToBePaidFull >= 0 && vm.ToBePaidInstallment >= 0 && authorize;
+            authorize = vm.ToBePaidFull+vm.ToBePaidInstallment==debtregister.Total && authorize;
+            authorize = !(vm.ToBePaidInstallment != 0 && vm.NumOfMonths == 0) && authorize;
+            authorize = !(vm.ToBePaidInstallment == 0 && vm.NumOfMonths > 0) && authorize;
+            authorize = (!User.IsInRole("Student") || vm.FirstInstallmentDate == debtregister.FirstInstallmentDate) && authorize;
             if (authorize)
                 {
                 if (ModelState.IsValid)
                 {
-                    var today = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
-                    var amounttopay = debtregister.Amount;
-                    var resttopayinstallment = vm.ToBePaidInstallment-debtregister.InterestAmount;
-                    var iatable = DivideDecimalIntoEqualParts(resttopayinstallment, vm.NumOfMonths);
-                    decimal interestamount = 0m;
-                    var whatstays = debtregister.Total-vm.ToBePaidFull;
-                    decimal tobepaideachmonth;
-                    if (vm.ToBePaidFull < debtregister.Amount)
-                    {
-                        whatstays = 0;
-                        for (int i = 1; i <= vm.NumOfMonths; i++)
-                        {
-                            int nod;
-                            if (i >= 2)
-                            {
-                                nod = (today.AddMonths(i) - today.AddMonths(i - 1)).Days;
-                            }
-                            else
-                            {
-                                nod = (today.AddMonths(i) - debtregister.RegDate).Days;
-                            }
-                            interestamount +=  nod * resttopayinstallment * debtregister.InterestRate / 365;
-                            resttopayinstallment -= iatable[i - 1];
-                        }
-                        try
-                        {
-                            tobepaideachmonth = decimal.Truncate((amounttopay / vm.NumOfMonths) * 100) / 100 + decimal.Truncate((interestamount + debtregister.InterestAmount) / vm.NumOfMonths);
-                        }
-                        catch
-                        {
-                            tobepaideachmonth = 0m;
-                        }
-                    }
-                    else
-                    {
-                        try
-                        {
-                            tobepaideachmonth = decimal.Truncate(whatstays / vm.NumOfMonths);
-                        }
-                        catch
-                        {
-                            tobepaideachmonth = 0m;
-                        }
-                    }
-                    var newvm = new PreviewRequestVM() 
-                    {
-                        Total = debtregister.Total,
-                        ToBePaidFull = vm.ToBePaidFull,
-                        NumOfMonths = vm.NumOfMonths,
-                        ToBePaidInstallment = tobepaideachmonth*vm.NumOfMonths,
-                        ToBePaidEachMonth = tobepaideachmonth
-                    };
-                    return View("CreateRequest", newvm);
+                    var ss = CalculateRequest(vm, debtregister);
+                    return View("CreateRequest", ss);
                 }
                 else
                 {
@@ -180,7 +143,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             else
             {
-                var vmm = new ErrorViewModel() { ErrorMessage = "You tried to enter a page to which you are not allowed" };
+                var vmm = new ErrorViewModel() { ErrorMessage = "İzin verilmeyen bir sayfaya girmeye çalıştınız" };
                 return RedirectToAction("Error", "Home", vmm);
             }
         }
@@ -192,11 +155,12 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             var studentid = User.FindFirstValue("Id");
             var student = await _studentService.GetByIdAsync(studentid, s => s.DebtRegister);
             var debtregister = await _debtregisterService.GetByIdAsync(student.DebtRegister.Id, d => d.Requests);
-            authorize = debtregister.Requests.Any(r => r.Status == "Accepted");
-            authorize = debtregister.Total - vm.ToBePaidFull >= 0;
+            //authorize = debtregister.Requests.Count(r => r.Status == "Onaylı")>0;
+            authorize = debtregister.Total - vm.ToBePaidFull >= 0 ;
+            debtregister.FirstInstallmentDate = vm.FirstInstallmentDate;
             if (authorize)
             {
-                if (ModelState.IsValid)
+                if (ModelState.ErrorCount<3)
                 {
                     if (vm.Accept)
                     {
@@ -206,13 +170,13 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                             ToBePaidInstallment = debtregister.Total-vm.ToBePaidFull,
                             NumOfMonths = vm.NumOfMonths,
                             RegDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day),
-                            Status = "Not Defined",
+                            Status = "Bekliyor",
                             DebtRegister = debtregister,
                         };
                         await _requestService.AddAsync(newrequest);
-                        student.Status = "Waiting";
+                        student.Status = "Talep Aşamasında";
                         await _context.SaveChangesAsync();
-                        var successMessage = "You successfully added a new request ";
+                        var successMessage = "Talebiniz Gönderildi.Teşekkürler ";
                         return RedirectToAction("IndexParam", "Home", new { successMessage });
                     }
                     else if (!vm.Accept)
@@ -231,28 +195,10 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             }
             else
             {
-                var vmm = new ErrorViewModel() { ErrorMessage = "You either tried to make a request when there's already one accepted or you typed the wrong data" };
+                var vmm = new ErrorViewModel() { ErrorMessage = "Halihazırda kabul edilmiş bir talep varken ya bir talepte bulunmaya çalıştınız ya da yanlış veri girdiniz." };
                 return RedirectToAction("Error", "Home", vmm);
             }
         }
-        public static decimal[] DivideDecimalIntoEqualParts(decimal x, int n)
-        {
-            try
-            {
-                decimal[] parts = new decimal[n];
-                decimal commonPart = Math.Floor(x / n * 100) / 100;
-                decimal remaining = x - commonPart * (n - 1);
-                for (int i = 0; i < n - 1; i++)
-                {
-                    parts[i] = commonPart;
-                }
-                parts[n - 1] = remaining;
-                return parts;
-            }
-            catch
-            {
-                return Enumerable.Repeat(0m, n).ToArray();
-            }
-        }
+       
     }
 }

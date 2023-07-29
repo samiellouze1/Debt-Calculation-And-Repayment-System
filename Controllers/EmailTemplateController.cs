@@ -46,7 +46,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
                     Id = editvm.TemplateId
                 };
                 await _emailtemplateservice.UpdateAsync(editvm.TemplateId, newtemplate);
-                var successMessage = "You successfully edited the content of template " + editvm.Name;
+                var successMessage = "Şablonun içeriğini başarıyla düzenlediniz " + editvm.Name;
                 return RedirectToAction("IndexParam", "Home", new { successMessage });
             }
             else

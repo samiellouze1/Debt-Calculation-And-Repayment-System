@@ -3,19 +3,23 @@
     Layout = "~/Views/Shared/_LayoutSecondary.cshtml";
 }
 @section Title {
-    Program Types
+    Program Tipleri
 }
     @section Name1{
-        This is only visible for admins
+        BU ALAN SADECE YÖNETİCİLER İÇİN GÖRÜLEBİLİR
 }
     @section Name2{
-    Program Types
+    Program Tipleri
 }
     <table class="table ">
         <thead>
             <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Program Type Name</th>
+           
+            <th scope="col">Program Tipi</th>
+            <th scope="col">Para Birimi</th>
+            <th scope="col">Faiz Oranı</th>
+            <th scope="col">Faiz Oranı(Taksit)</th>
+            <th scope="col">Faiz Oranı(Günlük Gecikme)</th>
                 <th scope="col"></th>
             </tr>
         </thead>
@@ -23,9 +27,14 @@
         @foreach (var item in Model)
         {
             <tr class="table">
-                <td>@item.Id</td>
+              
                 <td>@item.Type</td>
-                <td><a asp-controller="ProgramType" asp-action="DeleteProgramType" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block" style="width:150px;height:45px;">Delete</a></td>
+                <td>@item.Currency</td>
+                <td>@item.InterestRate</td>
+                <td>@item.InterestRateInstallment</td>
+                <td>@item.InterestRateDelay</td>
+                <td><a asp-controller="ProgramType" asp-action="AddProgramType" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block">Düzenle</a></td>
+                <td><a asp-controller="ProgramType" asp-action="DeleteProgramType" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block" style="width:150px;height:45px;">Sil</a></td>
             </tr>
         }
     </tbody>

@@ -11,25 +11,25 @@
             <div class="col-lg-6">
                 <div class="section-title text-center position-relative mb-4">
                     <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">ADMIN</h6>
-                    <h1 class="display-4">Fill in the credentials of the new staff member</h1>
+               
                 </div>
             </div>
         </div>
         <div class="row justify-content-center bg-image mx-0 mb-5">
             <div class="col-lg-9 py-5">
                 <div class="bg-white p-5 my-5">
-                    <h1 class="text-center mb-4">TYPE IN THE CREDENTIALS FOR THE NEW STAFF MEMBER!</h1>
+                <h1 class="text-center mb-4">Yeni personelin kimlik bilgilerini doldurun!</h1>
                     <form asp-action="RegisterAStaffMember">
                         <div class="form-row">
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <input asp-for="FirstName" type="text" class="form-control bg-light border-0" placeholder="First Name" style="padding: 30px 20px;">
+                                    <input asp-for="FirstName" type="text" class="form-control bg-light border-0" placeholder="İsim" style="padding: 30px 20px;">
                                     <span asp-validation-for="FirstName" style="color:red"></span>
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <input asp-for="SurName" type="text" class="form-control bg-light border-0" placeholder="Last Name" style="padding: 30px 20px;">
+                                    <input asp-for="SurName" type="text" class="form-control bg-light border-0" placeholder="Soyisim" style="padding: 30px 20px;">
                                     <span asp-validation-for="SurName" style="color:red"></span>
                                 </div>
                             </div>
@@ -41,19 +41,19 @@
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <input asp-for="PhoneNumber" type="number" class="form-control bg-light border-0" placeholder="Phone Number" style="padding: 30px 20px;">
+                                    <input asp-for="PhoneNumber" type="number" class="form-control bg-light border-0" placeholder="Telefon" style="padding: 30px 20px;">
                                     <span asp-validation-for="PhoneNumber" style="color:red"></span>
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <input asp-for="Address" type="text" class="form-control bg-light border-0" placeholder="Address" style="padding: 30px 20px;">
+                                    <input asp-for="Address" type="text" class="form-control bg-light border-0" placeholder="Adres" style="padding: 30px 20px;">
                                     <span asp-validation-for="Address" style="color:red"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="col-sm-6" style="width:50%;margin: 0 auto;">
-                            <button class="btn btn-primary btn-block" type="submit" style="height: 60px;" value="RegisterAStaffMember">Register The Staff Member </button>
+                            <button class="btn btn-primary btn-block" type="submit" style="height: 60px;" value="RegisterAStaffMember">Görevli Kaydet</button>
                         </div>
                     </form>
                 </div>

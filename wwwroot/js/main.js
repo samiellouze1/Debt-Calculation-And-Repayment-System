@@ -39,6 +39,12 @@
         time: 2000
     });
 
+    
+       
+    
+    
+
+
 
     // Courses carousel
     $(".courses-carousel").owlCarousel({

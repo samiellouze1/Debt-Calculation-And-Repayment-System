@@ -16,8 +16,8 @@ namespace Debt_Calculation_And_Repayment_System.Data
                 {
                     context.PROGRAMTYPESs.AddRange(new List<PROGRAMTYPE>()
                     {
-                        new PROGRAMTYPE(){Type="Type1"},
-                        new PROGRAMTYPE(){Type="Type2"}
+                        new PROGRAMTYPE(){Type="2211 Yurt içi Doktora"},
+                        new PROGRAMTYPE(){Type="2210 Yurt İçi Yüksek Lisans"}
 
                     });
                     context.SaveChanges();
@@ -26,14 +26,17 @@ namespace Debt_Calculation_And_Repayment_System.Data
                 {
                     context.STUDENTSTATUSTYPEs.AddRange(new List<STUDENTSTATUSTYPE>()
                     {
-                        new STUDENTSTATUSTYPE(){Type="Logged in"},
-                        new STUDENTSTATUSTYPE(){Type="Waiting"},
-                        new STUDENTSTATUSTYPE(){Type="Notified"},
-                        new STUDENTSTATUSTYPE(){Type="New Recorded"},
-                        new STUDENTSTATUSTYPE(){Type="In Accounting"},
-                        new STUDENTSTATUSTYPE(){Type="Refund Decision Canceled"},
-                        new STUDENTSTATUSTYPE(){Type="Refund Process Suspended"},
-                        new STUDENTSTATUSTYPE(){Type="Referred to Law"}
+                        new STUDENTSTATUSTYPE(){Type="Yeni Kayıt"},
+                        new STUDENTSTATUSTYPE(){Type="Borcu Girildi"},
+                        new STUDENTSTATUSTYPE(){Type="Bildirim Gönderildi"},
+                        new STUDENTSTATUSTYPE(){Type="Giriş Yapıldı"},
+                        new STUDENTSTATUSTYPE(){Type="Talep Aşamasında"},
+                        new STUDENTSTATUSTYPE(){Type="Muhasebede"},
+                        new STUDENTSTATUSTYPE(){Type="Tamamlandı"},
+
+                        new STUDENTSTATUSTYPE(){Type="İade Kararı İptal Edildi"},
+                        new STUDENTSTATUSTYPE(){Type="İade İşlemi Askıya Alındı"},
+                        new STUDENTSTATUSTYPE(){Type="Mahkemede"}
                     }) ;
                     context.SaveChanges();
                 }
@@ -41,10 +44,10 @@ namespace Debt_Calculation_And_Repayment_System.Data
                 {
                     context.EMAILTEMPLATEs.AddRange(new List<EMAILTEMPLATE>()
                     {
-                        new EMAILTEMPLATE(){Name="Reset Password", Content="Please reset your password ",NeedToLogin=false},
-                        new EMAILTEMPLATE(){Name="Debt Registered", Content="There has been a new debt added. See your debt register ",NeedToLogin=true},
-                        new EMAILTEMPLATE(){Name="Payment in 3 days", Content="You have a payment in 3 days. See all your payments ",NeedToLogin=true},
-                        new EMAILTEMPLATE(){Name="Payment 1 day ago", Content="You haven't paid the payment due Yesterday", NeedToLogin=true}
+                        new EMAILTEMPLATE(){Name="Şifre Sıfırlama", Content="Şifre Sıfırlama Talebi: ",NeedToLogin=false},
+                        new EMAILTEMPLATE(){Name="Borç Eklendi Bildirimi", Content="There has been a new debt added. See your debt register ",NeedToLogin=true},
+                        new EMAILTEMPLATE(){Name="Ödeme Hatırlatma.Son 3 Gün", Content="Borç Ödemeniz için son 3 gün. Tüm ödemeleleriniz için:",NeedToLogin=true},
+                        new EMAILTEMPLATE(){Name="Ödeme Hatırlatma.Son Gün", Content="Borç Ödemeniz için son gün. Tüm ödemeleleriniz için:", NeedToLogin=true}
                     });
                     context.SaveChanges();
                 }
@@ -71,7 +74,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                 var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<USER>>();
 
                 #region admin
-                string useradminemail = "admin@debt.com";
+                string useradminemail = "admin@bideb.gov.tr";
                 var useradmin = await userManager.FindByEmailAsync(useradminemail);
                 if (useradmin == null)
                 {
@@ -91,7 +94,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                 #endregion
 
                 #region staffmember
-                string userstaffemail = "staff@debt.com";
+                string userstaffemail = "staff@bideb.gov.tr";
                 var userstaff = await userManager.FindByEmailAsync(userstaffemail);
                 var newUserStaff = new STAFFMEMBER()
                 {
@@ -112,7 +115,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                 #endregion
 
                 #region student
-                string userstudentemail = "student@debt.com";
+                string userstudentemail = "student@bideb.gov.tr";
                 var userstudent = await userManager.FindByEmailAsync(userstudentemail);
                 if (userstudent == null)
                 {
@@ -123,9 +126,10 @@ namespace Debt_Calculation_And_Repayment_System.Data
                         FirstName = "Student",
                         SurName = "User",
                         RegDate = new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                        ProgramFinishDate=new DateTime(2023,1,16),
                         PhoneNumber = "12345678",
                         Address = "Turkey",
-                        Status="Logged In",
+                        Status= "Giriş Yapıldı",
                         DebtRegister = new DEBTREGISTER()
                         {
                             Amount = 3600m,
@@ -139,14 +143,159 @@ namespace Debt_Calculation_And_Repayment_System.Data
                                 new DEBT()
                                 {
                                     Amount=1800m,
-                                    StartDate=new DateTime(2012,12,22,12,0,0),
+                                    StartDate=new DateTime(2012,12,6,12,0,0),
                                     EndDate=new DateTime(2023,1,16,12,0,0),
                                     RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
                                 },
                                 new DEBT()
                                 {
                                     Amount=1800m,
-                                    StartDate=new DateTime(2012,12,23,12,0,0),
+                                    StartDate=new DateTime(2012,12,6,12,0,0),
+                                    EndDate=new DateTime(2023,1,16,12,0,0),
+                                    RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                                },
+                                new DEBT()
+                                {
+                                    Amount=1800m,
+                                    StartDate=new DateTime(2013,2,22,12,0,0),
+                                    EndDate=new DateTime(2023,1,16,12,0,0),
+                                    RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                                },
+                                new DEBT()
+                                {
+                                    Amount=1800m,
+                                    StartDate=new DateTime(2013,2,22,12,0,0),
+                                    EndDate=new DateTime(2023,1,16,12,0,0),
+                                    RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                                },
+                                new DEBT()
+                                {
+                                    Amount=1800m,
+                                    StartDate=new DateTime(2013,3,6,12,0,0),
+                                    EndDate=new DateTime(2023,1,16,12,0,0),
+                                    RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                                },
+                                new DEBT()
+                                {
+                                    Amount=400m,
+                                    StartDate=new DateTime(2013,4,3,12,0,0),
+                                    EndDate=new DateTime(2023,1,16,12,0,0),
+                                    RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                                },
+                                new DEBT()
+                                {
+                                    Amount=1800m,
+                                    StartDate=new DateTime(2013,4,3,12,0,0),
+                                    EndDate=new DateTime(2023,1,16,12,0,0),
+                                    RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                                },
+                                new DEBT()
+                                {
+                                    Amount=1800m,
+                                    StartDate=new DateTime(2013,5,6,12,0,0),
+                                    EndDate=new DateTime(2023,1,16,12,0,0),
+                                    RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                                },
+                                new DEBT()
+                                {
+                                    Amount=1800m,
+                                    StartDate=new DateTime(2013,6,5,12,0,0),
+                                    EndDate=new DateTime(2023,1,16,12,0,0),
+                                    RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                                },
+                                new DEBT()
+                                {
+                                    Amount=1800m,
+                                    StartDate=new DateTime(2013,7,3,12,0,0),
+                                    EndDate=new DateTime(2023,1,16,12,0,0),
+                                    RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                                },
+                                new DEBT()
+                                {
+                                    Amount=1800m,
+                                    StartDate=new DateTime(2013,8,2,12,0,0),
+                                    EndDate=new DateTime(2023,1,16,12,0,0),
+                                    RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                                },
+                                new DEBT()
+                                {
+                                    Amount=400m,
+                                    StartDate=new DateTime(2013,8,2,12,0,0),
+                                    EndDate=new DateTime(2023,1,16,12,0,0),
+                                    RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                                },
+                                new DEBT()
+                                {
+                                    Amount=1800m,
+                                    StartDate=new DateTime(2013,9,6,12,0,0),
+                                    EndDate=new DateTime(2023,1,16,12,0,0),
+                                    RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                                },
+                                new DEBT()
+                                {
+                                    Amount=1800m,
+                                    StartDate=new DateTime(2013,10,4,12,0,0),
+                                    EndDate=new DateTime(2023,1,16,12,0,0),
+                                    RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                                },
+                                new DEBT()
+                                {
+                                    Amount=283m,
+                                    StartDate=new DateTime(2013,11,7,12,0,0),
+                                    EndDate=new DateTime(2023,1,16,12,0,0),
+                                    RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                                },
+                                new DEBT()
+                                {
+                                    Amount=500m,
+                                    StartDate=new DateTime(2013,12,5,12,0,0),
+                                    EndDate=new DateTime(2023,1,16,12,0,0),
+                                    RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                                },
+                                new DEBT()
+                                {
+                                    Amount=500m,
+                                    StartDate=new DateTime(2013,12,23,12,0,0),
+                                    EndDate=new DateTime(2023,1,16,12,0,0),
+                                    RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                                }
+                                ,
+                                new DEBT()
+                                {
+                                    Amount=500m,
+                                    StartDate=new DateTime(2014,2,3,12,0,0),
+                                    EndDate=new DateTime(2023,1,16,12,0,0),
+                                    RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                                }
+                                ,
+                                new DEBT()
+                                {
+                                    Amount=500m,
+                                    StartDate=new DateTime(2014,3,5,12,0,0),
+                                    EndDate=new DateTime(2023,1,16,12,0,0),
+                                    RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                                }
+                                ,
+                                new DEBT()
+                                {
+                                    Amount=500m,
+                                    StartDate=new DateTime(2014,4,9,12,0,0),
+                                    EndDate=new DateTime(2023,1,16,12,0,0),
+                                    RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                                }
+                                ,
+                                new DEBT()
+                                {
+                                    Amount=400m,
+                                    StartDate=new DateTime(2014,4,9,12,0,0),
+                                    EndDate=new DateTime(2023,1,16,12,0,0),
+                                    RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
+                                }
+                                ,
+                                new DEBT()
+                                {
+                                    Amount=500m,
+                                    StartDate=new DateTime(2014,5,7,12,0,0),
                                     EndDate=new DateTime(2023,1,16,12,0,0),
                                     RegDate=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day),
                                 }
@@ -154,7 +303,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
                         },
                         StaffMember=newUserStaff,
                         StaffMemberAssigned = true,
-                        ProgramID="Unspecified"
+                        ProgramType=new PROGRAMTYPE {Currency="TL",InterestRate=0.9M,InterestRateDelay=0.9M,InterestRateInstallment=0.9m,Type="2209 Burs" }
                     };
                     await userManager.CreateAsync(newUserStudent, "Student123@");
                     await userManager.AddToRoleAsync(newUserStudent, UserRoles.Student);

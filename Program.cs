@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Build.Execution;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,7 @@ builder.Services.AddScoped<IPAYMENTService, PAYMENTService>();
 builder.Services.AddScoped<IREQUESTService, REQUESTService>();
 builder.Services.AddScoped<IDEBTREGISTERService, DEBTREGISTERService>();
 builder.Services.AddScoped<IDEBTService, DEBTService>();
+builder.Services.AddScoped<IDOCUMENTService, DOCUMENTService>();
 builder.Services.AddScoped<IINSTALLMENTService, INSTALLMENTService>();
 builder.Services.AddScoped<IPROGRAMTYPEService, PROGRAMTYPEService>();
 builder.Services.AddScoped<ISTUDENTSTATUSTYPEService, STUDENTSTATUSTYPEService>();
@@ -70,7 +72,8 @@ builder.Services.AddAuthorization(options =>
         });
 });
 #endregion
-
+builder.Services.AddControllers(
+    options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
 //builder.Services.AddHttpsRedirection(options =>
 //{
 //    options.HttpsPort = 443;
@@ -98,7 +101,13 @@ app.MapControllerRoute(
 AppDbInitializer.SeedUsersAndRolesAsync(app).Wait();
 AppDbInitializer.Seed(app);
 
+//CultureInfo culture = new CultureInfo("tr-TR");
+//Thread.CurrentThread.CurrentCulture = culture;
+//Thread.CurrentThread.CurrentUICulture = culture;
 
+var ci = new CultureInfo("en-US");
+CultureInfo.CurrentCulture = ci;
+CultureInfo.DefaultThreadCurrentCulture = ci;
 
 //Running
 app.Run();

@@ -6,7 +6,7 @@ using Debt_Calculation_And_Repayment_System.Data.Annotation;
 
 namespace Debt_Calculation_And_Repayment_System.Models
 {
-    public class DEBT : IEntityBase
+    public class DOCUMENT : IEntityBase
     {
         [Key]
         [Required]
@@ -15,20 +15,14 @@ namespace Debt_Calculation_And_Repayment_System.Models
         public string Id { get; set; }
 
         [Required]
-        public decimal Amount { get; set; }
+        public string Desc { get; set; }
 
         [Required]
-        [DateNotInFuture(ErrorMessage ="You provided a date in the future")]
-        public DateTime StartDate { get; set; }
-
-        [Required]
-        [Compare("StartDate", ErrorMessage = "End Date must be greater than Start Date.")]
-        [DateNotInFuture(ErrorMessage ="You provided a date in the future")]
-        public DateTime EndDate { get; set; }
+        public string FileName { get; set; }
 
         [Required]
         public DateTime RegDate { get; set; }
 
-        public virtual DEBTREGISTER DebtRegister { get; set; }
+        public virtual STUDENT Student { get; set; }
     }
 }

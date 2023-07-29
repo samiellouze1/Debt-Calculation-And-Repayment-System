@@ -26,8 +26,19 @@ namespace Debt_Calculation_And_Repayment_System.Models
         [Range(0,1)]
         public decimal InterestRate { get; set; }
         [Required]
+        [Range(0, 1)]
+        public decimal InterestRateInstallment { get; set; }
+        [Required]
+        [Range(0, 1)]
+        public decimal InterestRateDelay { get; set; }
+        [Required]
         public DateTime RegDate { get; set; }
-        public DateTime ReqDate { get; set; }
+        [Required]
+        public DateTime ProgramFinishDate { get; set; }
+        [Required]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+        public DateTime? FirstInstallmentDate { get; set; }
+        //public DateTime ReqDate { get; set; }
         public int NumOfMonths { get; set; }
         public string StudentId { get; set; }
         public virtual STUDENT Student { get; set; }

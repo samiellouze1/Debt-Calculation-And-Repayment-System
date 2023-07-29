@@ -4,66 +4,80 @@
     Layout = "~/Views/Shared/_LayoutSecondary.cshtml";
 }
 @section Title {
-    Staff Members
+    Görevliler
 }
-    @section Name1{
-    Information about
-}
+   
     @section Name2{
-    Students
+    Bursiyerler
 }
-
-    <div class="form-inline">
-        <div class="form-group mr-2">
-            <label for="filterProgramId">ProgramID:</label>
-            <input type="text" id="filterProgramId" class="form-control form-control-sm" />
+@using (Html.BeginForm("MyStudents", "Student", FormMethod.Post))
+{
+    if (ViewBag.Message != null)
+    {
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Mesaj:</strong> @ViewBag.Message
         </div>
-        <div class="form-group mr-2">
-            <label for="filterFirstName">FirstName:</label>
-            <input type="text" id="filterFirstName" class="form-control form-control-sm" />
-        </div>
-        <div class="form-group mr-2">
-            <label for="filterSurName">SurName:</label>
-            <input type="text" id="filterSurName" class="form-control form-control-sm" />
-        </div>
-        <div class="form-group mr-2">
-            <label for="filterEmail">Email:</label>
-            <input type="text" id="filterEmail" class="form-control form-control-sm" />
-        </div>
-        <div class="form-group mr-2">
-            <label for="filterStatus">Status:</label>
-            <input type="text" id="filterStatus" class="form-control form-control-sm" />
-        </div>
+    }
+   
+    
+        <div class="form-inline">
+            <div class="form-group mr-2">
 
-        <button id="btnFilter" class="btn btn-secondary mr-2">Filter</button>
-        <button id="btnClearFilter" class="btn btn-secondary">Clear Filter</button>
-    </div>
+                @*<input type="text" id="filterProgramId" class="form-control form-control-sm" />*@
+                @Html.DropDownList("filterProgramId",new SelectList(ViewBag.ProgramTypes,"Id","Type"),"Program Seçiniz",new { @class = "form-control bg-light border-0" })
+
+            </div>
+            <div class="form-group mr-2">
+                <label for="filterName">İsim Soyisim:</label>
+            <input type="text" id="filterName" name="filterName" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group mr-2">
+                <label for="filterTc">TCKN:</label>
+            <input type="text" id="filterTc" name="filterTc" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group mr-2">
+                <label for="filterEmail">Email:</label>
+            <input type="text" id="filterEmail" name="filterEmail" class="form-control form-control-sm" />
+            </div>
+            <div class="form-group mr-2">
+
+                @*<input type="text" id="filterStatus" class="form-control form-control-sm" />*@
+            @Html.DropDownList("filterStatus",new SelectList(ViewBag.Statuses,"Type","Type"),"Durum Seçiniz",new { @class = "form-control bg-light border-0" })
+
+            </div>
+
+            <button id="btnFilter"  class="btn btn-secondary mr-2">Filtrele</button>
+            @*<button id="btnClearFilter" class="btn btn-secondary">Temizle</button>*@
+        </div>
+        <br/>
+        <div class="row"></div>
+    }
 
 
-
-<table class="table" id="tblStudents">
+<table class="table" id="table" 
+       
+       data-show-multi-sort="true" >
     <thead>
         <tr>
             <th scope="col">Profile</th>
-            <th scope="col">ProgramID</th>
-            <th scope="col">FirstName</th>
-            <th scope="col">SurName</th>
-            <th scope="col">Address</th>
-            <th scope="col">Phone Number</th>
-            <th scope="col">RegDate</th>
-        @if (User.IsInRole(UserRoles.Admin))
-        {
-            <th scope="col">StaffMember</th>
-        }
+            <th  data-sortable="true" scope="col">Program</th>
+            <th data-field="item.FirstName" data-sortable="true" scope="col">İsim Soyisim</th>
+           
+            <th scope="col">Adres</th>
+            <th scope="col">Telefon</th>
+            <th scope="col">Kayıt Tarihi</th>
+       
         @if (User.IsInRole(UserRoles.Admin) || User.IsInRole(UserRoles.StaffMember))
         {
-            <th scope="col">Password Reset</th>
+            <th scope="col">Şifre Reset</th>
+                <th scope="col">Borç Yükle</th>
         }
         @if (User.IsInRole(UserRoles.Admin))
         {
             <th scope="col"></th>
         }
-            <th scope="col">Status</th>
+            <th data-sortable="true" scope="col">Durum</th>
             <th scope="col"></th>
         </tr>
     </thead>
@@ -71,35 +85,56 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td><a asp-controller="Student" asp-action="StudentById" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block" >@item.Email</a></td>
-                <td>@item.ProgramID</td>
-                <td>@item.FirstName</td>
-                <td>@item.SurName</td>
+                <td><a asp-controller="DebtRegister" asp-action="DebtRegisterById" asp-route-id=@item.Id class="btn btn-outline-secondary d-none d-lg-block">@item.Email</a></td>
+                <td>@item.ProgramType.Type</td>
+                <td>@item.FirstName @item.SurName @item.IdentityNumber</td>
                 <td>@item.Address</td>
                 <td>@item.PhoneNumber</td>
-                <td>@item.RegDate.ToString("yyyy-MM-dd")</td>
+                <td>@item.RegDate.ToString("dd.MM.yyyy")</td>
+               
+                
+                    <td>
+                    @if ((User.IsInRole(UserRoles.Admin) || User.IsInRole(UserRoles.StaffMember)) && item.Status == "Borcu Girildi")
+                    {
+                        <a asp-controller="Account" asp-action="SendPasswordResetEmail" asp-route-id=@item.Id class="btn btn-secondary py-2 px-2 d-none d-lg-block">Şifre Sıfırla</a>
+                    }
+                    </td>
+                    <td>
+                    @if ((User.IsInRole(UserRoles.Admin) || User.IsInRole(UserRoles.StaffMember)) && item.Status == "Yeni Kayıt")
+                    {
+                        
+                            <form method="post" enctype="multipart/form-data" asp-controller="Debt" asp-action="ExcelImport">
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <input type="hidden" name="id" value="@item.DebtRegister.Id" />
+                                        <input class="form-control"  name="fromFiles" multiple="multiple" type="file" />
+                                        
+                                    </div>
+                                    <div class="col-md-12">
+                                        <input class="btn btn-primary " type="submit" value="+" />
+                                    </div>
+                                </div>
+
+                            </form>
+                        }
+                       
+                        </td>
+                
                 @if (User.IsInRole(UserRoles.Admin))
                 {
-                    <td><a asp-controller="StaffMember" asp-action="StaffMemberById" asp-route-id=@item.StaffMember.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block">@item.StaffMember.Email</a></td>
-                }
-                @if (User.IsInRole(UserRoles.Admin) || User.IsInRole(UserRoles.StaffMember))
-                {
-                    <td><a asp-controller="Account" asp-action="SendPasswordResetEmail" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block">Send Reset Password Email</a></td>
-                }
-                @if (User.IsInRole(UserRoles.Admin))
-                {
-                    <td><a asp-controller="Student" asp-action="DeleteStudent" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block">Delete Student</a></td>
+                    <td><a asp-controller="Student" asp-action="DeleteStudent" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block"> Sil</a></td>
                 }
                     <td>@item.Status</td>
                 @if (User.IsInRole(UserRoles.Admin) || User.IsInRole(UserRoles.StaffMember))
                 {
-                    <td><a asp-controller="Student" asp-action="ChangeStatus" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block">ChangeStatus</a></td>
+                    <td><a asp-controller="Student" asp-action="ChangeStatus" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block">Güncelle</a></td>
                 }
             </tr>
         }
     </tbody>
 </table>
-@section Scripts {
+
+@*@section Scripts {
     @if (User.IsInRole("StaffMember"))
     {
         <script>
@@ -192,4 +227,15 @@
             });
         </script>
     }
-}
+}*@
+
+@section Scripts {
+   
+        <script>
+            $(document).ready(function () {
+            $('#table').bootstrapTable();
+        });
+    </script>
+    }
+
+            

@@ -14,27 +14,50 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
             _programTypeService = programTypeService;
         }
         [Authorize(Roles ="Admin")]
-        public IActionResult AddProgramType()
+        public async Task<IActionResult> AddProgramType(string id)
         {
             var vm = new ProgramTypeVM();
+            if (!string.IsNullOrEmpty(id))
+            {
+                var ent = await _programTypeService.GetByIdAsync(id);
+                vm.Id = ent.Id;
+                vm.InterestRate = ent.InterestRate;
+                vm.InterestRateDelay = ent.InterestRateDelay;
+                vm.InterestRateInstallment = ent.InterestRateInstallment;
+                vm.Currency = ent.Currency;
+                vm.Type = ent.Type;
+            }
             return View(vm);
         }
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddProgramType(ProgramTypeVM vm)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && !string.IsNullOrEmpty(vm.Type))
             {
                 var programtype = new PROGRAMTYPE()
                 {
+                    Id = vm.Id,
                     Type = vm.Type,
+                    Currency = vm.Currency,
+                    InterestRate = vm.InterestRate,
+                    InterestRateDelay = vm.InterestRateDelay,
+                    InterestRateInstallment = vm.InterestRateInstallment
                 };
-                await _programTypeService.AddAsync(programtype);
-                var successMessage = "You successfully added a new programtype";
+                if (!string.IsNullOrEmpty(vm.Id))
+                {
+                    await _programTypeService.UpdateAsync(vm.Id, programtype);
+                }
+                else
+                {
+                    await _programTypeService.AddAsync(programtype);
+                }
+                var successMessage = !string.IsNullOrEmpty(vm.Id) ? "Program Güncellendi" : "Başarıyla yeni bir program türü eklediniz";
                 return RedirectToAction("IndexParam", "Home", new { successMessage });
             }
             else
             {
+                ModelState.AddModelError("Type", "Program Adı Giriniz");
                 return View(vm);
             }
         }
@@ -48,7 +71,7 @@ namespace Debt_Calculation_And_Repayment_System.Controllers
         public async Task<IActionResult> DeleteProgramType(string id)
         {
             await _programTypeService.DeleteAsync(id);
-            var successMessage = "you successfully deleted a program type";
+            var successMessage = "Program türünü başarıyla sildiniz";
             return RedirectToAction("IndexParam","Home",new {successMessage});
         }
 

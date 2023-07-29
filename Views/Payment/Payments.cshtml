@@ -3,42 +3,99 @@
     Layout = "~/Views/Shared/_LayoutSecondary.cshtml";
 }
 @section Title {
-    Payments
+    Ödemeler
 }
     @section Name1{
-    Student @try
+    Bursiyer @try
     {
         @Model[0].DebtRegister.Student.Email
+        <br />
+        @Model[0].DebtRegister.Student.FirstName
+        <br />
+        @Model[0].DebtRegister.Student.ProgramType.Type
     }
     catch {}
 }
-    @section Name2{
-    Payments
-}
-    <table class="table ">
+<div class="alert alert-warning align-bottom" role="alert">
+    Ödeme Plan Özeti
+</div>
+
+<div class="row">
+    
+    <div class="col-md-6 offset-3">
+    <table class="table">
         <thead>
             <tr>
-                <th scope="col">Sum</th>
-                <th scope="col">Principal Amount</th>
-                <th scope="col">Interest Amount</th>
-                <th scope="col">Paid</th>
-                <th scope="col">Type</th>
-                <th scope="col">Payment Date</th>
-                <th scope="col">Registration Date</th>
+                <th scope="col">Toplam taksit / Kalan taksit    :    @Model.Count(k=>k.Type=="Taksit") / @Model.Count(k=>k.Paid==false && k.Type=="Taksit")</th>
+                <th scope="col">Başlangın Tarihi    :   @Model.OrderBy(k=>k.PaymentDate).FirstOrDefault().PaymentDate.ToString("dd.MM.yyyy")</th>
+                <th scope="col">Bitiş Tarihi    :   @Model.OrderByDescending(k=>k.PaymentDate).FirstOrDefault().PaymentDate.ToString("dd.MM.yyyy")   </th>
+               
+            </tr>
+            <tr>
+                    <th scope="col">Toplam Tutar    :   @Model.Sum(k=>k.Sum)</th>
+                    <th scope="col">Kalan Borç  : @Model.Where(k=> k.Paid==false).Sum(k=>k.Sum)  </th>
             </tr>
         </thead>
+        
+    </table>
+    </div>
+</div>
+<br/>
+<div class="alert alert-warning align-bottom" role="alert">
+    Ödeme Plan Dökümü
+</div>
+<div class="row">
+<table class="table table-hover">
+        <thead>
+            <tr>
+            <th scope="col">Taksit Sayısı</th>
+            <th scope="col">Son Ödeme Tarihi</th>
+            <th scope="col">Durumu</th>
+            <th scope="col">Tip</th>
+            <th scope="col">Ana Para</th>
+            <th scope="col">Faiz Tutarı</th>
+            <th scope="col">Aylık Toplam</th>
+          </tr>
+        </thead>
         <tbody>
-        @foreach (var item in Model)
-        {
+        @{
+            int taksit= 0;
+        }
+        @foreach (var item in Model.OrderBy(a=>a.PaymentDate))
+        {  taksit++;
             <tr class="table">
-                <td>@item.Sum</td>
+                <td>@taksit</td>
+                <td>@item.PaymentDate.ToString("dd.MM.yyyy")</td>
+                <td>@(item.Paid==false ? "Ödenmedi":"Ödendi")</td>
+                <td>@item.Type</td>
+                
+               
+                   
                 <td>@item.PrincipalAmount</td>
                 <td>@item.InterestAmount</td>
-                <td>@item.Paid</td>
-                <td>@item.Type</td>
-                <td>@item.PaymentDate.ToString("yyyy-MM-dd")</td>
-                <td>@item.RegDate.ToString("yyyy-MM-dd")</td>
+                <td>@item.Sum</td>
+                @if (User.IsInRole("Student") && item.Paid == false)
+                {
+                    <td><a asp-controller="" asp-action="" asp-route-id=@item.Id class="btn btn-secondary py-2 px-4 d-none d-lg-block" style="width:160px;height:45px;">Öde</a></td>
+                }
+               
             </tr>
         }
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><strong>@Model.Sum(k=>k.PrincipalAmount)</strong></td>
+            <td><strong>@Model.Sum(k=>k.InterestAmount)</strong></td>
+            <td><strong>@Model.Sum(k=>k.Sum)</strong></td>
+
+            @if (User.IsInRole("Student"))
+            {
+                <td></td>
+            }
+
+        </tr>
     </tbody>
 </table>
+</div>

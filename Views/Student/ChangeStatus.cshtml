@@ -1,48 +1,145 @@
 ﻿@using Debt_Calculation_And_Repayment_System.Data.ViewModels
 @model ChangeStatusVM
 @{
-    ViewData["Title"] = "Change Status";
+    ViewData["Title"] = "Durum Bilgisi Güncelle";
 }
 @section Title {
-    Change Status
+    Bilgi Güncelle
 }
     <div class="container-fluid px-0 py-5">
         <div class="row mx-0 justify-content-center pt-5">
             <div class="col-lg-6">
                 <div class="section-title text-center position-relative mb-4">
-                    <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Change status for</h6>
-                    <h1 class="display-4">@Model.Id</h1>
+                    <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Bursiyer Düzenleme </h6>
+                <h6 class="display-4">@Model.student.FirstName @Model.student.SurName @Model.student.Email</h6>
+                <h6 class="display-3">@Model.student.ProgramType.Type</h6>
                 </div>
             </div>
         </div>
         <div class="row justify-content-center bg-image mx-5 mb-5">
             <div class="col-lg-12 py-5">
                 <div class="bg-white p-5 my-5">
-                    <h1 class="text-center mb-4">Change Status</h1>
+                    <h1 class="text-center mb-4">Bilgileri Güncelle</h1>
                     <form asp-action="ChangeStatus">
-                        <div style="display:flex;">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>Id</label>
-                                    <input asp-for="Id" type="text" class="form-control bg-light border-0" readonly placeholder="Id" value=@Model.Id>
-                                    <span asp-validation-for="Id" style="color:red"></span>
-                                </div>
+                        <div class="row">
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>İsim</label>
+                                <input asp-for="@Model.student.FirstName" type="text" class="form-control bg-light border-0" value="@Model.student.FirstName">
+                                <span asp-validation-for="@Model.student.FirstName" style="color:red"></span>
                             </div>
-                            <div class="col-sm-6">
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Soyisim</label>
+                                <input asp-for="@Model.student.SurName" type="text" class="form-control bg-light border-0" value="@Model.student.SurName">
+                                <span asp-validation-for="@Model.student.SurName" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Kimlik No</label>
+                                <input asp-for="@Model.student.IdentityNumber" type="number" class="form-control bg-light border-0" value="@Model.student.IdentityNumber">
+                                <span asp-validation-for="@Model.student.IdentityNumber" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Eposta</label>
+                                <input asp-for="@Model.student.Email" type="text" class="form-control bg-light border-0" value="@Model.student.Email">
+                                <span asp-validation-for="@Model.student.Email" style="color:red"></span>
+                            </div>
+                        </div>
+
+                            <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label >Select a type</label>
-                                    <select asp-for="Type" class="form-control bg-light border-0">
-                                    @foreach (var item in Model.statuses)
-                                    {
-                                        <option   value=@item.Type>@item.Type</option>
-                                    }
-                                </select>
+                                    <label >Durum</label>
+                                  
+                                @Html.DropDownListFor(m => m.Type,new SelectList(Model.statuses,"Type","Type",Model.student.Status),new { @class = "form-control bg-light border-0" })
+                              
+                                <input asp-for="Id" type="hidden" class="form-control bg-light border-0" readonly placeholder="Id" value=@Model.Id>
                                 <span asp-validation-for="Type" style="color:red"></span>
                                 </div>
                             </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Program</label>
+
+                                @Html.DropDownListFor(m => m.student.ProgramType.Id,new SelectList(Model.programes,"Id","Type",Model.student.ProgramType.Id),new { @class = "form-control bg-light border-0" })
+
+
+                                <span asp-validation-for="@Model.student.ProgramType.Id" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Son Ödeme Tarihi</label>
+                                @*<input asp-for="@Model.student.ProgramFinishDate" type="date" class="form-control bg-light border-0 date-input" value="@Model.student.ProgramFinishDate.ToShortDateString()">*@
+                                
+                                @Html.TextBoxFor(m => m.student.ProgramFinishDate, "{0:yyyy-MM-dd}", new { @class = "form-control  bg-light border-0", type = "date" })
+
+                                <span asp-validation-for="@Model.student.ProgramFinishDate" style="color:red"></span>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>İlk Ödeme Tarihi</label>
+                               
+                                @Html.TextBoxFor(m => m.FirstInstallmentDate, "{0:yyyy-MM-dd}", new { @class = "form-control  bg-light border-0", type = "date" })
+
+                                <span asp-validation-for="@Model.FirstInstallmentDate" style="color:red"></span>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Telefon</label>
+                                <input  asp-for="@Model.student.PhoneNumber" type="number" class="form-control bg-light border-0" value="@Model.student.PhoneNumber">
+                                <span asp-validation-for="@Model.student.PhoneNumber" style="color:red"></span>
+                            </div>
+                        </div>
+                       
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Adres</label>
+                                <input asp-for="@Model.student.Address" type="text" class="form-control bg-light border-0" value="@Model.student.Address">
+                                <span asp-validation-for="@Model.student.Address" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Kefil İsim Soyisim</label>
+                                <input asp-for="@Model.student.GuarantorName" type="text" class="form-control bg-light border-0" value="@Model.student.GuarantorName">
+                            
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Kefil Kimlik No</label>
+                                <input asp-for="@Model.student.GuarantorIdentityNumber" type="number" class="form-control bg-light border-0" value="@Model.student.GuarantorIdentityNumber">
+                             
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Kefil Telefon</label>
+                                <input asp-for="@Model.student.GuarantorMobile" type="text" class="form-control bg-light border-0" value="@Model.student.GuarantorMobile">
+                              
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Kefil Adres</label>
+                                <input asp-for="@Model.student.GuarantorAddress" type="text" class="form-control bg-light border-0" value="@Model.student.GuarantorAddress">
+                              
+                            </div>
+                        </div>
                         </div>
                         <div class="col-sm-6" style="width:50%;margin: 0 auto;">
-                            <button class="btn btn-primary btn-block" type="submit" value="ChangeStatus" id="btnDelete">Change Status</button>
+                            <button class="btn btn-primary btn-block" type="submit" value="ChangeStatus" id="btnDelete">Güncelle</button>
                         </div>
                     </form>
                 </div>

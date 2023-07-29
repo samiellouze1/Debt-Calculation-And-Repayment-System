@@ -4,15 +4,15 @@ namespace Debt_Calculation_And_Repayment_System.Data.ViewModels
 {
     public class RegisterAStaffMemberVM
     {
-        [Required(ErrorMessage ="First Name is required")]
+        [Required(ErrorMessage ="İsim*")]
         public string FirstName { get; set; }
-        [Required(ErrorMessage ="Last Name is required")]
+        [Required(ErrorMessage ="Soyisim*")]
         public string SurName { get; set; }
-        [Required(ErrorMessage ="Email is required")]
+        [Required(ErrorMessage ="Email*")]
         public string Email { get; set; }
-        [Required(ErrorMessage ="Address")]
+        [Required(ErrorMessage ="Adres*")]
         public string Address { get; set; }
-        [Required(ErrorMessage ="Phone Number is required")]
+        [Required(ErrorMessage ="Telefon")]
         public string PhoneNumber { get; set; }
     }
 }

@@ -16,5 +16,18 @@ namespace Debt_Calculation_And_Repayment_System.Models
 
         [Required]
         public string Type { get; set; }
+
+        [Required]
+        [Range(0, 1)]
+        public decimal InterestRate { get; set; }
+        [Required]
+        [Range(0, 1)]
+        public decimal InterestRateInstallment { get; set; }
+        [Required]
+        [Range(0, 1)]
+        public decimal InterestRateDelay { get; set; }
+        [Required]
+        public string Currency { get; set; }
+        
     }
 }

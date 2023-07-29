@@ -6,17 +6,17 @@ namespace Debt_Calculation_And_Repayment_System.Data.ViewModels
 {
     public class CreateDebtVM
     {
-        [Required(ErrorMessage ="Amount Is Required")]
+        [Required(ErrorMessage ="Tutar giriniz")]
         public decimal Amount { get; set; }
-        [Required(ErrorMessage = "Start Date is required")]
-        [DateNotInFuture(ErrorMessage = "You provided a date in the future")]
+        [Required(ErrorMessage = "Başlangıç Tarihi *")]
+        [DateNotInFuture(ErrorMessage = "Geçmiş bir tarih seçiniz")]
         public DateTime StartDate { get; set; }
 
-        [Required]
-        [DateGreaterThan("StartDate", ErrorMessage = "End Date must be greater than Start Date.")]
-        [DateNotInFuture(ErrorMessage = "You provided a date in the future")]
+        //[Required]
+        //[DateGreaterThan("StartDate", ErrorMessage = "Bitiş Tarihi Başlangıç Tarihinden büyük olmalı")]
+        //[DateNotInFuture(ErrorMessage = "Geçmiş bir tarih seçiniz")]
         public DateTime EndDate { get; set; }
-        [Required(ErrorMessage ="Student is required")]
+        [Required(ErrorMessage ="Bursiyer seçiniz")]
         public string StudentId { get; set; }
         public List<STUDENT>? Students { get; set; }
     }

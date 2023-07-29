@@ -11,6 +11,8 @@ namespace Debt_Calculation_And_Repayment_System.Models
         [ScaffoldColumn(false)]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
+
+        public string? Description { get; set; }
         [Required]
         public decimal ToBePaidFull { get; set; }
         [Required]
@@ -20,7 +22,7 @@ namespace Debt_Calculation_And_Repayment_System.Models
         [Required]
         public DateTime RegDate { get; set; }
         [Required]
-        public string Status { get; set; } = "Not Defined";
+        public string Status { get; set; } = "Bekliyor";
         public virtual DEBTREGISTER DebtRegister { get; set; }
     }
 }

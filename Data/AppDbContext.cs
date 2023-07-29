@@ -19,6 +19,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
         public DbSet<DEBTREGISTER> DEBTREGISTERs { get; set; }
         public DbSet<STUDENTSTATUSTYPE> STUDENTSTATUSTYPEs { get; set; }
         public DbSet<EMAILTEMPLATE> EMAILTEMPLATEs { get; set; }
+        public DbSet<DOCUMENT> DOCUMENTs { get; set; }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
 
@@ -32,6 +33,7 @@ namespace Debt_Calculation_And_Repayment_System.Data
             builder.Entity<DEBT>().HasOne(r => r.DebtRegister).WithMany(r => r.Debts).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<INSTALLMENT>().HasOne(r => r.DebtRegister).WithMany(r => r.Installments).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<PAYMENT>().HasOne(r => r.DebtRegister).WithMany(r => r.Payments).OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<DOCUMENT>().HasOne(r => r.Student).WithMany(r => r.Documents).OnDelete(DeleteBehavior.Cascade);
             #endregion
 
 
@@ -47,7 +49,13 @@ namespace Debt_Calculation_And_Repayment_System.Data
             builder.Entity<DEBTREGISTER>().Property(dr => dr.TotalInstallment).HasPrecision(10, 2);
             builder.Entity<DEBTREGISTER>().Property(dr => dr.ToBePaidCash).HasPrecision(10, 2);
             builder.Entity<DEBTREGISTER>().Property(dr => dr.ToBePaidInstallment).HasPrecision(10, 2);
-            builder.Entity<DEBTREGISTER>().Property(dr => dr.InterestRate).HasPrecision(10, 2);
+            builder.Entity<DEBTREGISTER>().Property(dr => dr.InterestRate).HasPrecision(10, 4);
+            builder.Entity<DEBTREGISTER>().Property(dr => dr.InterestRateDelay).HasPrecision(10, 4);
+            builder.Entity<DEBTREGISTER>().Property(dr => dr.InterestRateInstallment).HasPrecision(10, 4);
+
+            builder.Entity<PROGRAMTYPE>().Property(dr => dr.InterestRate).HasPrecision(10, 4);
+            builder.Entity<PROGRAMTYPE>().Property(dr => dr.InterestRateDelay).HasPrecision(10, 4);
+            builder.Entity<PROGRAMTYPE>().Property(dr => dr.InterestRateInstallment).HasPrecision(10, 4);
 
             builder.Entity<INSTALLMENT>().Property(i=>i.AmountAfterInterest).HasPrecision(10, 2);
             builder.Entity<INSTALLMENT>().Property(i=>i.InitialAmount).HasPrecision(10, 2);

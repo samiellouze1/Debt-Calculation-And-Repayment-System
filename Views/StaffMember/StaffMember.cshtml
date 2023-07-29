@@ -1,22 +1,161 @@
 ﻿@using Debt_Calculation_And_Repayment_System.Data.Static
-@model STAFFMEMBER
+@model USER
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "İş Yüküm";
 }
 
 
 @section Title {
-    Home
+    İş Yüküm
 }
 
     <div class="jumbotron jumbotron-fluid position-relative overlay-bottom">
-        <div class="container text-center my-5 py-5">
-            <h1 class="text-white mt-4 mb-4">Profile of Staff Member</h1>
+       @* <div class="container text-center my-5 py-5">
+            <h1 class="text-white mt-4 mb-4">Görevli Profili</h1>
             <h1 class="text-white display-1 mb-5">@Model.Email</h1>
             @if (User.IsInRole(UserRoles.Admin)||User.IsInRole(UserRoles.StaffMember))
             {
-                <a asp-controller="Student" asp-action="StudentsByStaffMember" asp-route-id=@Model.Id class="btn btn-secondary px-3 px-lg-5">Students</a>
-                <a asp-controller="Request" asp-action="RequestsByStaffMember" asp-route-id=@Model.Id class="btn btn-secondary px-3 px-lg-5">Requests</a>
+                <a asp-controller="Student" asp-action="StudentsByStaffMember" asp-route-id=@Model.Id class="btn btn-secondary px-3 px-lg-5">Bursiyerler</a>
+                <a asp-controller="Request" asp-action="RequestsByStaffMember" asp-route-id=@Model.Id class="btn btn-secondary px-3 px-lg-5">Talepler</a>
             }
-        </div>
+        </div>*@
+    @{
+        var Ogrenciler = (List<STUDENT>)ViewBag.Ogrenciler;
+        var BorcHesabiYapilacak = (List<STUDENT>)ViewBag.BorcHesabiYapilacak;
+        var IlkTaksitOdemesiYapan = (List<STUDENT>)ViewBag.IlkTaksitOdemesiYapan;
+        var TaksikOdemesiniGeciren = (List<STUDENT>)ViewBag.TaksikOdemesiniGeciren;
+        var BorcuBiten = (List<STUDENT>)ViewBag.BorcuBiten;
+        var GeriOdemeKarariIptalEdilen = (List<STUDENT>)ViewBag.GeriOdemeKarariIptalEdilen;
+        var GeriOdemeSureciDurdurulan = (List<STUDENT>)ViewBag.GeriOdemeSureciDurdurulan;
+        var HukugaSevk = (List<STUDENT>)ViewBag.HukugaSevk;
+    }
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">@(User.IsInRole("Admin") ? "Yönetici Bilgileri":"Görevli Bilgileri")</div>
+                <div class="card-body">
+                  
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <p class="card-text">Ad Soyad:</p>
+                        </div>
+                        <div class="col-sm-8">
+                            <p class="text-muted mb-0">@Model.FirstName @Model.SurName</p>
+                        </div>
+                    </div>
+                  
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <p class="card-text">Telefon:</p>
+                        </div>
+                        <div class="col-sm-8">
+                            <p class="text-muted mb-0">@Model.PhoneNumber</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <p class="card-text">Eposta:</p>
+                        </div>
+                        <div class="col-sm-8">
+                            <p class="text-muted mb-0">@Model.Email</p>
+                        </div>
+                    </div>
+                   
+                   
+
+                </div>
+            </div>
+            <div class="card">
+                <a asp-controller="StaffMember" asp-action="MyProfile" asp-route-type=1 class="btn btn-secondary">
+                    Borç hesaplaması yapılacak bursiyerler
+                    <span class="badge badge-primary">@BorcHesabiYapilacak.Count</span>
+                </a>
+                <br/>
+                <a asp-controller="StaffMember" asp-action="MyProfile" asp-route-type=2 class="btn btn-secondary">
+                    İlk taksit ödemesini yapan bursiyerler
+
+                    <span class="badge badge-primary">@IlkTaksitOdemesiYapan.Count</span>
+                </a>
+                <br />
+                <a asp-controller="StaffMember" asp-action="MyProfile" asp-route-type=3 class="btn btn-secondary">
+                    Taksit ödemesini geçiren bursiyerler
+                    <span class="badge badge-primary">@TaksikOdemesiniGeciren.Count</span>
+                </a>
+                <br />
+                <a asp-controller="StaffMember" asp-action="MyProfile" asp-route-type=4 class="btn btn-secondary">
+                    Borcu biten bursiyerler
+                    <span class="badge badge-primary">@BorcuBiten.Count</span>
+                </a>
+                <br />
+                <a asp-controller="StaffMember" asp-action="MyProfile" asp-route-type=5 class="btn btn-secondary">
+                    Geri ödeme kararı iptal edilen bursiyerler
+
+                    <span class="badge badge-primary">@GeriOdemeKarariIptalEdilen.Count</span>
+                </a>
+                <br />
+                <a asp-controller="StaffMember" asp-action="MyProfile" asp-route-type=6 class="btn btn-secondary">
+                    Geri ödeme süreci durdurulan bursiyerler
+
+                    <span class="badge badge-primary">@GeriOdemeSureciDurdurulan.Count</span>
+                </a>
+                <br />
+                <a asp-controller="StaffMember" asp-action="MyProfile" asp-route-type=7 class="btn btn-secondary">
+                    Hukuk Hizmetleri Başkanlığı'na sevk edilen bursiyerler
+
+                    <span class="badge badge-primary">@HukugaSevk.Count</span>
+                </a>
+                <br />
+                <a asp-controller="Request" asp-action="MyRequests" class="btn btn-secondary">
+                    Talepler
+
+                    <span class="badge badge-primary">0</span>
+                </a>
+                
+            </div>
+            </div>
+            <div class="col-md-9">
+            
+             <div class="card">
+                <div class="card-header">İş Yükü Detayı (@ViewBag.FilterName)</div>
+                <div class="card-body">
+                <table class="table" id="tblStudents">
+                    <thead>
+                        <tr>
+
+                                <th scope="col">E-Posta</th>
+                            <th scope="col">İsim Soyisim</th>
+                            <th scope="col">Program</th>
+                            <th scope="col">Adres</th>
+                            <th scope="col">Telefon</th>
+                            
+                            
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                            @foreach (var item in Ogrenciler)
+                        {
+                            <tr>
+                                <td><a asp-controller="DebtRegister" asp-action="DebtRegisterById" asp-route-id=@item.Id class="btn btn-outline-secondary d-none d-lg-block">@item.Email</a></td>
+                                    <td>@item.FirstName @item.SurName @item.IdentityNumber</td>
+                                <td>@item.ProgramType.Type</td>
+                               
+                                <td>@item.Address</td>
+                                <td>@item.PhoneNumber</td>
+                               
+                               
+
+                               
+                                
+
+                                
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                </div>
+             </div>
+            </div>
+            </div>
     </div>

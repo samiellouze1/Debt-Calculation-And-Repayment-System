@@ -1,6 +1,8 @@
-﻿namespace Debt_Calculation_And_Repayment_System.Data.ViewModels
+﻿using Debt_Calculation_And_Repayment_System.Models;
+
+namespace Debt_Calculation_And_Repayment_System.Data.ViewModels
 {
-    public class AcceptRequestVM
+    public class _AcceptRequestVM
     {
         public string Id { get; set; }
         public bool Accept { get; set; }
@@ -9,5 +11,7 @@
         public decimal NumOfMonths { get; set; }
         public decimal ToBePaidEachMonth { get; set; }
         public decimal Total { get; set; }
+
+        
     }
 }

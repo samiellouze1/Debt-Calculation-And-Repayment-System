@@ -5,7 +5,7 @@ namespace Debt_Calculation_And_Repayment_System.Data.ViewModels
 {
     public class EditTemplateVM
     {
-        [Required(ErrorMessage="Id is required")]
+        [Required(ErrorMessage="Id*")]
         public string TemplateId { get; set; }
         [Required]
         public string Name { get; set; }
